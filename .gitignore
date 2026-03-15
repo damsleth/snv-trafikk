@@ -8,4 +8,5 @@ __pycache__/
 *.mp4
 *.gif
 QA*.md
+*_PLAN.md
 docs/WA
