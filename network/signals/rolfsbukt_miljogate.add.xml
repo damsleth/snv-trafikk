@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<additional>
+  <variableSpeedSign id="miljogate_vss_0_0" lanes="-115505244#0_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_1_0" lanes="-115505244#1_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_2_0" lanes="-27184811#0_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_3_0" lanes="-27184811#1_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_4_0" lanes="-27184811#3_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_5_0" lanes="115505217_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_6_0" lanes="115505223_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_7_0" lanes="115505244#0_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_8_0" lanes="115505244#1_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_9_0" lanes="115505248_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_10_0" lanes="115505259_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_11_0" lanes="27184811#0_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_12_0" lanes="27184811#1_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+  <variableSpeedSign id="miljogate_vss_13_0" lanes="27184811#3_0">
+    <step time="0" speed="4.17" />
+  </variableSpeedSign>
+</additional>

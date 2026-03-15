@@ -64,6 +64,16 @@ SCENARIO_FAMILIES = {
         "color": "#c0392b",
         "description": "Scenario 1A demand on official V1 lane layout",
     },
+    "scenario_4A_v1_rolfsbukt": {
+        "network": NETWORK_DIR / "proposed" / "fornebu_v1.net.xml",
+        "demand": "4A",
+        "label": "V1 + miljøgate",
+        "color": "#d35400",
+        "description": "V1 lane layout with Rolfsbuktveien miljøgate (15 km/h)",
+        "extra_additional": [
+            str(NETWORK_DIR / "signals" / "rolfsbukt_miljogate.add.xml"),
+        ],
+    },
 }
 
 
@@ -73,6 +83,9 @@ def build_scenarios() -> dict:
     for family_name, family in SCENARIO_FAMILIES.items():
         for period_name, period in PERIODS.items():
             scenario_name = f"{family_name}_{period_name}"
+            additional = [
+                str(NETWORK_DIR / "signals" / "roundabout_params.add.xml"),
+            ] + family.get("extra_additional", [])
             scenarios[scenario_name] = {
                 "family": family_name,
                 "period": period_name,
@@ -81,9 +94,7 @@ def build_scenarios() -> dict:
                 "description": f"{family['description']} ({period_name})",
                 "label": f"{family['label']} {period['label']}",
                 "color": family["color"],
-                "additional": [
-                    str(NETWORK_DIR / "signals" / "roundabout_params.add.xml"),
-                ],
+                "additional": additional,
             }
     return scenarios
 

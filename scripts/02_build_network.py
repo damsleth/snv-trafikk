@@ -270,6 +270,47 @@ def step5_roundabout_params():
     print(f"  Roundabout params → {add_file}")
 
 
+def step6_rolfsbukt_miljogaterestriction():
+    """Generate an additional file that slows Rolfsbuktveien to model a miljøgate.
+
+    The kommunestyre voted to convert Rolfsbuktveien to a "miljøgate" with
+    traffic calming (fartsdumper, chicanes). This reduces effective capacity
+    and speed to ~15 km/h, discouraging through-traffic.
+    """
+    import sumolib
+
+    net = sumolib.net.readNet(str(BASE_NET))
+    add_file = NETWORK_DIR / "signals" / "rolfsbukt_miljogatexml"
+    add_file = NETWORK_DIR / "signals" / "rolfsbukt_miljogate.add.xml"
+    add_file.parent.mkdir(parents=True, exist_ok=True)
+
+    # Collect all Rolfsbuktveien edges (not Rolfsbuktalléen)
+    rolfsbukt_edges = []
+    for edge in net.getEdges():
+        name = (edge.getName() or "").lower()
+        if "rolfsbuktveien" in name:
+            rolfsbukt_edges.append(edge.getID())
+
+    root = ET.Element("additional")
+    # Use variableSpeedSign to enforce 15 km/h on all Rolfsbuktveien lanes.
+    MILJOGATE_SPEED = 15.0 / 3.6  # 15 km/h → m/s
+    for i, eid in enumerate(sorted(rolfsbukt_edges)):
+        edge = net.getEdge(eid)
+        for lane in edge.getLanes():
+            vss = ET.SubElement(root, "variableSpeedSign")
+            vss.set("id", f"miljogate_vss_{i}_{lane.getIndex()}")
+            vss.set("lanes", lane.getID())
+            step = ET.SubElement(vss, "step")
+            step.set("time", "0")
+            step.set("speed", f"{MILJOGATE_SPEED:.2f}")
+
+    tree = ET.ElementTree(root)
+    ET.indent(tree, space="  ")
+    tree.write(str(add_file), xml_declaration=True, encoding="utf-8")
+    print(f"  Rolfsbukt miljøgate restriction → {add_file} ({len(rolfsbukt_edges)} edges)")
+    return add_file
+
+
 def build_all():
     """Build base network and all variants."""
     print("=" * 60)
@@ -313,6 +354,10 @@ def build_all():
     step4_create_variant("fornebu_v1", v1_layout)
     step4_create_variant("fornebu_v2", v2_layout)
     step4_create_variant("fornebu_v3", v3_layout)
+
+    # Step 6: Rolfsbuktveien miljøgate restriction
+    print("\nGenerating Rolfsbuktveien miljøgate restriction...")
+    step6_rolfsbukt_miljogaterestriction()
 
     print("\n" + "=" * 60)
     print("All networks built!")
