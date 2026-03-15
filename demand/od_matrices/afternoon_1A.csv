@@ -1,0 +1,12 @@
+intersection,from,to,vehicles_per_hour
+nordre_rundkjoring,snv_nord,southbound,819
+nordre_rundkjoring,snv_nord,wideroev,609
+nordre_rundkjoring,wideroev,snv_nord,372
+nordre_rundkjoring,wideroev,southbound,921
+nordre_rundkjoring,southbound,snv_nord,270
+nordre_rundkjoring,southbound,wideroev,1056
+sondre_rundkjoring,snv_sor,northbound,724
+sondre_rundkjoring,snv_sor,rolfsbuktv,33
+sondre_rundkjoring,rolfsbuktv,northbound,108
+sondre_rundkjoring,northbound,snv_sor,609
+sondre_rundkjoring,northbound,rolfsbuktv,386

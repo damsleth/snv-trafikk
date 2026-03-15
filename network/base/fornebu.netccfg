@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-03-15T19:52:35.720341+01:00 by Eclipse SUMO netconvert 1.26.0
+-->
+
+<netconvertConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <node-files value="/Users/damsleth/Code/SNV/network/base/fornebu.nod.xml"/>
+        <edge-files value="/Users/damsleth/Code/SNV/network/base/fornebu.edg.xml"/>
+        <connection-files value="/Users/damsleth/Code/SNV/network/base/fornebu.con.xml"/>
+        <tllogic-files value="/Users/damsleth/Code/SNV/network/base/fornebu.tll.xml"/>
+        <type-files value="/Users/damsleth/Code/SNV/network/base/fornebu.typ.xml"/>
+        <osm-files value="/Users/damsleth/Code/SNV/network/osm/fornebu.osm.xml"/>
+    </input>
+
+    <output>
+        <output-file value="/Users/damsleth/Code/SNV/network/base/fornebu.net.xml"/>
+        <output.street-names value="true"/>
+        <output.original-names value="true"/>
+    </output>
+
+    <projection>
+        <proj.utm value="true"/>
+    </projection>
+
+    <processing>
+        <geometry.remove value="true"/>
+        <roundabouts.guess value="true"/>
+    </processing>
+
+    <building_defaults>
+        <default.junctions.radius value="12"/>
+    </building_defaults>
+
+    <ramp_guessing>
+        <ramps.guess value="true"/>
+    </ramp_guessing>
+
+    <edge_removal>
+        <keep-edges.by-vclass value="passenger"/>
+        <remove-edges.by-type value="highway.footway,highway.cycleway,highway.path,highway.pedestrian,highway.steps,highway.service"/>
+    </edge_removal>
+
+    <junctions>
+        <junctions.join value="true"/>
+        <junctions.internal-link-detail value="5"/>
+    </junctions>
+
+</netconvertConfiguration>

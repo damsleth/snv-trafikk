@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<types>
+  <type id="highway.motorway" priority="6" speed="33.33" numLanes="2" oneway="true" />
+  <type id="highway.motorway_link" priority="5" speed="22.22" numLanes="1" oneway="true" />
+  <type id="highway.trunk" priority="5" speed="22.22" numLanes="2" oneway="false" />
+  <type id="highway.trunk_link" priority="4" speed="16.67" numLanes="1" oneway="false" />
+  <type id="highway.primary" priority="4" speed="16.67" numLanes="2" oneway="false" />
+  <type id="highway.primary_link" priority="3" speed="13.89" numLanes="1" oneway="false" />
+  <type id="highway.secondary" priority="3" speed="13.89" numLanes="2" oneway="false" />
+  <type id="highway.secondary_link" priority="2" speed="13.89" numLanes="1" oneway="false" />
+  <type id="highway.tertiary" priority="2" speed="11.11" numLanes="1" oneway="false" />
+  <type id="highway.tertiary_link" priority="2" speed="11.11" numLanes="1" oneway="false" />
+  <type id="highway.residential" priority="1" speed="8.33" numLanes="1" oneway="false" />
+  <type id="highway.unclassified" priority="1" speed="8.33" numLanes="1" oneway="false" />
+  <type id="highway.living_street" priority="1" speed="5.56" numLanes="1" oneway="false" />
+</types>
