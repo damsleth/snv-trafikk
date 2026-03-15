@@ -74,6 +74,28 @@ SCENARIO_FAMILIES = {
             str(NETWORK_DIR / "signals" / "rolfsbukt_miljogate.add.xml"),
         ],
     },
+    "scenario_4A_base_event": {
+        "network": NETWORK_DIR / "base" / "fornebu.net.xml",
+        "demand": "4A",
+        "label": "Base + konsert",
+        "color": "#27ae60",
+        "description": "Base network with Unity Arena event-night overlay (PM only)",
+        "periods": ["afternoon"],
+        "extra_routes": [
+            str(DEMAND_DIR / "routes" / "event_overlay.rou.xml"),
+        ],
+    },
+    "scenario_4A_v1_event": {
+        "network": NETWORK_DIR / "proposed" / "fornebu_v1.net.xml",
+        "demand": "4A",
+        "label": "V1 + konsert",
+        "color": "#922b21",
+        "description": "V1 lane layout with Unity Arena event-night overlay (PM only)",
+        "periods": ["afternoon"],
+        "extra_routes": [
+            str(DEMAND_DIR / "routes" / "event_overlay.rou.xml"),
+        ],
+    },
 }
 
 
@@ -81,16 +103,24 @@ def build_scenarios() -> dict:
     """Expand families into per-period scenarios."""
     scenarios = {}
     for family_name, family in SCENARIO_FAMILIES.items():
+        allowed_periods = family.get("periods", list(PERIODS.keys()))
         for period_name, period in PERIODS.items():
+            if period_name not in allowed_periods:
+                continue
             scenario_name = f"{family_name}_{period_name}"
             additional = [
                 str(NETWORK_DIR / "signals" / "roundabout_params.add.xml"),
             ] + family.get("extra_additional", [])
+            # Build route file list (base demand + optional overlay)
+            routes = str(DEMAND_DIR / "routes" / f"{period['route_suffix']}_{family['demand']}.rou.xml")
+            extra_routes = family.get("extra_routes", [])
+            if extra_routes:
+                routes = ",".join([routes] + extra_routes)
             scenarios[scenario_name] = {
                 "family": family_name,
                 "period": period_name,
                 "network": family["network"],
-                "routes": DEMAND_DIR / "routes" / f"{period['route_suffix']}_{family['demand']}.rou.xml",
+                "routes": routes,
                 "description": f"{family['description']} ({period_name})",
                 "label": f"{family['label']} {period['label']}",
                 "color": family["color"],

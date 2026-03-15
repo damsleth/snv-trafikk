@@ -274,6 +274,116 @@ def generate_routes(
     return len(vehicles)
 
 
+def generate_event_overlay(
+    net_file: Path,
+    output_file: Path,
+    seed: int = 42,
+    attendees: int = 27500,
+    car_share: float = 1 / 3,
+    persons_per_car: float = 2.5,
+    park_fraction: float = 1 / 3,
+) -> int:
+    """Generate a Unity Arena event-night demand overlay.
+
+    The event overlay models concert traffic at Unity Arena (Telenor Arena):
+
+    - **Inbound (sim time 1800-5400, i.e. 16:00-17:30):** Vehicles arrive
+      from E18/nordre rundkjøring heading to the arena area (Snarøyveien øst
+      zone). 1/3 park, 2/3 are drop-offs that leave immediately.
+    - **Drop-off outbound:** Vehicles that dropped off return toward E18
+      immediately.
+
+    The PM simulation window is 15:30-17:00 (5400s total).  Event arrival
+    starts at 16:00 (sim time 1800s), so 1 hour of event inbound traffic
+    overlaps.  This captures the critical compounding of commuter PM peak
+    with early event arrivals.
+    """
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+
+    total_cars = int(attendees * car_share / persons_per_car)
+    park_cars = int(total_cars * park_fraction)
+    dropoff_cars = total_cars - park_cars
+
+    # Inbound: all cars arrive sim time 1800-5400 (16:00-17:30)
+    # The distribution front-loads slightly (most arrive 16:00-17:00)
+    EVENT_START = 1800  # sim seconds = 16:00
+    EVENT_END = 5400    # sim seconds = 17:30
+
+    random.seed(seed + 1000)  # different seed from main demand
+
+    # Edges: inbound from nordre rundkjøring, destination near Unity Arena
+    # Unity Arena is near the snv_east / martin_linges zone
+    inbound_origins = ZONE_EDGE_CANDIDATES["snv_nordost"]["origin"]
+    arena_dest = ZONE_EDGE_CANDIDATES["snv_east"]["destination"]
+    outbound_dest = ZONE_EDGE_CANDIDATES["snv_nordost"]["destination"]
+
+    root = ET.Element("routes")
+
+    # Reuse the car vType from main demand (same route file will be merged)
+    vtype = ET.SubElement(root, "vType")
+    vtype.set("id", "event_car")
+    vtype.set("vClass", "passenger")
+    vtype.set("length", "4.5")
+    vtype.set("maxSpeed", "50.0")
+    vtype.set("accel", "2.6")
+    vtype.set("decel", "4.5")
+    vtype.set("sigma", "0.5")
+    vtype.set("color", "0.2,0.2,0.8")  # blue tint for event cars
+
+    vehicles = []
+    vid = 0
+
+    # Inbound arrivals (distributed over EVENT_START to EVENT_END)
+    for i in range(total_cars):
+        # Front-loaded distribution: beta distribution skewed early
+        t = EVENT_START + random.betavariate(2, 3) * (EVENT_END - EVENT_START)
+        vehicles.append((
+            t, vid,
+            random.choice(inbound_origins),
+            random.choice(arena_dest),
+            "snv_nordost", "snv_east", "event_car",
+        ))
+        vid += 1
+
+    # Drop-off vehicles leave ~2-5 minutes after arriving
+    for i in range(dropoff_cars):
+        base_arrival = EVENT_START + random.betavariate(2, 3) * (EVENT_END - EVENT_START)
+        depart = base_arrival + random.uniform(120, 300)  # 2-5 min turnaround
+        if depart < EVENT_END + 600:  # allow some overflow
+            vehicles.append((
+                depart, vid,
+                random.choice(ZONE_EDGE_CANDIDATES["snv_east"]["origin"]),
+                random.choice(outbound_dest),
+                "snv_east", "snv_nordost", "event_car",
+            ))
+            vid += 1
+
+    vehicles.sort(key=lambda v: v[0])
+
+    for depart, v_id, from_edge, to_edge, from_zone, to_zone, vtype_id in vehicles:
+        trip = ET.SubElement(root, "trip")
+        trip.set("id", f"event_{v_id}")
+        trip.set("type", vtype_id)
+        trip.set("depart", f"{depart:.1f}")
+        trip.set("from", from_edge)
+        trip.set("to", to_edge)
+        trip.set("departLane", "best")
+        trip.set("fromTaz", from_zone)
+        trip.set("toTaz", to_zone)
+
+    tree = ET.ElementTree(root)
+    ET.indent(tree, space="  ")
+    tree.write(str(output_file), xml_declaration=True, encoding="utf-8")
+
+    n_inbound = total_cars
+    n_dropoff_out = sum(1 for v in vehicles if v[6] == "event_car") - total_cars
+    print(
+        f"Event overlay ({n_inbound} inbound + {n_dropoff_out} drop-off outbound"
+        f" = {len(vehicles)} total vehicles) -> {output_file}"
+    )
+    return len(vehicles)
+
+
 def generate_all_demand() -> None:
     """Generate OD CSVs and route files for both scenarios and both peak hours."""
     print("=" * 60)
@@ -294,6 +404,13 @@ def generate_all_demand() -> None:
                 routes_dir / f"{suffix}.rou.xml",
                 seed=42,
             )
+
+    # Generate Unity Arena event overlay
+    print("\nGenerating Unity Arena event-night overlay...")
+    generate_event_overlay(
+        base_net,
+        routes_dir / "event_overlay.rou.xml",
+    )
 
     print("\nGenerated OD files for:")
     for zone_id, zone_label in ZONE_LABELS.items():

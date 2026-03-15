@@ -248,11 +248,13 @@ def run_all_scenarios(seeds: int = 5, verbose: bool = False) -> None:
     all_results: dict[str, list[dict]] = {}
 
     for scenario_name, scenario_def in SCENARIOS.items():
-        if not scenario_def["network"].exists():
+        if not Path(str(scenario_def["network"])).exists():
             print(f"\nSKIPPING {scenario_name}: network not found at {scenario_def['network']}")
             continue
-        if not scenario_def["routes"].exists():
-            print(f"\nSKIPPING {scenario_name}: routes not found at {scenario_def['routes']}")
+        route_files = str(scenario_def["routes"]).split(",")
+        missing_routes = [r for r in route_files if not Path(r).exists()]
+        if missing_routes:
+            print(f"\nSKIPPING {scenario_name}: routes not found: {missing_routes}")
             continue
 
         print(f"\n{'-' * 44}")

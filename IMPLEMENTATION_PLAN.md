@@ -77,16 +77,22 @@ A compound scenario (V1 + Rolfsbukt restriction) shows the combined risk.
 
 ## Gap 5: Unity Arena event-overlay demand
 
-**Why:** Event nights at Unity Arena (10,000-15,000 attendees) superimpose
-~3,000-5,000 additional vehicles on top of PM peak traffic. The group repeatedly
-cites event-night gridlock.
+**Why:** Event nights at Unity Arena (up to 27,500 attendees) superimpose
+thousands of additional vehicles on top of PM peak traffic. The group
+repeatedly cites event-night gridlock.
 
-**What:**
-- Create an event-overlay demand file with ~3,000 additional vehicles
-  arriving 17:00-19:00, departing 21:00-23:00, all from/to nordre rundkjøring
-- Add scenario families `scenario_4A_base_event` and `scenario_4A_v1_event`
-  that combine regular PM demand with the event overlay
-- Run PM period only
+**Demand model (corrected per user input):**
+- **Capacity:** 27,500 attendees
+- **Inbound (16:00-18:00):** Doors open ~18:00, cars arrive 16:00-18:00.
+  Assume ~1/3 of attendees arrive by car (avg 2.5 per car) ≈ 3,667 vehicles.
+  Of these, ~1/3 park (1,222 vehicles stay), ~2/3 are drop-offs (2,445 leave).
+- **Drop-off outbound (16:00-18:00):** 2,445 vehicles leave after dropping off.
+- **Return pickups (22:45-23:30):** ~1/3 of original inbound = 1,222 pickup
+  vehicles reappear.
+- **Parked departures (22:45-23:30):** ~1,222 vehicles leave from parking.
+- All event traffic originates from/destined to nordre rundkjøring (E18).
+- The PM simulation window (15:30-16:30) captures the leading edge of inbound
+  event traffic overlapping with commuter rush.
 
 **Files:** `scripts/03_generate_demand.py`, `scripts/utils/scenario_catalog.py`
 
