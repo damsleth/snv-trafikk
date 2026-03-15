@@ -1,0 +1,1002 @@
+                      Tilleggsnotat
+      - Trafikkanalyse Snarøyveien
+                Dok.nr.: PF-FLY0-070-RA-0007
+                                Revisjon: 01G
+
+
+
+
+OFFENTLIG
+Oslo Kommune – Fornebubanen                                                        Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                           Revisjon: 01G
+Tilleggsnotat                                                                            Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                               Side: 2 av 27
+
+Skjerming: Offentlig (O)                                                                   Klassifisering:
+Jfr.:      N/A                                                                                INTERN
+
+
+
+
+                                   Dokumentet er utarbeidet av
+
+
+
+
+ Rev.   Dato          Utgitt for             Utarbeidet av        Kontrollert av         Godkjent av
+ 01G    17.10.2024    Gjennomsyn             Jens Chr. Rognlien   Terje Vidar Fordal     Trude Een Eide
+Oslo Kommune – Fornebubanen                                                                                                           Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                                                                Revisjon: 01G
+Tilleggsnotat                                                                                                                                 Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                                                                     Side: 3 av 27
+
+Skjerming: Offentlig (O)                                                                                                                         Klassifisering:
+Jfr.:      N/A                                                                                                                                      INTERN
+
+
+
+
+Innhold:
+1.          INNLEDNING .................................................................................................................................... 4
+1.1         Hensikt og bakgrunn ........................................................................................................................ 4
+1.2         Sammendrag .................................................................................................................................... 5
+2.          ENDRINGSLOGG ............................................................................................................................... 5
+3.          DATAGRUNNLAG.............................................................................................................................. 6
+3.1         Veinett ............................................................................................................................................. 6
+3.2         Trafikkmengder i rundkjøringene og i lyskrysset ............................................................................... 7
+3.2.1       Trafikkmengder i makstimene (etterspørsel) ........................................................................................... 7
+3.2.2       Generelt om trafikkavvikling i rundkjøringer ............................................................................................ 9
+3.2.3       Resultater/beregnet trafikkavvikling ........................................................................................................ 9
+
+4.          OPTIMALISERINGSTILTAK ............................................................................................................... 13
+4.1         Mulige tiltak................................................................................................................................... 13
+4.2         Tiltak i planlagte signalanlegg ......................................................................................................... 13
+4.2.1       Ettermiddagssituasjonen ........................................................................................................................ 15
+4.3         Tilfartskontroll inn mot rundkjøringene .......................................................................................... 16
+4.4         Ombygging av søndre rundkjøring til signalregulert T-kryss ............................................................ 18
+4.5         Endre kjøremønster i søndre rundkjøring ....................................................................................... 19
+4.6         Endre kjøremønster andre steder på veinettet ............................................................................... 21
+4.7         Omregulering av kollektivfelt til kjørefelt ....................................................................................... 22
+4.8         Variable felter og svingebevegelser ................................................................................................ 22
+4.9         Endring av reisevaner ..................................................................................................................... 23
+5.          OPPSUMMERING ........................................................................................................................... 24
+5.1         Søndre rundkjøring, spesielt i morgenrush...................................................................................... 25
+5.2         Signalanlegg i Snarøyveien nordover, spesielt i ettermiddagsrush ................................................... 26
+REFERANSER ............................................................................................................................................... 27
+Oslo Kommune – Fornebubanen                                                                           Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                              Revisjon: 01G
+Tilleggsnotat                                                                                               Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                                  Side: 4 av 27
+
+Skjerming: Offentlig (O)                                                                                      Klassifisering:
+Jfr.:      N/A                                                                                                   INTERN
+
+
+
+
+1.       INNLEDNING
+
+1.1      Hensikt og bakgrunn
+
+Dette notatet er et tilleggsnotat til trafikkanalyse Snarøyveien (PGF 2024, PF-FLY0-070-RA-0006) for
+reguleringsplanforslag for Snarøyveien. Trafikkanalysen viser at planforslaget for Snarøyveien
+medfører problemer med å avvikle trafikken som kommer fra Snarøya, og at det kan oppstå lange
+køer i nordgående retning på Snarøyveien og Snarøyveien sør. Bærum kommune har derfor bedt om
+at det vurderes mulige tiltak for å redusere køene. Notatet er basert på Trafikkanalyse Snarøyveien
+og tiltakene som er vurdert er direkte knyttet til løsninger som ligger i planforslaget for Snarøyveien.
+Trafikkscenario 4A er lagt til grunn for tiltakene, det henvises til Trafikkanalyse Snarøyveien (PGF
+2024) og Trafikkanalyse Fornebu KDP3 (Multiconsult, 2022) for mer informasjon om ulike
+forutsetninger og scenarier.
+
+
+
+
+Figur 1-1: Kart over området med relevante vei-/gatenavn. Strekningen som inngår i planforslag for Snarøyveien er angitt
+med rød firkant. (Kilde: kart.finn.no)
+Oslo Kommune – Fornebubanen                                                            Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                               Revisjon: 01G
+Tilleggsnotat                                                                                Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                   Side: 5 av 27
+
+Skjerming: Offentlig (O)                                                                       Klassifisering:
+Jfr.:      N/A                                                                                    INTERN
+
+
+
+
+1.2     Sammendrag
+
+Overordnet kommer det mest trafikk inn mot Fornebu på morgenen, mens det om ettermiddagen
+går mest trafikk ut fra Fornebu. Den største utfordringen i morgenrush er å få avviklet trafikken som
+kommer fra Snarøya, gjennom søndre rundkjøring (Snarøyveien x Rolfsbuktveien). Søndre
+rundkjøring har i utgangspunktet kapasitet til å avvikle de totale trafikkmengdene, men stor
+skjevfordeling i trafikk fra hver arm, spesielt i morgenrushet, gir lav avviklingsevne i rundkjøringen.
+Trafikken fra Snarøyveien sør må vike for en kontinuerlig strøm med kjøretøy inne i rundkjøringen, og
+det bygger seg opp betydelig kø på Snarøyveien sør, inn mot rundkjøringen.
+I ettermiddagsrushet er de største utfordringene å få nordgående trafikk gjennom lyskrysset
+Snarøyveien x Bernt Balchens vei, og videre forbi innsnevringen ved Flytårnet stasjon. Forbi Flytårnet
+stasjon er det kun ett kollektivfelt og ett kjørefelt for biler nordover, og det er et signalregulert
+gangfelt ved stasjonen/holdeplassene. Kjørefeltet fylles opp tilbake mot krysset når fotgjengerne får
+grønt lys i gangfeltet, og dette påvirker avviklingen i lyskrysset. Kjøretøy som skal nordover fra sør og
+øst får dermed ikke kjørt gjennom krysset når de har grønt lys. I tillegg må kjøretøyene flette fra to til
+ett kjørefelt etter krysset.
+
+For å redusere køen på Snarøyveien sør i nordgående retning i morgenrush, er det vurdert
+hensiktsmessig med tiltak som gir større prioritet til denne trafikkstrømmen gjennom søndre
+rundkjøring. Dette kan være ved hjelp av trafikkstyrt tilfartskontroll av sørgående trafikk inn mot
+rundkjøringen, ombygging av rundkjøring til signalregulert T-kryss, eller å lede trafikken fra Snarøya
+over på Rolfsbuktveien inn mot rundkjøringen. Det er vurdert at disse tiltakene kan ha god effekt på
+avviklingen av trafikken fra Snarøya, og bedre situasjonen betraktelig. Noen av tiltakene kan samtidig
+gi noe forsinkelse for sørgående trafikk.
+
+For å redusere køer på Snarøyveien i nordgående retning og på Snarøyveien øst i ettermiddagsrush,
+er det vurdert flere tiltak som øker avviklingen gjennom krysset Snarøyveien x Bernt Balchens vei og
+forbi Flytårnet stasjon. Det er vurdert at optimalisering av signalplanene for krysset, og samkjøring av
+signalanleggene på strekningen vil ha god effekt på avviklingssituasjonen.
+
+2.      ENDRINGSLOGG
+
+Rev.     Rev.dato          Kapittel/side     Beskrivelse av endring
+
+01G      17.10.2024        -                 Første utgave
+
+
+
+
+Endringsloggen skal bestå av endringer som er nye for denne revisjonen. Alle endringer skal legges
+inn her. Dersom endringen er for lang/omfattende, så kan den henvises til her.
+Oslo Kommune – Fornebubanen                                                                            Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                               Revisjon: 01G
+Tilleggsnotat                                                                                                Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                                   Side: 6 av 27
+
+Skjerming: Offentlig (O)                                                                                       Klassifisering:
+Jfr.:      N/A                                                                                                    INTERN
+
+
+
+
+3.       DATAGRUNNLAG
+
+3.1      Veinett
+
+
+
+
+Figur 3-1: T.v: Overordnet veinett på Fornebu. T.h.: Veinettets utstrekning i modelleringsverktøyet Aimsun
+
+Veinettet som omtales i notatet er i hovedsak Snarøyveien med tilstøtende veier, på strekningen fra
+Unity arena i nord til kjøpesenteret Fornebu S i sør. Figur 3-1 viser veinettet og navngitte bygninger. I
+nord ligger rundkjøringen Snarøyveien x Widerøeveien, merket med N i figuren over. Denne omtales
+Oslo Kommune – Fornebubanen                                                            Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                               Revisjon: 01G
+Tilleggsnotat                                                                                Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                   Side: 7 av 27
+
+Skjerming: Offentlig (O)                                                                       Klassifisering:
+Jfr.:      N/A                                                                                    INTERN
+
+
+
+
+videre i notatet som nordre rundkjøring og rundkjøring Widerøeveien. Ved Flytårnet T-banestasjon
+(merket Fly) ligger krysset Snarøyveien x Bernt Balchens vei, som også omtales som lyskrysset og
+signalregulert kryss. Den østre armen går inn til bl.a. Telenor-komplekset, og omtales videre som
+Snarøyveien øst. I sør ligger rundkjøringen Snarøyveien x Rolfsbuktveien (merket S). Denne omtales
+videre som søndre rundkjøring og rundkjøring Rolfsbuktveien. Den strekningen på Snarøyveien som
+går mellom søndre rundkjøring og kjøpesenteret Fornebu S, omtales videre som Snarøyveien sør.
+
+Til/fra Snarøya er det kun en veiakse; Snarøyveien. Ved Hundsund bad møtes Snarøyveien og
+Rolfsbuktveien i en rundkjøring. Rolfsbuktveien går i en sløyfe mot øst, og kobler seg på Snarøyveien
+igjen i søndre rundkjøring. I forbindelse med utbyggingen av Fornebubanen og
+endestoppet/snuplassen på denne er Snarøyveien midlertidig stengt mellom Hundsund bad og
+kjøpesenteret Fornebu S. All trafikk til/fra Snarøya må dermed gå via Rolfsbuktveien i
+anleggsperioden. I beregninger for fremtidig situasjon er Snarøyveien åpnet igjen, mens
+Rolfsbuktveien er stengt for gjennomkjøring. Det betyr at all trafikk til/fra Snarøya i fremtidig
+situasjon går på Snarøyveien mellom de to rundkjøringene.
+
+3.2     Trafikkmengder i rundkjøringene og i lyskrysset
+
+I trafikkanalysen for Snarøyveien ble det beregnet framtidig timestrafikk (år 2040) for rushtider om
+morgen og ettermiddag. For beregningen er det tatt utgangpunkt i trafikkmengder (årsdøgntrafikk -
+ÅDT) i Trafikkanalyse Fornebu KDP3 (Multiconsult, 2022). Disse tilsvarer 2021/2022 i NVDB (Norsk
+vegdatabase). På steder hvor det mangler trafikktall i Trafikkanalyse Fornebu KDP3, eller hvor det er
+store avvik mellom ÅDT i Trafikkanalyse Fornebu KDP3 og i NVDB, er trafikktallene justert mot tall fra
+trafikktellinger. Videre er det beregnet oppskaleringsfaktorer mellom dagens situasjon og år 2040.
+Framtidige rushtidsandeler er basert på dagens andeler i tellepunktene på Snarøyveien, som utgjør
+10-12 % av ÅDT for makstimen i morgenrush, og rundt 12 % av ÅDT for makstimen i
+ettermiddagsrush.
+For beregninger av svingeandeler i kryss i ny situasjon er det tatt utgangspunkt i tellinger av
+svingeandeler i dagens situasjon. Svingeandelene er deretter justert for nytt kjøremønster. Med
+disse forutsetningene vil det naturligvis være noen faktorer som ikke tas med, som f.eks. framtidige
+endringer i rushtidsperioder og endringer i reisevaner. Det henvises til Trafikkanalyse Fornebu KDP3
+og trafikkanalyse Snarøyveien for mer informasjon.
+
+3.2.1   Trafikkmengder i makstimene (etterspørsel)
+For scenario 4A er det beregnet trafikkmengder i makstimen for henholdsvis morgen og ettermiddag,
+se figurer under. Trafikkmengdene som er vist er den beregnete etterspørselen, altså ikke
+nødvendigvis all trafikken som blir avviklet i modellen. Tallene er avrundet til nærmeste 5 kjøretøy,
+og gitt verdi 5 kjøretøy hvis det er en tillatt svingebevegelse med lavere etterspørsel enn dette. Tallet
+plassert midt i kryssene representerer summen av etterspurt trafikk inn i det aktuelle krysset. I
+krysset Snarøyveien x Bernt Balchens vei er flere svingebevegelser fjernet. Etterspørselen for disse
+svingebevegelsene er likevel vist. Denne trafikken må dermed velge andre ruter; enten via
+Oslo Kommune – Fornebubanen                                                            Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                               Revisjon: 01G
+Tilleggsnotat                                                                                Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                   Side: 8 av 27
+
+Skjerming: Offentlig (O)                                                                       Klassifisering:
+Jfr.:      N/A                                                                                    INTERN
+
+
+
+
+Forneburingen (utenfor modellen), eller følge tillatte svingebevegelser og ta u-sving i nærmeste
+rundkjøring (inne i modellen). Dette er synliggjort ved at noen trafikkstrømmer har angitt et
+trafikktall i parentes. Tallet i parentes er den opprinnelige etterspørselen på disse bevegelsene, mens
+tallet utenfor parentesen er etterspørselen som er brukt i modellen. Differansen representerer
+dermed trafikkmengden som velger å kjøre på Forneburingen som følge av svingebevegelsene som
+er fjernet fra hhv. Bernt Balchens vei og Odd Nansens vei. Dette gir en reduksjon på de to sistnevnte
+veilenkene, og en økning på Widerøeveien.
+
+ Nordre rundkjøring, x Widerøeveien, morgen          Nordre rundkjøring, x Widerøeveien, ettermiddag
+
+
+
+
+ Kryss Snarøyveien x Bernt Balchens vei, morgen      Kryss Snarøyveien x Bernt Balchens vei, ettermiddag
+
+
+
+
+ Søndre rundkjøring, x Rolfsbuktveien, morgen        Søndre rundkjøring, x Rolfsbuktveien, ettermiddag
+Oslo Kommune – Fornebubanen                                                                      Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                         Revisjon: 01G
+Tilleggsnotat                                                                                          Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                             Side: 9 av 27
+
+Skjerming: Offentlig (O)                                                                                 Klassifisering:
+Jfr.:      N/A                                                                                              INTERN
+
+
+
+
+Figur 3-2: Estimerte trafikkmengder i makstimer 2040, grunnlag for modellberegningene i Aimsun
+
+Overordnet kan vi se at det kommer mest trafikk inn mot Fornebu om morgenen (fra Vestre
+lenke/Wideøreveien, Snarøyveien nord og Snarøyveien sør). Om ettermiddagen har det delvis snudd,
+slik at det da går mer trafikk ut fra Fornebu. Dette stemmer godt med at det er mange arbeidsplasser
+på Fornebu.
+
+Videre ser vi at den totale trafikkmengden inn i nordre rundkjøring er vesentlig høyere enn i søndre
+rundkjøring, både for morgen- og ettermiddagsrushet. I nordre rundkjøring er trafikkstrømmene fra
+hver arm ganske jevne (tilnærmet like store), mens det i søndre rundkjøring er en stor skjevfordeling.
+
+3.2.2 Generelt om trafikkavvikling i rundkjøringer
+«Tommelfingerregel/erfaringsbasert»: En 3-armet rundkjøring kan avvikle ca. 3 500 kjøretøy/time
+(teoretisk makskapasitet). Dette forutsetter svingefelt i armene, to sirkulerende felt, maks 1 200 kjt/t
+per tilfart, og at det er liten skjevfordeling. Blir skjevfordelingen for stor så reduseres kapasiteten.
+
+I søndre rundkjøring er det stor skjevfordeling, spesielt i morgenrushet, som er hovedårsaken til lav
+avviklingsevne i denne.
+
+3.2.3 Resultater/beregnet trafikkavvikling
+Jevnere trafikkstrømmer fra hver arm gjør at trafikken avvikles bedre i nordre rundkjøring enn i
+søndre, på tross av at trafikkmengdene er større i norde rundkjøring. Figurene under viser
+beregningsresultater fra Aimsun, med forsinkelsesplott, og beregnede kølengder utenfor modellen,
+for scenario 4A, variant V3 (Trafikkanalyse Snarøyveien).
+Oslo Kommune – Fornebubanen                                                                               Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                                  Revisjon: 01G
+Tilleggsnotat                                                                                                   Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                                     Side: 10 av 27
+
+Skjerming: Offentlig (O)                                                                                          Klassifisering:
+Jfr.:      N/A                                                                                                       INTERN
+
+
+
+
+Morgen:
+
+
+
+
+Figur 3-3: Resultater for morgenrush: forsinkelsesplot t.v. og beregnet antall biler i kø utenfor modellen t.h (Aimsun)
+
+Den største utfordringen i morgenrush er å avvikle trafikken fra Snarøya gjennom søndre
+rundkjøring. Den største trafikkstrømmen kommer fra nord og skal ut mot Rolfsbuktveien. Fra
+Rolfsbuktveien er det svært få biler som skal til venstre i rundkjøringen. Dermed blir det få biler som
+kan bryte opp strømmen fra nord. Det gjør at trafikken fra Snarøyveien sør må vike for en
+kontinuerlig strøm med kjøretøy inne i rundkjøringen.
+
+
+
+
+Figur 3-4: Skjevfordeling av trafikkmengder i søndre rundkjøring i morgenrush. Den største trafikkstrømmen (grønn pil)
+hindrer for den neste største (rød pil).
+Oslo Kommune – Fornebubanen                                                                               Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                                  Revisjon: 01G
+Tilleggsnotat                                                                                                   Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                                     Side: 11 av 27
+
+Skjerming: Offentlig (O)                                                                                          Klassifisering:
+Jfr.:      N/A                                                                                                       INTERN
+
+
+
+
+Ved slutten av beregningsperioden for morgenrushet står det fortsatt ca. 340 biler i kø på
+Snarøyveien sør inn mot søndre rundkjøring. Av disse er ca. 30 kjøretøy innenfor modellens veinett,
+mens resterende 309 kjøretøy står utenfor modellen, som vist i figur 3-3. Dette er over halvparten av
+alle bilene som skulle vært avviklet fra Snarøya i løpet av makstimen, ref. figur 3-4.
+
+De beregnede kølengdene er et uttrykk for at kapasiteten i veinettet er for liten. I virkeligheten vil
+ikke køene bli så lange som beregningene viser. Trafikantene vil i stedet, på ulike måter, tilpasse seg
+for å unngå å tilbringe lang tid i bilkø.
+
+Ettermiddag:
+
+
+
+
+Figur 3-5: Resultater for ettermiddagsrush: forsinkelsesplot t.v. og beregnet antall biler i kø utenfor modellen t.h (Aimsun)
+
+De største utfordringene i ettermiddagsrushet er å få nordgående trafikk ut gjennom lyskrysset
+Snarøyveien x Bernt Balchens vei, og videre forbi innsnevringen ved Flytårnet stasjon, med tilhørende
+signalregulert gangfelt. Køen på Snarøyveien forplanter seg tilbake til og gjennom søndre
+rundkjøring.
+
+Ved slutten av beregningsperioden for ettermiddagsrushet er det beregnet ca. 170 kjøretøy i kø på
+Snarøyveien nordover inn mot lyskrysset. Av disse er ca. 90 biler innenfor modellens veinett, mens
+resterende 79 biler står utenfor modellen, som vist i Figur 3-5. I tillegg står det nesten 250 biler i kø
+på Snarøyveien øst (mot Telenor), inn mot lyskrysset. Av disse er 233 kjøretøy utenfor modellen. Det
+er nesten to tredeler av alle bilene som skulle vært avviklet fra Snarøyveien øst.
+
+Signalplanene som er lagt til grunn i krysset Snarøyveien x Bernt Balchens vei, og i signalregulerte
+gangfelt over Snarøyveien, gir i kombinasjon med ett kjørefelt og ett kollektivfelt nordover forbi
+Flytårnet stasjon, ikke nok grønntid for nordgående trafikk til at trafikken blir avviklet.
+Oslo Kommune – Fornebubanen                                                                             Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                                Revisjon: 01G
+Tilleggsnotat                                                                                                 Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                                   Side: 12 av 27
+
+Skjerming: Offentlig (O)                                                                                        Klassifisering:
+Jfr.:      N/A                                                                                                     INTERN
+
+
+
+
+Figur 3-6: Utklipp fra en modellkjøring i ettermiddagsperiode, Aimsun (variant V3 trafikkscenario 4A)
+
+Figur 3-6 gir et visuelt bilde av hovedproblemet. Forbi flytårnet stasjon er det kun ett kjørefelt for
+biler nordover. Det er den store mengden fotgjengere over det signalregulerte gangfeltet ved
+stasjonen/holdeplassene, som fører til at kjørefeltet tilbake mot krysset fylles opp når det blir grønt
+for fotgjengerne. Kjøretøy som skal nordover fra sør og øst får dermed ikke kjørt gjennom krysset når
+de har grønt lys, fordi armen ut av krysset er full. Dette tar mye av kapasiteten i krysset. I tillegg må
+kjøretøyene flette fra to til ett kjørefelt etter krysset.
+Oslo Kommune – Fornebubanen                                                             Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                Revisjon: 01G
+Tilleggsnotat                                                                                 Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                   Side: 13 av 27
+
+Skjerming: Offentlig (O)                                                                        Klassifisering:
+Jfr.:      N/A                                                                                     INTERN
+
+
+
+
+4.        OPTIMALISERINGSTILTAK
+Den beregnede avviklingen av trafikken på Snarøyveien i 2040 med trafikkscenario 4A er ikke god
+nok. Spesielt for trafikken fra Snarøya i morgenrushet, og for nordgående trafikk fra søndre del av
+Fornebu i ettermiddagsrushet.
+
+I dette kapittelet vil vi se på mulige tiltak som kan bidra til å bedre avvikling på Snarøyveien.
+
+Dette notatet har til hensikt å belyse hvilke tiltak, som hver for seg eller i kombinasjon kan bedre
+trafikkavviklingen i det fremtidige scenarioet på Snarøyveien. Det handler i stor grad om prioritering
+av trafikkstrømmer. Det er ikke gjort beregninger på effekten av disse tiltakene i denne omgang.
+
+4.1       Mulige tiltak
+
+Under følger en liste over noen mulige tiltak. Flere av tiltakene blir deretter beskrevet nærmere i
+etterfølgende delkapitler. Listen er ikke uttømmende, men gir en pekepinn på aktuelle tiltak både på
+strekningen og i kryssene.
+
+      •   Optimalisering av signalplaner i signalanleggene
+      •   Samkjøring av signalanleggene (grønn bølge)
+      •   Tilfartskontroll inn mot rundkjøringer
+      •   Ombygging av søndre rundkjøring til signalregulert T-kryss
+      •   Endre kjøremønster i søndre rundkjøring (fordeling av trafikk mellom Snarøyveien sør,
+          Rolfsbuktveien og Forneburingen), og andre steder på veinettet.
+      •   Omregulering av kollektivfelt til kjørefelt
+      •   Sensorteknologi og smartstyring av signalanlegg, feltrestriksjoner, m.m.
+      •   Variable felt, variable svingeforbud/svingebevegelser
+      •   Tiltak for å endre reisevaner
+
+4.2       Tiltak i planlagte signalanlegg
+
+Det er planlagt tre signalanlegg på Snarøyveien på strekningen mellom nordre og søndre rundkjøring:
+
+      •   Ett signalregulert (sakset) gangfelt over Snarøyveien rett nord for kryss med Odd Nansens
+          vei.
+      •   Ett signalregulert gangfelt over Snarøyveien ved Flytårnet stasjon.
+      •   Ett signalregulert X-kryss mellom Snarøyveien og Bernt Balchens vei. Gangfeltet over
+          Snarøyveien sør for krysset er signalregulert og en del av krysset. Det samme gjelder
+          gangfeltet over Bernt Balchens vei. Gangfeltet over Snarøyveien øst er trukket vekk fra
+          krysset og er ikke signalregulert.
+Oslo Kommune – Fornebubanen                                                          Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                             Revisjon: 01G
+Tilleggsnotat                                                                              Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                Side: 14 av 27
+
+Skjerming: Offentlig (O)                                                                     Klassifisering:
+Jfr.:      N/A                                                                                  INTERN
+
+
+
+
+Figur 4-1: Oversikt over signalanlegg på strekningen mellom rundkjøringene
+
+Optimalisering av signalplaner i signalanleggene
+Det er mulig å optimalisere signalplanene for de tre signalanleggene slik at de prioriterer mer
+grønntid til kritiske trafikkstrømmer, som varierer mellom morgen- og ettermiddagsrushet.
+Anleggene bør være trafikkstyrt (med detektorer), og ikke tidsstyrt med faste intervaller. Dette gjør
+at fasene kan variere avhengig av hvordan trafikkstrømmene endrer seg. Dermed prioriteres
+trafikkstrømmene som er mest kritisk for å få effektiv avvikling av trafikken.
+
+Samkjøring av anlegg
+Signalanleggene bør være samkjørte slik at man kan regulere trafikkavviklingen på de forskjellige
+trafikkstrømmene etter behov. Dette kan gjøres ved f.eks. grønn bølge for noen bevegelser, som
+dermed kan komme seg gjennom en større del av strekningen, og tømme delstrekninger for kø. For
+andre trafikkstrømmer kan man gi rød bølge, for å bremse trafikkstrømmen, eller dele den opp for å
+skape tidsluker for konflikterende strømmer.
+
+Saksing av gangfelt
+Gangfeltet over Snarøyveien nord for Odd Nansens vei er planlagt sakset. Dette muliggjør oppdeling
+av gangkryssingen mellom de ulike retningene, og dermed kortere grønntid og uttømmingstid for
+fotgjengerne. Dette gir mer grønntid og økt prioritet for kjøretøytrafikken. Når signalanlegget er
+sakset gis fotgjengerne grønt lys over den ene kjøreretningen, og deretter over den andre. Dette kan
+gi grønn bølge for fotgjengerne som går i den ene retningen, mens fotgjengerne som skal motsatt vei
+må vente i midtrabatten før de kan krysse den siste delen av gangfeltet. Hvis gangstrømmene i
+hovedsak er retningsstyrt mellom f.eks. morgen og ettermiddag, vil dette gi ulemper kun for
+Oslo Kommune – Fornebubanen                                                           Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                              Revisjon: 01G
+Tilleggsnotat                                                                               Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                  Side: 15 av 27
+
+Skjerming: Offentlig (O)                                                                      Klassifisering:
+Jfr.:      N/A                                                                                   INTERN
+
+
+
+
+mindretallet av fotgjengere som går mot hovedstrømmen. Dersom det ikke er store forskjeller
+mellom gangstrømmene, kan signalplanen også være slik at det blir tilnærmet like lang ventetid
+mellom kryssing av de forskjellige gangretningene. Da får alle fotgjengerne samme forsinkelse når de
+venter i midtrabatten, uavhengig av retningen de kommer fra. Et sakset gangfelt gir også økte
+muligheter for å optimalisere samkjøring av flere anlegg, i begge retninger, for de kjørende. I Statens
+vegvesens veiledning til Trafikksignalanlegg, V322, står det at saksing er uheldig for fotgjengerne og
+bør i utgangspunktet unngås. Men det står også «Saksing av gangfelt kan imidlertid vurderes
+benyttet når man har behov for så lang grønntid som mulig for kjøretøytrafikken eller man ønsker
+forskjøvet grønntid for kjøretøytrafikken i de to ulike retningene for å optimalisere en samkjøring av
+flere signalanlegg. Saksing av gangfelt krever imidlertid at det er liten gangtrafikk i det aktuelle
+gangfeltet.»
+
+Det vurderes at det er en del å hente på optimalisering av signalanleggene, spesielt for avviklingen av
+nordgående trafikk i ettermiddagsrushet.
+
+4.2.1 Ettermiddagssituasjonen
+I kapittel 3.2.3 ble det vist at manglende samkjøring mellom signalanleggene (og for kort grønntid for
+noen bevegelser) bidro sterkt til å forverre avviklingen gjennom innsnevringen forbi Flytårnet stasjon.
+Ved å samkjøre signalanleggene slik at de som kjører nordover på Snarøyveien får grønn bølge fra
+krysset med Bernt Balchens vei og videre forbi gangfeltene, kan man unngå at det stadig fylles opp
+med kjøretøy fra gangfeltene, som gir tilbakeblokkering og dermed påvirker avviklingen i
+signalanlegget oppstrøms. Dermed kan man få flere kjøretøy gjennom krysset fordi det ikke er fullt i
+armen ut av krysset.
+
+Dersom gangfeltet ved Flytårnet stasjon også blir sakset, kan man redusere grønntiden for
+fotgjengerne vesentlig, ettersom de da kun må rekke over én kjøreretning per grønntid. Dette gir økt
+kapasitet og bedre avvikling for bilistene, men på bekostning av fotgjengerne. I fremtidig situasjon er
+det forventet forholdsvis stor gangtrafikk over dette gangfeltet. Derfor er det ikke anbefalt saksing
+her.
+
+I ettermiddagsrushet bør signalplanene være detektorstyrt, slik at det gis mer grønntid til
+Snarøyveien øst for å unngå at køen på denne blir uforholdsmessig lang.
+
+Totalt sett vurderes det at tiltak i signalanleggene med optimalisering og samkjøring kan gi en
+vesentlig forbedring i ettermiddagsrushet for trafikken i nordgående retning. Men slike tiltak vil ikke
+løse alle avviklingsutfordringene fra Snarøyveien sør og Snarøyveien øst.
+
+Tiltakene vil i liten grad påvirke kollektivtrafikken på strekningen mellom rundkjøringene med
+Rolfsbuktveien og Widerøeveien, ettersom det er eget kollektivfelt nordover på hele denne
+strekningen. Bedre avvikling for bilistene på Snarøyveien sør vil også bedre forholdene for
+kollektivtrafikken der det ikke er egne kollektivfelt, ettersom bussene står i samme kø som den
+øvrige biltrafikken.
+Oslo Kommune – Fornebubanen                                                                           Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                              Revisjon: 01G
+Tilleggsnotat                                                                                               Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                                 Side: 16 av 27
+
+Skjerming: Offentlig (O)                                                                                      Klassifisering:
+Jfr.:      N/A                                                                                                   INTERN
+
+
+
+
+Tiltakene vil prioritere avviklingen for biltrafikken, og forventes å gå på bekostning av myke
+trafikanter. Samkjøring av signalanlegg vil kunne gi lenger ventetid for fotgjengere fordi den må
+passe med grønn bølge for bilistene. Saksing av gangfelt vil også gi økt ventetid for fotgjengere, og
+bør unngås der det er stor gangtrafikk.
+
+4.3      Tilfartskontroll inn mot rundkjøringene
+
+Tilfartskontroll ved hjelp av trafikksignaler kan regulere hvor mange kjøretøy som kommer inn mot
+rundkjøringen. Dette kan gi større tidsluker for konflikterende trafikkstrømmer i rundkjøringen, slik
+at man får avviklet disse mer effektivt. Tilfartskontrollen bør være trafikkstyrt, noe som gir en mer
+effektiv trafikkavvikling enn tidsstyrt tilfartskontroll.
+
+Tilfartskontroll ved hjelp av trafikksignaler kan være et enkelt signalanlegg, eller det kan kombineres
+med et signalregulert gangfelt. Et eksempel på tilfartskontroll i rundkjøring finnes i dag ved
+rundkjøringen Østensjøveien x Jernbaneveien på Brynseng i Oslo. Her er trafikk fra Jernbaneveien inn
+mot rundkjøringen signalregulert for å bedre avviklingen av sørgående trafikk i Østensjøveien.
+
+
+
+
+Figur 4-2: Eksempel: Tilfartskontroll på Jernbaneveien, ca. 80 m før rundkjøringen på Brynseng (Google maps street view)
+
+Nordre rundkjøring (Widerøeveien)
+I nordre rundkjøring er det ifølge beregningene ikke behov for tilfartskontroll i fremtidig situasjon.
+
+Søndre rundkjøring (Rolfsbuktveien)
+I søndre rundkjøring kan det være aktuelt med tilfartskontroll i nordre arm, spesielt i morgenrushet.
+Det vil gi større tidsluker for trafikken nordover på Snarøyveien sør, slik at de kommer inn i
+rundkjøringen. Tilfartskontrollen må balanseres slik at den ikke gir for mye rødtid for trafikken i
+nordre arm. Da kan man risikere at det blir kø i sørgående retning tilbake gjennom krysset
+Oslo Kommune – Fornebubanen                                                                    Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                       Revisjon: 01G
+Tilleggsnotat                                                                                        Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                          Side: 17 av 27
+
+Skjerming: Offentlig (O)                                                                               Klassifisering:
+Jfr.:      N/A                                                                                            INTERN
+
+
+
+
+Snarøyveien x Bernt Balchens vei, og videre tilbake mot nordre rundkjøring og ut mot E18. Dette kan
+reguleres ved å ha flere detektorer langs Snarøyveien.
+
+Tilfartskontrollen kan også kombineres med et signalregulert gangfelt her, ca. 30 m nord for
+rundkjøringen. Gangfeltet må «sakses», slik at de to retningene kan styres uavhengig av hverandre.
+Et gangfelt her vil også gi bedre forhold for myke trafikanter, som vil få en ny kryssingsmulighet av
+Snarøyveien. Gående som skal krysse her vil da få kortere vei, og de trenger kun å krysse ett
+istedenfor to gangfelt som i dag (over Snarøyveien sør og over Rolfsbuktveien). Et gangfelt her kan
+imidlertid føre til at nordgående biltrafikk ut av rundkjøringen kan bli påvirket, noe som kan være
+uheldig med hensyn til effekten av tilfartskontrollen i rundkjøringen.
+
+
+
+
+Figur 4-3: Skisse av mulig tilfartskontroll i nordre arm, som signalregulert sakset gangfelt
+
+Det vurderes at trafikkstyrt tilfartskontroll i nordre arm inn mot søndre rundkjøring kan gi en bedring
+i avviklingen av trafikken fra Snarøyveien sør, spesielt i morgenrush, men også i ettermiddagsrush.
+Tilfartskontrollen bør være samkjørt med gangfeltet sørvest for rundkjøringen, for å få økt effekt. Det
+bør fortrinnsvis være en trafikkstyrt tilfartskontroll, uten signalregulert gangfelt.
+
+Tilfartskontrollen må reguleres slik at det ikke oppstår tilbakeblokkeringer langs Snarøyveien som kan
+påvirke resten av veisystemet og trafikken inn til Fornebu fra E18 og øvrig veinett. Det forventes
+derfor at tiltaket ikke kan fjerne hele nordgående kø fra Snarøyveien sør, men det vil gi en merkbar
+forbedring.
+Oslo Kommune – Fornebubanen                                                                             Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                                Revisjon: 01G
+Tilleggsnotat                                                                                                 Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                                    Side: 18 av 27
+
+Skjerming: Offentlig (O)                                                                                        Klassifisering:
+Jfr.:      N/A                                                                                                     INTERN
+
+
+
+
+Bedre avvikling for bilistene på Snarøyveien sør vil også bedre forholdene for nordgående
+kollektivtrafikk der det ikke er egne kollektivfelt, ettersom bussene står i samme kø som den øvrige
+biltrafikken. Tilfartskontrollen kan gi noe forsinkelse for sørgående busstrafikk da det er denne
+trafikkstrømmen som blir bremset.
+
+Tilfartskontroll vil i hovedsak ikke påvirke gangtrafikken. Dersom man kombinerer tilfartskontroll
+med gangfelt får fotgjengerne et ekstra kryssingspunkt, og dermed bedre forhold og flere
+valgmuligheter.
+
+4.4      Ombygging av søndre rundkjøring til signalregulert T-kryss
+
+Rundkjøringen i sør får redusert kapasitet som følge av den store skjevfordelingen av trafikk. Det er i
+dag signalregulert gangfelt på Snarøyveien sør, ca. 30 m sørvest for rundkjøringen. I Rolfsbuktveien
+er det vanlig gangfelt. Her er det tidvis et høyt antall myke trafikantersom går mellom
+kollektivholdeplasser og arbeidsplasser. Det er foreslått tilfartskontroll i nordre arm for sørgående
+trafikk for å prioritere den mest kritiske trafikkstrømmen. Et alternativt tiltak er å bygge om krysset til
+et signalregulert T-kryss.
+
+
+
+
+Figur 4-4: Utklipp fra tidligere mulighetsstudier viser annen kryssform enn rundkjøring i krysset Snarøyveien x Rolfsbuktveien
+(Norconsult, 2018)
+Oslo Kommune – Fornebubanen                                                             Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                Revisjon: 01G
+Tilleggsnotat                                                                                 Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                   Side: 19 av 27
+
+Skjerming: Offentlig (O)                                                                        Klassifisering:
+Jfr.:      N/A                                                                                     INTERN
+
+
+
+
+Et trafikkstyrt signalregulert kryss kan lettere prioritere de kritiske trafikkstrømmene enn en
+rundkjøring, spesielt ved skjevfordeling (dvs. stor forskjell i trafikkmengde i armene inn mot krysset).
+I tillegg kan gangkryssingene inkluderes i signalanlegget, noe som gir færre frittstående signalanlegg
+enn i dagens situasjon og i alternativet med tilfartskontroll. Et T-kryss vil kreve et eget svingefelt fra
+Rolfsbuktveien, som krever mer areal her. Til gjengjeld vil T-krysset kreve mindre areal enn dagens
+rundkjøring.
+
+Det vurderes at et signalregulert T-kryss istedenfor rundkjøring mellom Snarøyveien og
+Rolfsbuktveien kan bidra til bedre avvikling, og redusere køen på Snarøyveien sør. Ettersom de to
+hovedstrømmene i krysset om morgenen er konflikterende, vil tiltaket ikke fjerne køen på
+Snarøyveien sør uten av det går utover sørgående trafikk fra nord. Detektorer kan regulere
+signalplanen slik at det ikke blir tilbakeblokkering i Snarøyveien ut mot E18. Tiltaket kan derfor, på
+samme måte som tilfartskontroll, gi en merkbar bedring for trafikken fra Snarøyveien uten at det blir
+tilbakeblokkering mot E18.
+
+Det signalregulerte krysset vil gi bedre avvikling for kollektivtrafikken nordover, men kan gi noe
+forsinkelse for kollektivtrafikken sørover, på samme måte som tilfartskontrollen.
+
+Lyskrysset kan gi bedre kryssingsforhold for gangtrafikken. Det vil bli signalregulerte gangfelt i alle
+armene, nærmere selve krysset. Nytt gangfelt over nordre kryssarm gir flere valgmuligheter for de
+gående.
+
+4.5     Endre kjøremønster i søndre rundkjøring
+
+Dersom man får endret kjøremønsteret i søndre rundkjøring slik at de største trafikkstrømmene ikke
+kommer i konflikt, så vil avviklingen i rundkjøringen bli bedre, ref. utfordringene beskrevet i kap. 3.
+
+Rolfsbuktveien åpnes for gjennomkjøring fra Snarøya
+En mulighet er å åpne for at bilister fra Snarøya kan velge om de vil kjøre Snarøyveien forbi Fornebu S
+eller via Rolfsbuktveien. Dette vil føre til at bilistene i stor grad velger å kjøre Rolfsbuktveien for å
+unngå køen på Snarøyveien sør inn mot rundkjøring Rolfsbuktveien. Man kan også stenge
+Snarøyveien for gjennomkjøring for vanlig trafikk i en eller begge retninger, om man ønsker å lede all
+trafikk over på Rolfsbuktveien.
+Oslo Kommune – Fornebubanen                                                                       Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                          Revisjon: 01G
+Tilleggsnotat                                                                                           Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                             Side: 20 av 27
+
+Skjerming: Offentlig (O)                                                                                  Klassifisering:
+Jfr.:      N/A                                                                                               INTERN
+
+
+
+
+Figur 4-5: Endring av kjøremønster mellom Snarøya og rundkjøringen Snarøyveien x Rolfsbuktveien
+
+De to hovedstrømmene vil dermed kunne kjøre gjennom rundkjøringen samtidig, som vil gi vesentlig
+bedre avvikling i rundkjøringen. Det vil i stedet bli en konflikt mellom trafikkstrømmene på
+Rolfsbuktveien når biler fra nord skal svinge til venstre inn på Martin Linges vei. Dette kan gi kø
+tilbake mot rundkjøringen, og dermed forsinkelse for sørgående trafikk. I Rolfsbuktveien er
+fartsgrensen lavere, og kryssingavstanden for venstresvingende kjøretøy kortere. Det vurderes derfor
+at bilene som skal til venstre lettere vil kunne finne luker, og at motgående trafikk i større grad vil
+slippe bilene forbi når køen bygger seg opp. Avviklingen vurderes derfor totalt sett å bli vesentlig
+bedre for trafikken fra Snarøya, og spesielt i morgenrushet.
+
+Sørgående trafikk mot Snarøya vil fortsatt gå langs Snarøyveien, og blir i liten grad påvirket av
+endringen.
+
+Kollektivtrafikken nordover kan fortsatt gå langs Snarøyveien. Den vil oppleve kortere kø inn mot
+rundkjøringen, ettersom det meste av biltrafikken bruker Rolfsbuktveien. Bussene vil fortsatt vike for
+den store trafikkstrømmen fra nord. Men erfaring viser at busser lettere kommer seg gjennom et
+kryss i køsituasjon, enten ved at de slippes inn, eller at de presser seg inn mellom saktegående
+trafikk.
+Oslo Kommune – Fornebubanen                                                                 Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                    Revisjon: 01G
+Tilleggsnotat                                                                                     Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                       Side: 21 av 27
+
+Skjerming: Offentlig (O)                                                                            Klassifisering:
+Jfr.:      N/A                                                                                         INTERN
+
+
+
+
+Endring av kjøremønster vil gi mer trafikk i Rolfsbuktveien. Pga. lav fartsgrense og saktegående
+trafikk inn mot søndre rundkjøring fra Rolfsbuktveien, vurderes det ikke som problematisk for
+fotgjengere å krysse i gangfeltet selv med økt biltrafikk. Årsdøgntrafikken her vil bli stor nok til å
+tilfredsstille kriteriene for signalregulert gangfelt i Rolfsbuktveien øst for søndre rundkjøring (kap. 4,
+håndbok N303, Statens vegvesen).
+
+4.6      Endre kjøremønster andre steder på veinettet
+
+Flytte trafikk til Forneburingen
+Forneburingen er stengt for trafikk som kommer fra Snarøya. Det er mulig å avlaste søndre
+rundkjøring ved å lede noe av trafikken fra Snarøya over til Forneburingen. Dette er i utgangspunktet
+ikke å anbefale med tanke på Forneburingens utforming som smal gate med lave trafikkmengder,
+men det er trolig noe ledig kapasitet her som kan avlaste Snarøyveien. Det er derfor kun kort nevnt
+som en mulighet.
+
+Flytte trafikk fra Snarøyveien øst (Telenor)
+Trafikken som skal til/fra Snarøyveien øst skal i stor grad til Telenors garasjeanlegg. Dette anlegget
+har flere nedkjøringer, som kobler seg mot Snarøyveien på to forskjellige steder. Det kan dermed
+være mulig å flytte mer av trafikken fra krysset Snarøyveien x Bernt Balchens vei, til krysset med
+Snarøyveien nordøst for nordre rundkjøring. Det må her gjøres vurderinger av kapasiteten til det
+nordre krysset, slik at man ikke bare flytter avviklingsproblemene hit i stedet.
+
+
+
+
+                                                                  Telenor
+
+
+
+
+Figur 4-6: Telenor-komplekset har adkomst til garasjeanlegget fra to sider (kart.finn.no)
+Oslo Kommune – Fornebubanen                                                                 Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                    Revisjon: 01G
+Tilleggsnotat                                                                                     Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                       Side: 22 av 27
+
+Skjerming: Offentlig (O)                                                                            Klassifisering:
+Jfr.:      N/A                                                                                         INTERN
+
+
+
+
+4.7     Omregulering av kollektivfelt til kjørefelt
+
+Det er planlagt sammenhengende kollektivfelt nordover på hele strekningen mellom rundkjøringene
+med Rolfsbuktveien i sør, og Widerøeveien i nord. På Widerøeveien er det planlagt kollektivfelt i
+begge retninger. På Snarøyveien sør er det planlagt kollektivfelt inn mot søndre rundkjøring, i
+nordgående retning.
+
+Innsnevringen av Snarøyveien nordover forbi Flytårnet, til ett kjørefelt og ett kollektivfelt, gir en
+flaskehals som i stor grad bidrar til avviklingsproblemene i ettermiddagsrushet. Effekten av å fjerne
+kollektivfeltet på to delstrekninger for å gi økt prioritet til bilistene, er vurdert. Det var kollektivfeltet
+på Snarøyveien sør inn mot søndre rundkjøring, og kollektivfeltet forbi Flytårnet stasjon som ble
+vurdert fjernet slik at det ble to ordinære kjørefelt nordover på hele strekningen fra Snarøyveien sør
+og opp til nordre rundkjøringen.
+
+Beregningene viste at det ga god effekt på avviklingen i ettermiddagsrushet. Køene på Snarøyveien
+sør og Snarøyveien øst krympet betraktelig. Det er spesielt fjerning av kollektivfeltet forbi Flytårnet
+stasjon som bidrar til denne bedringen i ettermiddagsrushet.
+
+Beregningene viste også noe bedring av avviklingen i morgenrushet. To kjørefelt inn mot og gjennom
+søndre rundkjøring fra Snarøyveien sør bidrar til å få flere kjøretøy gjennom rundkjøringen. Den store
+trafikkstrømmen fra nord hindrer at man får en større effekt i morgenrushet.
+
+Endringen vil i stor grad kunne påvirke kollektivtrafikken negativt på strekningen mellom Snarøyveien
+sør og nordre rundkjøring. Bussene må dele kjørefelt med bilistene på deler av strekningen, og mister
+dermed prioriteten sin på disse. Samtidig gir tiltaket bedre avvikling, spesielt i ettermiddagsrushet.
+Bedre avvikling for bilistene på Snarøyveien sør vil også bedre forholdene for kollektivtrafikken,
+ettersom det ikke er egne kollektivfelt på Snarøya, og bussene derfor står i samme kø som bilistene.
+Kollektivtrafikken vil i ettermiddagsrushet dermed få kortere forsinkelse på strekningen fra Snarøya
+og ut mot søndre rundkjøring, men mer forsinkelse på strekningene der kollektivfeltet fjernes. I
+morgenrushet gir tiltaket mindre effekt på den generelle avviklingen, og det vurderes derfor at
+ulempene totalt sett kan bli større for kollektivtrafikken.
+
+Endringen vil i liten grad påvirke gangtrafikken.
+
+Totalt sett vurderes det at omregulering av kollektivfelt til kjørefelt kan gi en god forbedring for
+trafikkavviklingen i ettermiddagsrushet, men en svært begrenset forbedring i morgenrushet. Med
+tenke på at trafikkavviklingen er mest problematisk i morgenrushet, så vurderes ulempene for
+kollektivtrafikken å være for store til at endringene er aktuelle på permanent basis.
+
+4.8     Variable felter og svingebevegelser
+
+Flere av tiltakene over er vurdert å gi god effekt i den ene rushperioden, men liten effekt i den andre
+perioden. Det er mulig å ha variable løsninger, som kan endres mellom morgen- og
+Oslo Kommune – Fornebubanen                                                               Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                  Revisjon: 01G
+Tilleggsnotat                                                                                   Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                     Side: 23 av 27
+
+Skjerming: Offentlig (O)                                                                          Klassifisering:
+Jfr.:      N/A                                                                                       INTERN
+
+
+
+
+ettermiddagsrush, eller på bakgrunn av trafikkmengder og avvikling. Eksempelvis kan høyre felt
+nordover forbi Flytårnet stasjon være regulert som ordinært kjørefelt i ettermiddagsrushet for å få
+avviklet nordgående trafikk, og regulert som kollektivfelt resten av døgnet. Tilsvarende kan trafikken
+fra Snarøya styres over på Rolfsbuktveien i morgenrushet, men stenges for gjennomgangstrafikk
+resten av døgnet. Med detektorer, variable skilter og smartstyring kan veinettet dermed endres etter
+behov, for å optimalisere avviklingen. En slik fleksibilitet kan gjøre det lettere å prioritere henholdsvis
+bilister, kollektivtrafikk eller gangtrafikk ut fra den aktuelle situasjonen. Variable løsninger kan også gi
+ulemper ved at det er vanskeligere å forstå systemet når det ikke er likt hver gang. Det krever mer av
+sjåførene og mer av myndighetene for å håndheve/kontrollere.
+
+4.9     Endring av reisevaner
+
+Fornebubanen er et stort kollektivprosjekt som skal gjøre det mer attraktivt å reise kollektivt til/fra
+Fornebu. Det er usikkert hvor stor effekt banen vil ha på endring i valg av transportmiddel på
+arbeidsreiser. Dersom framkommeligheten for biltrafikken er dårlig, kan det bidra til at flere enn det
+som er lagt til grunn i trafikkanalysene vil velge bane framfor bil. For de som bor ute på Snarøya kan
+tiltak som bedrer forholdene for myke trafikanter langs Snarøyveien, gode sykkelparkingsforhold ved
+stasjonene, eller pendlerparkering for bil, bidra til å flytte reiser fra bil til kollektiv. Hyppige avganger
+med buss som korresponderer bra med banen vil også gjøre kollektivtrafikk mer attraktivt.
+Informasjonskampanjer til beboere på Snarøya og Fornebu om utfordringene med trafikkavviklingen,
+med oppfordring til å reise kollektivt, samkjøring, gange eller sykkel kan også bidra.
+
+Fleksible arbeidstider og mulighet for hjemmekontor er andre forhold som har blitt mer vanlige de
+senere årene. Dette kan bidra til at rushtrafikken fordeler seg utover en lengre tidsperiode, og at
+man dermed ikke får like store trafikktopper som er lagt til grunn i beregningene.
+
+Andre tiltak kan være samarbeid mellom kommunen og bedriftene på Fornebu om å redusere bruk
+av bil som transportmiddel.
+Oslo Kommune – Fornebubanen                                                             Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                Revisjon: 01G
+Tilleggsnotat                                                                                 Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                   Side: 24 av 27
+
+Skjerming: Offentlig (O)                                                                        Klassifisering:
+Jfr.:      N/A                                                                                     INTERN
+
+
+
+
+5.       OPPSUMMERING
+Avviklingsproblemene på Snarøyveien kan grovt deles i to grupper:
+
+     •   Kø nordover på Snarøyveien sør i morgenrushet, pga dårlig avvikling i søndre rundkjøring
+     •   Kø nordover på Snarøyveien og Snarøyveien øst, inn mot signalregulert kryss med Bernt
+         Balchens vei, i ettermiddagsrushet.
+
+
+
+
+Figur 5-1: Køproblematikk om morgenen er vist t.v., og om ettermiddagen t.h.
+
+Veisystemet har for lav kapasitet til å avvikle trafikken som forventes i rushtidene i 2040. Problemene
+er størst for vanlig biltrafikk, og vil dessuten påvirke kollektivtrafikken på strekningene der det ikke er
+kollektivfelt og hvor bussen må stå i samme kø som øvrig biltrafikk. I beregningene er konsekvensen
+av manglende kapasitet uttrykt i form av kølengder. I virkeligheten vil trafikantene unngå å havne i så
+lange køer. De vil i stedet, på ulike måter, tilpasse seg for redusere ulempene som følge av mangelen
+på kapasitet i veinettet.
+
+Det er sett på en rekke tiltak som kan bidra til å redusere køene på Snarøyveien. De fleste tiltakene
+virker kun på et av problemområdene, men i kombinasjon kan flere av tiltakene bidra til forbedring
+av trafikkavviklingen og reduksjon av køene på Snarøyveien, både i morgen- og ettermiddagsrush.
+
+Det er ikke beregnet hvor stor effekt de forskjellige tiltakene kan gi, men det er vurdert om de
+forventes å gi stor eller liten effekt, samt hvordan de påvirker kollektivreisende og gående.
+
+Tiltak som er rettet mot prioriterte trafikkstrømmer kan føre til avviklingsproblemer andre steder i
+veinettet, eksempelvis tilbakeblokkering ut mot E18. Tiltakene bør kunne endres etter hvert som
+trafikksituasjonen endrer seg, f.eks. ved hjelp av detektorer (trafikkstyrt, ikke bare tidsstyrt). Andre
+tiltak bør være reversible, slik at det kan endres tilbake om man ikke oppnår ønsket effekt. Dette kan
+f.eks. være omregulering av kollektivfelt til ordinært kjørefelt.
+Oslo Kommune – Fornebubanen                                                                           Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                              Revisjon: 01G
+Tilleggsnotat                                                                                               Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                                  Side: 25 av 27
+
+Skjerming: Offentlig (O)                                                                                      Klassifisering:
+Jfr.:      N/A                                                                                                   INTERN
+
+
+
+
+5.1      Søndre rundkjøring, spesielt i morgenrush
+
+
+
+
+Figur 5-2: I morgenrushet er det avviklingsproblemer i søndre rundkjøring, som resulterer i svært lange køer på Snarøyveien
+sør (Aimsun)
+
+Tiltakene som vurderes å gi best effekt på avviklingen i søndre rundkjøring, er tilfartskontroll,
+ombygging til signalregulert kryss, eller endre kjøremønster fra Snarøya via Rolfsbuktveien. Alle tre
+vurderes å kunne gi god effekt på avviklingen av trafikken fra Snarøya inn mot rundkjøringen, og
+redusere kølengden betraktelig. Ingen av tiltakene forventes å kunne fjerne køen helt.
+
+Ombygging av rundkjøringen til signalregulert kryss er nok det dyreste og mest omfattende tiltaket.
+Sammen med tilfartskontroll vil disse to påvirke sørgående trafikk på Snarøyveien inn mot
+kryssområdet, og må balanseres så ikke avviklingsproblemene her blir så store at det kan gå tilbake
+ut mot E18. Omdirigering av trafikken fra Snarøya til Rolfsbuktveien vil trolig påvirke sørgående
+trafikk på Snarøyveien i minst grad, ettersom hovedstrømmene i rundkjøringen ikke lenger havner i
+konflikt.
+
+Mindre kø og bedre avvikling av trafikken fra Snarøya inn mot søndre rundkjøring vil også gi bedre
+forhold for kollektivtrafikken nordover. Tilfartskontroll og signalregulert kryss kan gi noe mer
+forsinkelse for kollektivtrafikken som går sørover på Snarøyveien, men dette vurderes som
+akseptabelt mtp. gevinst man får i den andre retningen.
+
+Ingen av tiltakene påvirker gangtrafikken negativt. Ombygging til signalregulert kryss vil kunne gi
+gående et nytt kryssingpunkt over Snarøyveien, og dermed bedre forhold.
+Oslo Kommune – Fornebubanen                                                                             Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                                                Revisjon: 01G
+Tilleggsnotat                                                                                                 Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                                                    Side: 26 av 27
+
+Skjerming: Offentlig (O)                                                                                        Klassifisering:
+Jfr.:      N/A                                                                                                     INTERN
+
+
+
+
+5.2      Signalanlegg i Snarøyveien nordover, spesielt i ettermiddagsrush
+
+
+
+
+Figur 5-3: I ettermiddagsrushet er det avviklingsproblemer i krysset Snarøyveien x Bernt Balchens vei og videre forbi
+Flytårnet stasjon, som resulterer i lange køer både på Snarøyveien i nordgående retning, og i Snarøyveien øst.
+
+Tiltakene som vurderes å gi best effekt på avviklingen nordover på Snarøyveien, er optimalisering av
+signalplanene og samkjøring av signalanleggene, og omregulering av kollektivfelt til kjørefelt forbi
+Flytårnet stasjon. Alle tre vurderes å kunne gi god effekt på avviklingen av trafikken nordover
+gjennom krysset Snarøyveien x Bernt Balchens vei, og redusere kølengdene betraktelig.
+
+Ingen av disse tiltakene vurderes å gi vesentlig økte kostnader for prosjektet. Trafikken inn i krysset
+fra sør og øst er konflikterende strømmer, og kan ikke ha grønntid i signalanlegget samtidig. Det fører
+til at man ikke kan forvente å bli kvitt all køen både i Snarøyveien og Snarøyveien øst. Samkjøring av
+signalanlegg og fjerning av kollektivfelt er begge tiltak som vil bidra kraftig til at man kan få flere biler
+gjennom krysset per grønnfase. Om mer av trafikken fra Telenor kan flyttes til alternativ utkjøring vil
+det også redusere køen fra Snarøyveien øst.
+
+Mindre kø og bedre avvikling av trafikken nordover på Snarøyveien vil også redusere køen fra
+Snarøya inn mot søndre rundkjøring i ettermiddagsrushet. Dette vil gi bedre forhold for
+kollektivtrafikken der denne står i samme kø som bilistene. Optimalisering og samkjøring av
+signalanlegg vil også kunne gi noe bedre avviklingsforhold for bussene gjennom kryssene, men denne
+effekten er lav ettersom bussene ellers har eget kollektivfelt, og må stoppe på holdeplasser langs
+strekningen. Omregulering av kollektivfeltet forbi Flytårnet stasjon vil påvirke bussene negativt, med
+mer forsinkelse på denne delstrekningen.
+
+Optimalisering av signalplaner og samkjøring av signalanlegg vil kunne gi noe mer ventetid for
+gangtrafikken, spesielt i rushtiden. Ved Flytårnet stasjon vil det bli en planskilt undergang for kryssing
+av Snarøyveien, som gir gående et alternativ til gangfeltene. Ulempen ved tiltakene for gangtrafikken
+vurderes derfor som akseptable.
+Oslo Kommune – Fornebubanen                                                         Dok. nr.: PF-FLY0-070-RA-0007
+                                                                                            Revisjon: 01G
+Tilleggsnotat                                                                             Dato: 17.10.2024
+
+- Trafikkanalyse Snarøyveien                                                               Side: 27 av 27
+
+Skjerming: Offentlig (O)                                                                    Klassifisering:
+Jfr.:      N/A                                                                                 INTERN
+
+
+
+
+REFERANSER
+
+•   Trafikkanalyse – Snarøyveien, PF-FLY0-070-RA-0006 (PGF, 2024)
+•   Trafikkanalyse Fornebu KDP3 (Multiconsult, 2022)
+•   Mulighetsstudie; Snarøyveien: Fra hovedvei til hovedgate (Norconsult, 2018)
+•   Vegnormal N303 Trafikksignalanlegg (Statens vegvesen)
+•   Veileder V322 Trafikksignalanlegg – Planlegging, drift og vedlikehold (Statens vegvesen)
+
