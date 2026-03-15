@@ -74,7 +74,7 @@ The official traffic analysis (PGF, doc 7133122) already shows **~2 km queues** 
 ## Project Structure
 
 ```
-snaroyveien-trafikk/
+SNV/
 ├── README.md
 ├── pyproject.toml                  # Python project config (uv/pip)
 ├── CLAUDE.md                       # AI agent instructions

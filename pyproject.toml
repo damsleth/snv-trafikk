@@ -1,0 +1,17 @@
+[project]
+name = "snv"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.10"
+dependencies = [
+    "eclipse-sumo>=1.26.0",
+    "imageio>=2.37.3",
+    "lxml>=6.0.2",
+    "matplotlib>=3.10.8",
+    "pandas>=2.3.3",
+    "pillow>=12.1.1",
+    "plotly>=6.6.0",
+    "requests>=2.32.5",
+    "sumolib>=1.26.0",
+    "traci>=1.26.0",
+]
