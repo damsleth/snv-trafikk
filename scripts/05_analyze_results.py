@@ -107,40 +107,34 @@ def load_summary(scenario: str, seed: int = 1) -> pd.DataFrame:
 
 
 def load_fcd(scenario: str, seed: int = 1) -> pd.DataFrame:
-    """Load FCD (Floating Car Data) for vehicle positions."""
+    """Load FCD (Floating Car Data) for vehicle positions.
+
+    Uses iterparse to handle large files without loading entire XML into memory.
+    """
     filepath = OUTPUT_DIR / scenario / f"seed_{seed}" / "fcd.xml"
     if not filepath.exists():
         return pd.DataFrame()
 
     records = []
+    current_time = 0.0
+
     try:
-        for event, elem in ET.iterparse(str(filepath), events=["end"]):
-            if elem.tag == "vehicle":
-                timestep = elem.getparent() if hasattr(elem, "getparent") else None
+        for event, elem in ET.iterparse(str(filepath), events=["start", "end"]):
+            if event == "start" and elem.tag == "timestep":
+                current_time = float(elem.get("time", 0))
+            elif event == "end" and elem.tag == "vehicle":
                 records.append({
+                    "time": current_time,
                     "x": float(elem.get("x", 0)),
                     "y": float(elem.get("y", 0)),
                     "speed": float(elem.get("speed", 0)),
                     "id": elem.get("id"),
                 })
                 elem.clear()
-    except Exception:
-        # Fallback: parse entire file
-        try:
-            tree = ET.parse(str(filepath))
-            root = tree.getroot()
-            for timestep in root.findall("timestep"):
-                t = float(timestep.get("time", 0))
-                for veh in timestep.findall("vehicle"):
-                    records.append({
-                        "time": t,
-                        "x": float(veh.get("x", 0)),
-                        "y": float(veh.get("y", 0)),
-                        "speed": float(veh.get("speed", 0)),
-                        "id": veh.get("id"),
-                    })
-        except ET.ParseError:
-            pass
+            elif event == "end" and elem.tag == "timestep":
+                elem.clear()
+    except ET.ParseError as e:
+        print(f"  FCD parse error: {e}")
 
     return pd.DataFrame(records)
 
