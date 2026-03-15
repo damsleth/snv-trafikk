@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""Build SUMO network from OSM data and create lane configuration variants.
-
-Strategy:
-1. Convert OSM → base .net.xml via netconvert (unmodified, OSM lane counts)
-2. Extract .edg.xml and .nod.xml from base network
-3. Modify edge lane counts in .edg.xml for each variant
-4. Rebuild each variant via netconvert from modified .edg.xml + .nod.xml
-
-This ensures all internal connections are correctly regenerated.
-"""
+"""Build SUMO network from OSM data and create PGF lane configuration variants."""
 
 import subprocess
 import sys
@@ -24,9 +15,14 @@ BASE_NOD = NETWORK_DIR / "base" / "fornebu.nod.xml"
 BASE_CON = NETWORK_DIR / "base" / "fornebu.con.xml"
 BASE_TLL = NETWORK_DIR / "base" / "fornebu.tll.xml"
 
-sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
-from utils.signal_generator import generate_signal_plan, generate_optimized_signal_plan
-
+CORRIDOR_X_MIN = 3200
+CORRIDOR_X_MAX = 3900
+SEGMENT_BOUNDS = {
+    "C": (1700, 2315),
+    "B": (2315, 2505),
+    "A": (2505, 3050),
+}
+BUS_LANE_ALLOWED = "bus coach taxi emergency"
 
 def find_tool(name: str) -> str:
     """Find a SUMO binary in venv or PATH."""
@@ -115,12 +111,26 @@ def step1_osm_to_base():
     print(f"  Node definitions → {BASE_NOD}")
 
 
+def classify_segment(mid_y: float) -> str | None:
+    """Map edge midpoint to corridor segment A/B/C."""
+    for segment, (lower, upper) in SEGMENT_BOUNDS.items():
+        if lower <= mid_y < upper:
+            return segment
+    return None
+
+
 def step2_find_snaroyveien_edges() -> dict:
-    """Identify Snarøyveien edges from the edge definition file."""
+    """Identify Snarøyveien corridor edges by segment and direction."""
     import sumolib
+
     net = sumolib.net.readNet(str(BASE_NET))
 
-    edges = {"northbound": [], "southbound": [], "all_names": set()}
+    edges: dict[str, dict[str, list[str]] | list[str]] = {
+        "northbound": {"A": [], "B": [], "C": []},
+        "southbound": {"A": [], "B": [], "C": []},
+        "all_names": [],
+    }
+    all_names = set()
 
     for edge in net.getEdges():
         eid = edge.getID()
@@ -130,77 +140,88 @@ def step2_find_snaroyveien_edges() -> dict:
         if "snarøyveien" not in name and "snaroyveien" not in name:
             continue
 
-        edges["all_names"].add(edge.getName() or eid)
         from_y = edge.getFromNode().getCoord()[1]
         to_y = edge.getToNode().getCoord()[1]
+        from_x = edge.getFromNode().getCoord()[0]
+        to_x = edge.getToNode().getCoord()[0]
+        mid_x = (from_x + to_x) / 2
+        mid_y = (from_y + to_y) / 2
+        segment = classify_segment(mid_y)
+        if segment is None or not (CORRIDOR_X_MIN <= mid_x <= CORRIDOR_X_MAX):
+            continue
 
+        all_names.add(edge.getName() or eid)
         if to_y > from_y:
-            edges["northbound"].append(eid)
+            edges["northbound"][segment].append(eid)
         else:
-            edges["southbound"].append(eid)
+            edges["southbound"][segment].append(eid)
 
-    edges["all_names"] = list(edges["all_names"])
+    edges["all_names"] = sorted(all_names)
     return edges
 
 
-def step3_find_signal_junction() -> str:
-    """Find junction for Bernt Balchens vei signal."""
-    import sumolib
-    net = sumolib.net.readNet(str(BASE_NET))
+def build_variant_layout(
+    snv_edges: dict,
+    northbound_by_segment: dict[str, tuple[int, bool]],
+    southbound_by_segment: dict[str, tuple[int, bool]],
+    speed_kmh: float = 40.0,
+) -> dict[str, dict[str, str | bool]]:
+    """Construct per-edge lane count and bus-lane configuration."""
+    config: dict[str, dict[str, str | bool]] = {}
+    speed_ms = speed_kmh / 3.6
 
-    # Check edges for Bernt Balchens vei reference
-    for node in net.getNodes():
-        for edge in list(node.getIncoming()) + list(node.getOutgoing()):
-            ename = (edge.getName() or "").lower()
-            if "balchen" in ename or "bernt" in ename:
-                return node.getID()
+    for direction_key, segment_map, spec_map in [
+        ("northbound", snv_edges["northbound"], northbound_by_segment),
+        ("southbound", snv_edges["southbound"], southbound_by_segment),
+    ]:
+        _ = direction_key
+        for segment, edge_ids in segment_map.items():
+            target_lanes, has_bus_lane = spec_map[segment]
+            for edge_id in edge_ids:
+                config[edge_id] = {
+                    "numLanes": str(target_lanes),
+                    "speed": f"{speed_ms:.2f}",
+                    "bus_lane": has_bus_lane,
+                }
+    return config
 
-    # Fallback: any signalized junction
-    for node in net.getNodes():
-        if node.getType() == "traffic_light":
-            return node.getID()
 
-    return "lyskrysset"
+def apply_lane_permissions(net_file: Path, lane_config: dict[str, dict[str, str | bool]]) -> None:
+    """Set lane-level permissions after netconvert has rebuilt connections."""
+    tree = ET.parse(str(net_file))
+    root = tree.getroot()
+
+    for edge_elem in root.iter("edge"):
+        edge_id = edge_elem.get("id", "")
+        if edge_id not in lane_config:
+            continue
+
+        bus_lane = bool(lane_config[edge_id]["bus_lane"])
+        lanes = edge_elem.findall("lane")
+        bus_lane_index = str(len(lanes) - 1) if lanes else None
+        for lane in lanes:
+            lane.attrib.pop("allow", None)
+            if bus_lane and lane.get("index") == bus_lane_index:
+                lane.attrib.pop("disallow", None)
+                lane.set("allow", BUS_LANE_ALLOWED)
+
+    ET.indent(tree, space="  ")
+    tree.write(str(net_file), xml_declaration=True, encoding="utf-8")
 
 
-def step4_create_variant(variant_name: str, snv_edges: dict, nb_lanes: int, sb_lanes: int,
-                         bus_lane_nb: bool = False, bus_lane_sb: bool = False,
-                         speed_kmh: float = 40.0):
-    """Create a network variant by patching the base .net.xml.
-
-    Strategy: Write an edge-patch file with only the changed edges,
-    then use netconvert --sumo-net-file + --edge-files to apply changes.
-    This lets netconvert correctly rebuild all connections.
-    """
+def step4_create_variant(variant_name: str, lane_config: dict[str, dict[str, str | bool]]):
+    """Create a network variant by patching edge lane counts and permissions."""
     netconvert = find_tool("netconvert")
     proposed_dir = NETWORK_DIR / "proposed"
     proposed_dir.mkdir(parents=True, exist_ok=True)
 
-    all_snv_nb = set(snv_edges["northbound"])
-    all_snv_sb = set(snv_edges["southbound"])
-    speed_ms = speed_kmh / 3.6
-
     # Create a minimal edge-patch file with just the modified edges
     patch_root = ET.Element("edges")
-    modified = 0
-
-    # Read the base edge file to get edge attributes
-    base_tree = ET.parse(str(BASE_EDG))
-    for edge_elem in base_tree.getroot().iter("edge"):
-        eid = edge_elem.get("id", "")
-        if eid in all_snv_nb:
-            target = nb_lanes
-        elif eid in all_snv_sb:
-            target = sb_lanes
-        else:
-            continue
-
-        # Create patch element
+    for edge_id, edge_config in sorted(lane_config.items()):
         patch_edge = ET.SubElement(patch_root, "edge")
-        patch_edge.set("id", eid)
-        patch_edge.set("numLanes", str(target))
-        patch_edge.set("speed", f"{speed_ms:.2f}")
-        modified += 1
+        patch_edge.set("id", edge_id)
+        patch_edge.set("numLanes", str(edge_config["numLanes"]))
+        patch_edge.set("speed", str(edge_config["speed"]))
 
     variant_patch = proposed_dir / f"{variant_name}.patch.edg.xml"
     patch_tree = ET.ElementTree(patch_root)
@@ -223,36 +244,10 @@ def step4_create_variant(variant_name: str, snv_edges: dict, nb_lanes: int, sb_l
         print(f"  stderr: {result.stderr[:500]}")
         return None
 
-    # If bus lanes needed, create additional file to restrict lanes
-    if bus_lane_nb or bus_lane_sb:
-        create_bus_lane_additional(output_net, snv_edges, bus_lane_nb, bus_lane_sb)
+    apply_lane_permissions(output_net, lane_config)
 
-    print(f"  {variant_name} ({sb_lanes}+{nb_lanes} lanes, {modified} edges) → {output_net}")
+    print(f"  {variant_name} ({len(lane_config)} edges patched) -> {output_net}")
     return output_net
-
-
-def create_bus_lane_additional(net_file: Path, snv_edges: dict, bus_nb: bool, bus_sb: bool):
-    """Create an additional file that restricts one lane to buses."""
-    add_file = net_file.with_suffix(".bus_lanes.add.xml")
-    root = ET.Element("additional")
-
-    # For edges with bus lanes, the highest-index lane becomes bus-only
-    if bus_nb:
-        for eid in snv_edges["northbound"]:
-            # Restrict lane 1 (leftmost of 2) to bus
-            closing = ET.SubElement(root, "closingLaneReroute")
-            # We'll use vType restrictions instead
-            pass
-
-    if bus_sb:
-        for eid in snv_edges["southbound"]:
-            pass
-
-    # Simpler approach: use edge-level allow/disallow in the network
-    # This is handled at the network level already via lane permissions
-    tree = ET.ElementTree(root)
-    ET.indent(tree, space="  ")
-    tree.write(str(add_file), xml_declaration=True, encoding="utf-8")
 
 
 def step5_roundabout_params():
@@ -287,15 +282,10 @@ def build_all():
     # Step 2: Identify Snarøyveien edges
     print("\nIdentifying Snarøyveien corridor edges...")
     snv_edges = step2_find_snaroyveien_edges()
-    print(f"  Found {len(snv_edges['northbound'])} NB + {len(snv_edges['southbound'])} SB edges")
+    nb_total = sum(len(edges) for edges in snv_edges["northbound"].values())
+    sb_total = sum(len(edges) for edges in snv_edges["southbound"].values())
+    print(f"  Found {nb_total} NB + {sb_total} SB corridor edges")
     print(f"  Names: {snv_edges['all_names']}")
-
-    # Step 3: Signal plans
-    print("\nGenerating signal plans for Bernt Balchens vei...")
-    signal_jid = step3_find_signal_junction()
-    print(f"  Signal junction ID: {signal_jid}")
-    generate_signal_plan(signal_jid)
-    generate_optimized_signal_plan(signal_jid)
 
     # Step 4: Roundabout calibration
     print("\nCalibrating roundabout parameters...")
@@ -304,15 +294,25 @@ def build_all():
     # Step 5: Create variant networks
     print("\nCreating network variants...")
 
-    # V1: 2+2 (proposed bygate)
-    step4_create_variant("fornebu_v1", snv_edges, nb_lanes=2, sb_lanes=2)
+    v1_layout = build_variant_layout(
+        snv_edges,
+        northbound_by_segment={"A": (3, True), "B": (2, True), "C": (2, True)},
+        southbound_by_segment={"A": (2, False), "B": (2, False), "C": (2, False)},
+    )
+    v2_layout = build_variant_layout(
+        snv_edges,
+        northbound_by_segment={"A": (3, True), "B": (2, True), "C": (2, True)},
+        southbound_by_segment={"A": (2, True), "B": (2, True), "C": (2, True)},
+    )
+    v3_layout = build_variant_layout(
+        snv_edges,
+        northbound_by_segment={"A": (3, True), "B": (2, True), "C": (3, True)},
+        southbound_by_segment={"A": (2, False), "B": (2, False), "C": (2, False)},
+    )
 
-    # V2: 1+1+kollektiv (worst case — effectively 1 lane per direction for cars)
-    step4_create_variant("fornebu_v2", snv_edges, nb_lanes=1, sb_lanes=1,
-                         bus_lane_nb=True, bus_lane_sb=True)
-
-    # V3: hybrid (2+2 but with bus priority on southern segment)
-    step4_create_variant("fornebu_v3", snv_edges, nb_lanes=2, sb_lanes=2)
+    step4_create_variant("fornebu_v1", v1_layout)
+    step4_create_variant("fornebu_v2", v2_layout)
+    step4_create_variant("fornebu_v3", v3_layout)
 
     print("\n" + "=" * 60)
     print("All networks built!")
