@@ -280,7 +280,6 @@ def step6_rolfsbukt_miljogaterestriction():
     import sumolib
 
     net = sumolib.net.readNet(str(BASE_NET))
-    add_file = NETWORK_DIR / "signals" / "rolfsbukt_miljogatexml"
     add_file = NETWORK_DIR / "signals" / "rolfsbukt_miljogate.add.xml"
     add_file.parent.mkdir(parents=True, exist_ok=True)
 
