@@ -42,6 +42,14 @@ def compute_stats(runs: list[dict]) -> dict:
         "not_inserted",
         "inserted",
         "loaded",
+        # New metrics
+        "emergency_avg_duration_s",
+        "emergency_max_duration_s",
+        "emergency_avg_time_loss_s",
+        "snaroya_origin_count",
+        "snaroya_avg_duration_s",
+        "snaroya_avg_time_loss_s",
+        "queue_length_km",
     ]
     stats = {}
     for key in keys:
@@ -154,6 +162,82 @@ def generate_report() -> None:
             f"{stats.get('peak_waiting_mean', 0):.0f} |"
         )
 
+    # --- Emergency response time section ---
+    lines += ["", "## Utrykningstid (beredskap)", ""]
+    lines.append(
+        "Tre ambulanser er lagt inn i hver simuleringsperiode "
+        "(snv_syd → snv_nordost, dvs. Snarøya til nordre rundkjøring). "
+        "Tabellen viser gjennomsnittlig reisetid for utrykningskjøretøy:"
+    )
+    lines += [
+        "",
+        "| Scenario | Utrykningstid (gj.snitt) | Maks utrykningstid | Tidstap utrykn. |",
+        "|---|---|---|---|",
+    ]
+    for scenario_name in sorted(results):
+        st = stats_by_scenario.get(scenario_name, {})
+        emer_avg = st.get("emergency_avg_duration_s_mean")
+        if emer_avg is None:
+            continue
+        emer_max = st.get("emergency_max_duration_s_mean", 0)
+        emer_loss = st.get("emergency_avg_time_loss_s_mean", 0)
+        lines.append(
+            f"| {scenario_label(scenario_name)} | "
+            f"{emer_avg / 60.0:.1f} min | "
+            f"{emer_max / 60.0:.1f} min | "
+            f"{emer_loss:.0f} s |"
+        )
+
+    # --- Per-capita delay (Snarøya residents) ---
+    lines += ["", "## Forsinkelse for Snarøya-beboere", ""]
+    lines.append(
+        "Kun turer med avgang fra Snarøya (snv_syd-sonen). "
+        "Viser forsinkelsen for beboere som skal ut fra halvøya."
+    )
+    lines += [
+        "",
+        "| Scenario | Ant. turer | Gj.snitt reisetid | Gj.snitt tidstap |",
+        "|---|---|---|---|",
+    ]
+    for scenario_name in sorted(results):
+        st = stats_by_scenario.get(scenario_name, {})
+        sn_count = st.get("snaroya_origin_count_mean")
+        if sn_count is None:
+            continue
+        sn_dur = st.get("snaroya_avg_duration_s_mean", 0)
+        sn_loss = st.get("snaroya_avg_time_loss_s_mean", 0)
+        lines.append(
+            f"| {scenario_label(scenario_name)} | "
+            f"{sn_count:.0f} | "
+            f"{sn_dur / 60.0:.1f} min | "
+            f"{sn_loss:.0f} s |"
+        )
+
+    # --- Queue length in km ---
+    lines += ["", "## Estimert kølengde", ""]
+    lines.append(
+        "Beregnet fra antall blokkerte + ventende kjøretøy, konvertert med "
+        "120 kjt/km (stoppet trafikk) fordelt på 2 tilkomstfelt."
+    )
+    lines += [
+        "",
+        "| Scenario | Blokkerte kjt | Maks ventende | Kølengde (km) |",
+        "|---|---|---|---|",
+    ]
+    for scenario_name in sorted(results):
+        st = stats_by_scenario.get(scenario_name, {})
+        ql = st.get("queue_length_km_mean")
+        if ql is None:
+            continue
+        ni = st.get("not_inserted_mean", 0)
+        pw = st.get("peak_waiting_mean", 0)
+        lines.append(
+            f"| {scenario_label(scenario_name)} | "
+            f"{ni:.0f} | "
+            f"{pw:.0f} | "
+            f"{ql:.1f} km |"
+        )
+
     lines += [
         "",
         "## Begrensninger",
@@ -161,6 +245,8 @@ def generate_report() -> None:
         "- Repoet mangler fortsatt observasjonsbasert kalibrering og automatiserte tester.",
         "- Flytårnet/Bernt Balchens-krysset er fortsatt avhengig av OSM-nettets geometri og prioriteringsmodell; dette er en kjent modellbegrensning som må forbedres før rapportering utad.",
         "- Scenarioet med signaloptimalisering er midlertidig tatt ut av standardkjøringen til kryssmodellen er eksplisitt implementert.",
+        "- Utrykningstidsberegningen forutsetter at andre kjøretøy viker (SUMO vClass=emergency). I praksis er dette avhengig av at det finnes plass å vike til — med 2+2 felt er det mindre rom for å slippe frem utrykningskjøretøy enn med 2+3.",
+        "- Kølengdeestimatet er en forenklet omregning og tar ikke hensyn til faktisk køgeometri eller E18-tilknytning.",
         "",
     ]
 

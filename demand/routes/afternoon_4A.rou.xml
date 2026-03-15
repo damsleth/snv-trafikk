@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <routes>
   <vType id="car" vClass="passenger" length="4.5" maxSpeed="50.0" accel="2.6" decel="4.5" sigma="0.5" jmTimegapMinor="1.5" />
+  <vType id="emergency" vClass="emergency" length="6.5" maxSpeed="38.89" accel="3.0" decel="5.0" sigma="0.0" speedFactor="1.0" jmDriveAfterRedTime="3" jmIgnoreKeepClearTime="3" color="1,0,0" />
   <trip id="veh_1" type="car" depart="0.0" from="515410724#0" to="313965530#1" departLane="best" fromTaz="snv_syd" toTaz="snv_nordost" />
   <trip id="veh_348" type="car" depart="0.0" from="515410724#0" to="32321957" departLane="best" fromTaz="snv_syd" toTaz="wideroe_nordvest" />
   <trip id="veh_481" type="car" depart="0.0" from="515410724#0" to="-27184811#3" departLane="best" fromTaz="snv_syd" toTaz="rolfsbukt_syd" />
@@ -923,6 +924,7 @@
   <trip id="veh_2902" type="car" depart="896.7" from="-27194983" to="32321957" departLane="best" fromTaz="snv_east" toTaz="wideroe_nordvest" />
   <trip id="veh_1662" type="car" depart="897.2" from="32321958" to="1077838551#1" departLane="best" fromTaz="wideroe_nordvest" toTaz="snv_syd" />
   <trip id="veh_2003" type="car" depart="899.2" from="32321958" to="313965530#1" departLane="best" fromTaz="wideroe_nordvest" toTaz="snv_nordost" />
+  <trip id="emer_3582" type="emergency" depart="900.0" from="515410724#0" to="313965530#1" departLane="free" fromTaz="snv_syd" toTaz="snv_nordost" />
   <trip id="veh_88" type="car" depart="901.8" from="515410724#0" to="313965530#1" departLane="best" fromTaz="snv_syd" toTaz="snv_nordost" />
   <trip id="veh_2336" type="car" depart="902.0" from="32321958" to="27194983" departLane="best" fromTaz="wideroe_nordvest" toTaz="snv_east" />
   <trip id="veh_3110" type="car" depart="904.7" from="-52975954" to="313965530#1" departLane="best" fromTaz="martin_linges_sydost" toTaz="snv_nordost" />
@@ -1816,6 +1818,7 @@
   <trip id="veh_733" type="car" depart="1796.1" from="466495265#0" to="1077838551#1" departLane="best" fromTaz="snv_nordost" toTaz="snv_syd" />
   <trip id="veh_1094" type="car" depart="1799.0" from="466495271#0" to="32321957" departLane="best" fromTaz="snv_nordost" toTaz="wideroe_nordvest" />
   <trip id="veh_2104" type="car" depart="1799.8" from="32321958" to="313965530#1" departLane="best" fromTaz="wideroe_nordvest" toTaz="snv_nordost" />
+  <trip id="emer_3583" type="emergency" depart="1800.0" from="515410724#0" to="313965530#1" departLane="free" fromTaz="snv_syd" toTaz="snv_nordost" />
   <trip id="veh_3375" type="car" depart="1801.5" from="-52975954" to="32321957" departLane="best" fromTaz="martin_linges_sydost" toTaz="wideroe_nordvest" />
   <trip id="veh_3186" type="car" depart="1803.6" from="-52975954" to="313965530#1" departLane="best" fromTaz="martin_linges_sydost" toTaz="snv_nordost" />
   <trip id="veh_2757" type="car" depart="1803.9" from="-27194983" to="313965530#1" departLane="best" fromTaz="snv_east" toTaz="snv_nordost" />
@@ -2712,6 +2715,7 @@
   <trip id="veh_3261" type="car" depart="2697.1" from="-52975954" to="313965530#1" departLane="best" fromTaz="martin_linges_sydost" toTaz="snv_nordost" />
   <trip id="veh_524" type="car" depart="2699.3" from="515410724#0" to="-27184811#3" departLane="best" fromTaz="snv_syd" toTaz="rolfsbukt_syd" />
   <trip id="veh_811" type="car" depart="2699.6" from="466495271#0" to="1077838551#1" departLane="best" fromTaz="snv_nordost" toTaz="snv_syd" />
+  <trip id="emer_3584" type="emergency" depart="2700.0" from="515410724#0" to="313965530#1" departLane="free" fromTaz="snv_syd" toTaz="snv_nordost" />
   <trip id="veh_3538" type="car" depart="2700.2" from="27184811#3" to="313965530#1" departLane="best" fromTaz="rolfsbukt_syd" toTaz="snv_nordost" />
   <trip id="veh_2205" type="car" depart="2701.6" from="32321958" to="313965530#1" departLane="best" fromTaz="wideroe_nordvest" toTaz="snv_nordost" />
   <trip id="veh_2935" type="car" depart="2702.0" from="-27194983" to="32321957" departLane="best" fromTaz="snv_east" toTaz="wideroe_nordvest" />

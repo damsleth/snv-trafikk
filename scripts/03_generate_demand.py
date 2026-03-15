@@ -166,13 +166,23 @@ def generate_routes(
     seed: int = 42,
     period_start: int = 0,
     period_end: int = 3600,
+    include_emergency: bool = True,
 ) -> int:
-    """Generate SUMO trips from the appendix OD matrix."""
+    """Generate SUMO trips from the appendix OD matrix.
+
+    If include_emergency is True, adds 3 emergency vehicles at evenly spaced
+    intervals during the peak hour.  They route from Snarøya (snv_syd) to
+    nordre rundkjøring (snv_nordost), modelling an ambulance responding to a
+    call on the peninsula.  SUMO's vClass="emergency" makes other vehicles
+    yield (blue-light behaviour).
+    """
     validate_zone_edges(net_file)
 
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     root = ET.Element("routes")
+
+    # --- passenger vehicle type ---
     vtype = ET.SubElement(root, "vType")
     vtype.set("id", "car")
     vtype.set("vClass", "passenger")
@@ -182,6 +192,20 @@ def generate_routes(
     vtype.set("decel", "4.5")
     vtype.set("sigma", "0.5")
     vtype.set("jmTimegapMinor", "1.5")
+
+    # --- emergency vehicle type (ambulance / blue-light) ---
+    evtype = ET.SubElement(root, "vType")
+    evtype.set("id", "emergency")
+    evtype.set("vClass", "emergency")
+    evtype.set("length", "6.5")
+    evtype.set("maxSpeed", "38.89")       # ~140 km/h capability
+    evtype.set("accel", "3.0")
+    evtype.set("decel", "5.0")
+    evtype.set("sigma", "0.0")            # no stochastic dawdling
+    evtype.set("speedFactor", "1.0")
+    evtype.set("jmDriveAfterRedTime", "3")  # can proceed through red
+    evtype.set("jmIgnoreKeepClearTime", "3")
+    evtype.set("color", "1,0,0")          # red in SUMO-GUI
 
     random.seed(seed)
     vehicles = []
@@ -203,27 +227,50 @@ def generate_routes(
                     random.choice(destination_edges),
                     from_zone,
                     to_zone,
+                    "car",
+                )
+            )
+            vehicle_id += 1
+
+    # --- emergency vehicles (3 per peak hour) ---
+    if include_emergency:
+        EMERGENCY_COUNT = 3
+        emergency_origin = ZONE_EDGE_CANDIDATES["snv_syd"]["origin"]
+        emergency_dest = ZONE_EDGE_CANDIDATES["snv_nordost"]["destination"]
+        spacing = (period_end - period_start) / (EMERGENCY_COUNT + 1)
+        for i in range(EMERGENCY_COUNT):
+            depart = period_start + spacing * (i + 1)
+            vehicles.append(
+                (
+                    depart,
+                    vehicle_id,
+                    random.choice(emergency_origin),
+                    random.choice(emergency_dest),
+                    "snv_syd",
+                    "snv_nordost",
+                    "emergency",
                 )
             )
             vehicle_id += 1
 
     vehicles.sort(key=lambda item: item[0])
 
-    for depart, vid, from_edge, to_edge, from_zone, to_zone in vehicles:
+    for depart, vid, from_edge, to_edge, from_zone, to_zone, vtype_id in vehicles:
         trip = ET.SubElement(root, "trip")
-        trip.set("id", f"veh_{vid}")
-        trip.set("type", "car")
+        trip.set("id", f"emer_{vid}" if vtype_id == "emergency" else f"veh_{vid}")
+        trip.set("type", vtype_id)
         trip.set("depart", f"{depart:.1f}")
         trip.set("from", from_edge)
         trip.set("to", to_edge)
-        trip.set("departLane", "best")
+        trip.set("departLane", "best" if vtype_id == "car" else "free")
         trip.set("fromTaz", from_zone)
         trip.set("toTaz", to_zone)
 
     tree = ET.ElementTree(root)
     ET.indent(tree, space="  ")
     tree.write(str(output_file), xml_declaration=True, encoding="utf-8")
-    print(f"Route file ({len(vehicles)} vehicles) -> {output_file}")
+    n_emer = sum(1 for v in vehicles if v[6] == "emergency")
+    print(f"Route file ({len(vehicles)} vehicles, {n_emer} emergency) -> {output_file}")
     return len(vehicles)
 
 

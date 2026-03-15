@@ -133,9 +133,14 @@ def parse_stats(output_dir: Path) -> dict:
         try:
             tree = ET.parse(str(tripinfo_file))
             trips = tree.getroot().findall("tripinfo")
-            durations = [float(trip.get("duration", 0)) for trip in trips]
-            waiting_times = [float(trip.get("waitingTime", 0)) for trip in trips]
-            time_losses = [float(trip.get("timeLoss", 0)) for trip in trips]
+
+            # Separate regular vs emergency vehicles
+            regular = [t for t in trips if not t.get("id", "").startswith("emer_")]
+            emergency = [t for t in trips if t.get("id", "").startswith("emer_")]
+
+            durations = [float(t.get("duration", 0)) for t in regular]
+            waiting_times = [float(t.get("waitingTime", 0)) for t in regular]
+            time_losses = [float(t.get("timeLoss", 0)) for t in regular]
 
             if durations:
                 stats["completed_vehicles"] = len(durations)
@@ -145,6 +150,33 @@ def parse_stats(output_dir: Path) -> dict:
                 stats["max_waiting_time_s"] = max(waiting_times)
                 stats["avg_time_loss_s"] = sum(time_losses) / len(time_losses)
                 stats["completed_time_loss_h"] = sum(time_losses) / 3600.0
+
+            # Emergency vehicle metrics
+            if emergency:
+                emer_durations = [float(t.get("duration", 0)) for t in emergency]
+                emer_time_losses = [float(t.get("timeLoss", 0)) for t in emergency]
+                stats["emergency_count"] = len(emer_durations)
+                stats["emergency_avg_duration_s"] = sum(emer_durations) / len(emer_durations)
+                stats["emergency_max_duration_s"] = max(emer_durations)
+                stats["emergency_avg_time_loss_s"] = sum(emer_time_losses) / len(emer_time_losses)
+
+            # Snarøya-origin trips (per-capita delay for peninsula residents).
+            # tripinfo records departLane="edgeId_laneIndex", so we extract
+            # the edge ID and match against the known snv_syd origin edges.
+            SNV_SYD_ORIGINS = {"515410724#0"}
+            snaroya_only = []
+            for t in regular:
+                dl = t.get("departLane", "")
+                depart_edge = dl.rsplit("_", 1)[0] if "_" in dl else ""
+                if depart_edge in SNV_SYD_ORIGINS:
+                    snaroya_only.append(t)
+            if snaroya_only:
+                snaroya_dur = [float(t.get("duration", 0)) for t in snaroya_only]
+                snaroya_loss = [float(t.get("timeLoss", 0)) for t in snaroya_only]
+                stats["snaroya_origin_count"] = len(snaroya_dur)
+                stats["snaroya_avg_duration_s"] = sum(snaroya_dur) / len(snaroya_dur)
+                stats["snaroya_avg_time_loss_s"] = sum(snaroya_loss) / len(snaroya_loss)
+
         except ET.ParseError:
             print(f"    WARNING: Could not parse {tripinfo_file}")
 
@@ -190,6 +222,20 @@ def parse_stats(output_dir: Path) -> dict:
     completed_delay = float(stats.get("completed_time_loss_h", 0))
     blocked_delay = float(stats.get("blocked_vehicle_h", 0))
     stats["system_delay_h"] = completed_delay + blocked_delay
+
+    # Approximate queue length in km.
+    # "not_inserted" vehicles are waiting outside the network boundary.
+    # Density assumption: ~120 vehicles/km for stopped single-lane traffic
+    # (avg vehicle length 4.5 m + ~3.8 m gap ≈ 8.3 m/veh → ~120 veh/km).
+    # Snarøyveien approach from E18 has 2 lanes, so divide by 2.
+    STOPPED_DENSITY_VEH_PER_KM = 120
+    APPROACH_LANES = 2
+    not_inserted = int(stats.get("not_inserted", 0))
+    peak_waiting = int(stats.get("peak_waiting", 0))
+    stats["queue_length_km"] = round(
+        (not_inserted + peak_waiting) / (STOPPED_DENSITY_VEH_PER_KM * APPROACH_LANES), 1
+    )
+
     return stats
 
 
