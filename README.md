@@ -72,7 +72,6 @@ Det finnes også en egen lokal presentasjonsvisning med Kartverket-kart i bakgru
 - Tidsrom: morgen, ettermiddag og et syntetisk estimat for midt på dagen
 - Lag for blålyskjøretøy
 - Konsertpåslag for Unity Arena
-- Presentasjonskontroller for busser og fotgjengerpuljer fra T-banen
 
 Slik starter du den:
 
@@ -83,7 +82,7 @@ uv run python scripts/08_serve_presentation.py
 
 Åpne deretter [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-Merk: morgen- og ettermiddagskartene bygger på reelle SUMO-kjøringer. Midt på dagen, busspåslag og fotgjengerpuljer er laget for presentasjon og utforskning, og er derfor tydelig merket som estimater i visningen.
+Merk: morgen- og ettermiddagskartene bygger på reelle SUMO-kjøringer. Midt på dagen er laget som et tydelig merket presentasjonsestimat.
 
 ## Les mer
 

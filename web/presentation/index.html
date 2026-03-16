@@ -19,8 +19,8 @@
           <p class="eyebrow">Snarøyveien</p>
           <h1>Presentasjonskart</h1>
           <p class="lede">
-            Reell SUMO-avspilling for kjørte scenarioer, med tydelig merkede
-            presentasjonsestimater for midt på dagen, busser og fotgjengerpuljer.
+            Reell SUMO-avspilling for kjørte scenarioer, med tydelig merket
+            presentasjonsestimat for midt på dagen.
           </p>
         </div>
 
@@ -39,7 +39,7 @@
         </section>
 
         <section class="toggle-grid">
-          <label class="toggle">
+          <label class="toggle" id="concertToggleRow">
             <input type="checkbox" id="concertToggle" />
             <span>Unity Arena-konsert</span>
           </label>
@@ -47,30 +47,6 @@
             <input type="checkbox" id="emergencyToggle" checked />
             <span>Vis blålyskjøretøy</span>
           </label>
-        </section>
-
-        <section class="control-group">
-          <div class="range-head">
-            <label for="busSlider">Busser</label>
-            <output id="busValue">100%</output>
-          </div>
-          <input id="busSlider" type="range" min="0" max="200" step="10" value="100" />
-        </section>
-
-        <section class="control-group">
-          <div class="range-head">
-            <label for="pedestrianSlider">Fotgjengere</label>
-            <output id="pedestrianValue">100%</output>
-          </div>
-          <input id="pedestrianSlider" type="range" min="0" max="300" step="10" value="100" />
-        </section>
-
-        <section class="control-group">
-          <div class="range-head">
-            <label for="pulseSlider">T-bane-puljer</label>
-            <output id="pulseValue">70%</output>
-          </div>
-          <input id="pulseSlider" type="range" min="0" max="100" step="5" value="70" />
         </section>
 
         <section class="timeline">
@@ -108,8 +84,6 @@
           <ul>
             <li>Veglenker farges etter belastning og hastighet.</li>
             <li>Røde symboler viser blålyskjøretøy når laget er aktivt.</li>
-            <li>Gule pulser viser fotgjengertrykk ved stasjon og kryss.</li>
-            <li>Blå markører viser bussflyt i presentasjonsmodus.</li>
           </ul>
           <p id="scenarioNote" class="note">
             Lastet scenario.

@@ -5,9 +5,6 @@ const state = {
   period: "morning",
   concert: false,
   showEmergency: true,
-  busLevel: 100,
-  pedestrianLevel: 100,
-  pulseLevel: 70,
   frameIndex: 0,
   isPlaying: false,
 };
@@ -15,14 +12,9 @@ const state = {
 const ui = {
   familySelect: document.getElementById("familySelect"),
   periodSelect: document.getElementById("periodSelect"),
+  concertToggleRow: document.getElementById("concertToggleRow"),
   concertToggle: document.getElementById("concertToggle"),
   emergencyToggle: document.getElementById("emergencyToggle"),
-  busSlider: document.getElementById("busSlider"),
-  busValue: document.getElementById("busValue"),
-  pedestrianSlider: document.getElementById("pedestrianSlider"),
-  pedestrianValue: document.getElementById("pedestrianValue"),
-  pulseSlider: document.getElementById("pulseSlider"),
-  pulseValue: document.getElementById("pulseValue"),
   playPauseButton: document.getElementById("playPauseButton"),
   timeSlider: document.getElementById("timeSlider"),
   timeLabel: document.getElementById("timeLabel"),
@@ -58,8 +50,6 @@ let networkLayer = null;
 let edgeLayers = new Map();
 let activeEdges = new Set();
 const emergencyLayer = L.layerGroup().addTo(map);
-const busLayer = L.layerGroup().addTo(map);
-const pulseLayer = L.layerGroup().addTo(map);
 
 let playTimer = null;
 
@@ -75,6 +65,7 @@ function initControls() {
   }
   ui.familySelect.value = state.family;
   ui.periodSelect.value = state.period;
+  syncConcertVisibility();
 
   ui.familySelect.addEventListener("change", async (event) => {
     state.family = event.target.value;
@@ -84,6 +75,7 @@ function initControls() {
 
   ui.periodSelect.addEventListener("change", async (event) => {
     state.period = event.target.value;
+    syncConcertVisibility();
     state.frameIndex = 0;
     await renderAll();
   });
@@ -96,19 +88,6 @@ function initControls() {
 
   ui.emergencyToggle.addEventListener("change", async (event) => {
     state.showEmergency = event.target.checked;
-    await updateDynamicLayers();
-  });
-
-  bindRange(ui.busSlider, ui.busValue, async (value) => {
-    state.busLevel = value;
-    await updateDynamicLayers();
-  });
-  bindRange(ui.pedestrianSlider, ui.pedestrianValue, async (value) => {
-    state.pedestrianLevel = value;
-    await updateDynamicLayers();
-  });
-  bindRange(ui.pulseSlider, ui.pulseValue, async (value) => {
-    state.pulseLevel = value;
     await updateDynamicLayers();
   });
 
@@ -126,13 +105,13 @@ function initControls() {
   });
 }
 
-function bindRange(slider, output, callback) {
-  output.textContent = `${slider.value}%`;
-  slider.addEventListener("input", async (event) => {
-    const value = Number(event.target.value);
-    output.textContent = `${value}%`;
-    await callback(value);
-  });
+function syncConcertVisibility() {
+  const visible = state.period === "afternoon";
+  ui.concertToggleRow.hidden = !visible;
+  if (!visible && state.concert) {
+    state.concert = false;
+    ui.concertToggle.checked = false;
+  }
 }
 
 async function renderAll() {
@@ -204,12 +183,11 @@ function updateModeBadge(mode) {
     ui.modeBadge.textContent = "SUMO + presentasjonsestimat";
     return;
   }
-  const isPureReal =
-    !state.concert &&
-    state.busLevel === 100 &&
-    state.pedestrianLevel === 100 &&
-    state.pulseLevel === 70;
-  ui.modeBadge.textContent = isPureReal ? "Ekte SUMO-kjøring" : "SUMO + presentasjonslag";
+  if (manifest.scenarios[mode.scenario]?.has_event_overlay) {
+    ui.modeBadge.textContent = "Ekte SUMO-konsertkjøring";
+    return;
+  }
+  ui.modeBadge.textContent = "Ekte SUMO-kjøring";
 }
 
 function updateScenarioNote(mode) {
@@ -232,7 +210,7 @@ function updateScenarioNote(mode) {
   }
 
   ui.scenarioNote.textContent =
-    "Veglenkene viser reell SUMO-avspilling for seed 1. Buss- og fotgjengerlagene er presentasjonskontroller over den kjørte simuleringen.";
+    "Veglenkene viser reell SUMO-avspilling for seed 1.";
 }
 
 function updateKpis(mode) {
@@ -248,8 +226,6 @@ async function updateDynamicLayers(existingMode = null) {
   const frame = buildFrame(mode, state.frameIndex);
   drawFrame(frame);
   drawEmergency(frame);
-  drawBuses(frame.time_s);
-  drawPedestrianPulses(frame.time_s);
   ui.timeLabel.textContent = formatClock(frame.time_s, state.period);
   ui.timeSlider.value = String(state.frameIndex);
   updateKpis(mode);
@@ -260,7 +236,7 @@ function buildFrame(mode, index) {
     return buildSyntheticMiddayFrame(mode, index);
   }
   const frame = mode.playback.frames[index] ?? mode.playback.frames[0] ?? { t: 0, edges: {}, emergency: [] };
-  const adjusted = applySyntheticStress(frame, mode);
+  const adjusted = applyConcertStress(frame, mode);
   return {
     time_s: frame.t,
     edges: adjusted.edges,
@@ -292,28 +268,19 @@ function buildSyntheticMiddayFrame(mode, index) {
     edges,
     emergency: morningFrame?.emergency ?? [],
   };
-  const adjusted = applySyntheticStress(syntheticFrame, mode);
   return {
     time_s: syntheticFrame.t,
-    edges: adjusted.edges,
-    emergency: adjusted.emergency,
+    edges: syntheticFrame.edges,
+    emergency: syntheticFrame.emergency,
   };
 }
 
-function applySyntheticStress(frame, mode) {
+function applyConcertStress(frame, mode) {
   const edges = {};
   const concertMultiplier = getConcertMultiplier(mode);
-  const busMultiplier = 1 + ((state.busLevel - 100) / 100) * manifest.synthetic.bus_penalty_per_100pct;
-  const pedestrianBase = 1 + ((state.pedestrianLevel - 100) / 100) * manifest.synthetic.pedestrian_penalty_per_100pct;
-  const pulseWave = pulseEnvelope(frame.t);
-  const pulseMultiplier =
-    1 + (state.pulseLevel / 100) * manifest.synthetic.pulse_penalty_max * pulseWave;
 
   for (const [edgeId, values] of Object.entries(frame.edges ?? {})) {
-    const layer = edgeLayers.get(edgeId);
-    const name = layer?.feature?.properties?.name ?? "";
-    const hotspotMultiplier = isPedestrianHotspot(name) ? pedestrianBase * pulseMultiplier : 1;
-    const totalMultiplier = clamp(concertMultiplier * busMultiplier * hotspotMultiplier, 0.65, 6);
+    const totalMultiplier = clamp(concertMultiplier, 0.65, 6);
     const count = Math.max(0, Math.round(values[0] * totalMultiplier));
     const speed = Math.max(2, round1(values[1] / Math.max(totalMultiplier * 0.82, 0.85)));
     edges[edgeId] = [count, speed, values[2], values[3]];
@@ -388,57 +355,6 @@ function drawEmergency(frame) {
   }
 }
 
-function drawBuses(timeSeconds) {
-  busLayer.clearLayers();
-  const networkMeta = manifest.networks[state.family] ?? manifest.networks.scenario_4A_base;
-  const route = networkMeta.bus_route ?? [];
-  if (route.length < 2) {
-    return;
-  }
-
-  const baseBusCount = state.period === "afternoon" ? 5 : state.period === "midday" ? 3 : 6;
-  const scaledBusCount = Math.max(0, Math.round((baseBusCount * state.busLevel) / 100));
-
-  for (let index = 0; index < scaledBusCount; index += 1) {
-    const phase = ((timeSeconds / 3600) * 0.55 + index / Math.max(scaledBusCount, 1)) % 1;
-    const forward = index % 2 === 0;
-    const latlng = pointAlongPolyline(route, forward ? phase : 1 - phase);
-    const marker = L.marker(latlng, {
-      icon: L.divIcon({
-        className: "",
-        html: '<div class="bus-marker"></div>',
-        iconSize: [14, 14],
-        iconAnchor: [7, 7],
-      }),
-    });
-    marker.bindTooltip("Presentasjonsbuss");
-    marker.addTo(busLayer);
-  }
-}
-
-function drawPedestrianPulses(timeSeconds) {
-  pulseLayer.clearLayers();
-  const networkMeta = manifest.networks[state.family] ?? manifest.networks.scenario_4A_base;
-  const hotspots = networkMeta.pedestrian_hotspots ?? [];
-  const baseLevel = state.pedestrianLevel / 100;
-  const pulseStrength = state.pulseLevel / 100;
-  const wave = pulseEnvelope(timeSeconds);
-
-  for (const hotspot of hotspots) {
-    const radius = 8 + baseLevel * 9 + pulseStrength * wave * 15;
-    const opacity = clamp(0.2 + baseLevel * 0.18 + pulseStrength * wave * 0.32, 0.2, 0.9);
-    const circle = L.circleMarker([hotspot.lat, hotspot.lon], {
-      radius,
-      color: "#d97706",
-      weight: 1.5,
-      fillColor: "#f59e0b",
-      fillOpacity: opacity,
-    });
-    circle.bindTooltip(`${hotspot.label}: fotgjengerpuls`);
-    circle.addTo(pulseLayer);
-  }
-}
-
 function calculateKpis(mode) {
   if (mode.kind === "synthetic_midday") {
     const morning = manifest.scenarios[`${state.family}_morning`]?.kpis;
@@ -474,16 +390,6 @@ function applyKpiStress(base, mode, midday) {
     result.queue_km *= multipliers.queue;
     result.emergency_avg_min *= multipliers.emergency;
   }
-
-  const busFactor = 1 + ((state.busLevel - 100) / 100) * manifest.synthetic.bus_penalty_per_100pct;
-  const pedestrianFactor = 1 + ((state.pedestrianLevel - 100) / 100) * manifest.synthetic.pedestrian_penalty_per_100pct;
-  const pulseFactor = 1 + (state.pulseLevel / 100) * manifest.synthetic.pulse_penalty_max * 0.45;
-  const total = clamp(busFactor * pedestrianFactor * pulseFactor, 0.75, 4.2);
-
-  result.avg_duration_min *= Math.max(total * 0.9, 0.7);
-  result.system_delay_h *= total;
-  result.queue_km *= Math.max(total * 0.95, 0.7);
-  result.emergency_avg_min *= Math.max(1 + (total - 1) * 0.6, 0.8);
 
   return result;
 }
@@ -557,53 +463,6 @@ function edgeStyle(count, speedKmh, lanes, emergencyCount, eventCount) {
     weight: 1.4 + Math.min(loadPerLane, 6) * 0.9 + emergencyCount * 0.4,
     opacity: 0.92,
   };
-}
-
-function isPedestrianHotspot(name) {
-  return /Bernt Balchens vei|Rolfsbuktveien|Snarøyveien/.test(name);
-}
-
-function pulseEnvelope(timeSeconds) {
-  const period = manifest.synthetic.pulse_period_s;
-  const phase = (timeSeconds % period) / period;
-  const distance = Math.min(Math.abs(phase - 0.1), 1 - Math.abs(phase - 0.1));
-  return Math.exp(-Math.pow(distance / 0.12, 2));
-}
-
-function pointAlongPolyline(points, progress) {
-  if (points.length === 0) {
-    return [manifest.default_center[0], manifest.default_center[1]];
-  }
-  if (points.length === 1) {
-    return points[0];
-  }
-
-  const lengths = [];
-  let total = 0;
-  for (let index = 1; index < points.length; index += 1) {
-    const seg = distance(points[index - 1], points[index]);
-    lengths.push(seg);
-    total += seg;
-  }
-  let remaining = clamp(progress, 0, 1) * total;
-  for (let index = 0; index < lengths.length; index += 1) {
-    const seg = lengths[index];
-    if (remaining <= seg) {
-      const ratio = seg === 0 ? 0 : remaining / seg;
-      return [
-        points[index][0] + (points[index + 1][0] - points[index][0]) * ratio,
-        points[index][1] + (points[index + 1][1] - points[index][1]) * ratio,
-      ];
-    }
-    remaining -= seg;
-  }
-  return points[points.length - 1];
-}
-
-function distance(a, b) {
-  const dx = b[1] - a[1];
-  const dy = b[0] - a[0];
-  return Math.sqrt(dx * dx + dy * dy);
 }
 
 function formatClock(timeSeconds, period) {

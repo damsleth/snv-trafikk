@@ -40,7 +40,6 @@ SCENARIOS_TO_EXPORT = [
     "scenario_4A_v1_event_afternoon",
 ]
 
-PEDESTRIAN_PULSE_PERIOD_S = 450
 PLAYBACK_INTERVAL_S = 15
 
 
@@ -88,7 +87,7 @@ def export_network_geojson(network_path: Path, family_name: str) -> dict:
         if not edge.getLanes():
             continue
         drivable = any(
-            lane.allows("passenger") or lane.allows("bus") or lane.allows("emergency")
+            lane.allows("passenger") or lane.allows("emergency")
             for lane in edge.getLanes()
         )
         if not drivable:
@@ -139,32 +138,10 @@ def export_network_geojson(network_path: Path, family_name: str) -> dict:
         encoding="utf-8",
     )
 
-    bus_route_edges = ["313965530#1", "53141119", "27184811#3", "515410724#0"]
-    bus_route = []
-    for edge_id in bus_route_edges:
-        edge = net.getEdge(edge_id)
-        x, y = midpoint(edge.getShape())
-        lon, lat = net.convertXY2LonLat(x, y)
-        bus_route.append([lat, lon])
-
-    hotspots = []
-    hotspot_specs = [
-        ("flytarnet", "Flytårnet stasjon", "53141119"),
-        ("rolfsbukt", "Rolfsbuktveien", "27184811#3"),
-        ("nordre_rundkjoring", "Nordre rundkjøring", "313965530#1"),
-    ]
-    for hotspot_id, label, edge_id in hotspot_specs:
-        edge = net.getEdge(edge_id)
-        x, y = midpoint(edge.getShape())
-        lon, lat = net.convertXY2LonLat(x, y)
-        hotspots.append({"id": hotspot_id, "label": label, "lat": lat, "lon": lon})
-
     return {
         "file": f"data/networks/{family_name}.geojson",
         "center": center,
         "bounds": bounds,
-        "bus_route": bus_route,
-        "pedestrian_hotspots": hotspots,
     }
 
 
@@ -352,10 +329,6 @@ def build_manifest() -> dict:
                 "queue": round((event_multipliers["base"]["queue"] + event_multipliers["v1"]["queue"]) / 2, 2),
                 "emergency": round((event_multipliers["base"]["emergency"] + event_multipliers["v1"]["emergency"]) / 2, 2),
             },
-            "bus_penalty_per_100pct": 0.08,
-            "pedestrian_penalty_per_100pct": 0.12,
-            "pulse_penalty_max": 0.25,
-            "pulse_period_s": PEDESTRIAN_PULSE_PERIOD_S,
         },
     }
 

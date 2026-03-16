@@ -163,7 +163,7 @@ def parse_stats(output_dir: Path) -> dict:
             # Snarøya-origin trips (per-capita delay for peninsula residents).
             # tripinfo records departLane="edgeId_laneIndex", so we extract
             # the edge ID and match against the known snv_syd origin edges.
-            SNV_SYD_ORIGINS = {"515410724#0"}
+            SNV_SYD_ORIGINS = {"115505254", "515410724#0"}
             snaroya_only = []
             for t in regular:
                 dl = t.get("departLane", "")

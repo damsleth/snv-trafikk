@@ -30,44 +30,6 @@
           59.91422503196528,
           10.63707151820095
         ]
-      ],
-      "bus_route": [
-        [
-          59.906559066516756,
-          10.629240168265778
-        ],
-        [
-          59.89774985861541,
-          10.624751363774958
-        ],
-        [
-          59.891976295919406,
-          10.628142094021545
-        ],
-        [
-          59.892808585194466,
-          10.620433147654072
-        ]
-      ],
-      "pedestrian_hotspots": [
-        {
-          "id": "flytarnet",
-          "label": "Flyt\u00e5rnet stasjon",
-          "lat": 59.89774985861541,
-          "lon": 10.624751363774958
-        },
-        {
-          "id": "rolfsbukt",
-          "label": "Rolfsbuktveien",
-          "lat": 59.891976295919406,
-          "lon": 10.628142094021545
-        },
-        {
-          "id": "nordre_rundkjoring",
-          "label": "Nordre rundkj\u00f8ring",
-          "lat": 59.906559066516756,
-          "lon": 10.629240168265778
-        }
       ]
     },
     "scenario_4A_v1": {
@@ -85,44 +47,6 @@
           59.91422503196528,
           10.63707151820095
         ]
-      ],
-      "bus_route": [
-        [
-          59.906559066516756,
-          10.629240168265778
-        ],
-        [
-          59.89774985861541,
-          10.624751363774958
-        ],
-        [
-          59.891976295919406,
-          10.628142094021545
-        ],
-        [
-          59.892808585194466,
-          10.620433147654072
-        ]
-      ],
-      "pedestrian_hotspots": [
-        {
-          "id": "flytarnet",
-          "label": "Flyt\u00e5rnet stasjon",
-          "lat": 59.89774985861541,
-          "lon": 10.624751363774958
-        },
-        {
-          "id": "rolfsbukt",
-          "label": "Rolfsbuktveien",
-          "lat": 59.891976295919406,
-          "lon": 10.628142094021545
-        },
-        {
-          "id": "nordre_rundkjoring",
-          "label": "Nordre rundkj\u00f8ring",
-          "lat": 59.906559066516756,
-          "lon": 10.629240168265778
-        }
       ]
     },
     "scenario_4A_v1_rolfsbukt": {
@@ -140,44 +64,6 @@
           59.91422503196528,
           10.63707151820095
         ]
-      ],
-      "bus_route": [
-        [
-          59.906559066516756,
-          10.629240168265778
-        ],
-        [
-          59.89774985861541,
-          10.624751363774958
-        ],
-        [
-          59.891976295919406,
-          10.628142094021545
-        ],
-        [
-          59.892808585194466,
-          10.620433147654072
-        ]
-      ],
-      "pedestrian_hotspots": [
-        {
-          "id": "flytarnet",
-          "label": "Flyt\u00e5rnet stasjon",
-          "lat": 59.89774985861541,
-          "lon": 10.624751363774958
-        },
-        {
-          "id": "rolfsbukt",
-          "label": "Rolfsbuktveien",
-          "lat": 59.891976295919406,
-          "lon": 10.628142094021545
-        },
-        {
-          "id": "nordre_rundkjoring",
-          "label": "Nordre rundkj\u00f8ring",
-          "lat": 59.906559066516756,
-          "lon": 10.629240168265778
-        }
       ]
     },
     "scenario_4A_v2": {
@@ -195,44 +81,6 @@
           59.91422503196528,
           10.63707151820095
         ]
-      ],
-      "bus_route": [
-        [
-          59.906559066516756,
-          10.629240168265778
-        ],
-        [
-          59.89774985861541,
-          10.624751363774958
-        ],
-        [
-          59.891976295919406,
-          10.628142094021545
-        ],
-        [
-          59.892808585194466,
-          10.620433147654072
-        ]
-      ],
-      "pedestrian_hotspots": [
-        {
-          "id": "flytarnet",
-          "label": "Flyt\u00e5rnet stasjon",
-          "lat": 59.89774985861541,
-          "lon": 10.624751363774958
-        },
-        {
-          "id": "rolfsbukt",
-          "label": "Rolfsbuktveien",
-          "lat": 59.891976295919406,
-          "lon": 10.628142094021545
-        },
-        {
-          "id": "nordre_rundkjoring",
-          "label": "Nordre rundkj\u00f8ring",
-          "lat": 59.906559066516756,
-          "lon": 10.629240168265778
-        }
       ]
     },
     "scenario_4A_v3": {
@@ -250,44 +98,6 @@
           59.91422503196528,
           10.63707151820095
         ]
-      ],
-      "bus_route": [
-        [
-          59.906559066516756,
-          10.629240168265778
-        ],
-        [
-          59.89774985861541,
-          10.624751363774958
-        ],
-        [
-          59.891976295919406,
-          10.628142094021545
-        ],
-        [
-          59.892808585194466,
-          10.620433147654072
-        ]
-      ],
-      "pedestrian_hotspots": [
-        {
-          "id": "flytarnet",
-          "label": "Flyt\u00e5rnet stasjon",
-          "lat": 59.89774985861541,
-          "lon": 10.624751363774958
-        },
-        {
-          "id": "rolfsbukt",
-          "label": "Rolfsbuktveien",
-          "lat": 59.891976295919406,
-          "lon": 10.628142094021545
-        },
-        {
-          "id": "nordre_rundkjoring",
-          "label": "Nordre rundkj\u00f8ring",
-          "lat": 59.906559066516756,
-          "lon": 10.629240168265778
-        }
       ]
     }
   },
@@ -304,12 +114,12 @@
       },
       "kpis": {
         "avg_duration_min": 3.6,
-        "system_delay_h": 489.1,
+        "system_delay_h": 487.6,
         "queue_km": 2.8,
-        "blocked_vehicles": 203,
-        "peak_waiting": 469,
-        "emergency_avg_min": 4.2,
-        "snaroya_avg_min": 4.1
+        "blocked_vehicles": 201,
+        "peak_waiting": 462,
+        "emergency_avg_min": 4.7,
+        "snaroya_avg_min": 4.4
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -326,10 +136,10 @@
       },
       "kpis": {
         "avg_duration_min": 3.7,
-        "system_delay_h": 406.4,
-        "queue_km": 2.0,
-        "blocked_vehicles": 79,
-        "peak_waiting": 399,
+        "system_delay_h": 402.2,
+        "queue_km": 1.9,
+        "blocked_vehicles": 77,
+        "peak_waiting": 390,
         "emergency_avg_min": 3.7,
         "snaroya_avg_min": 3.5
       },
@@ -348,12 +158,12 @@
       },
       "kpis": {
         "avg_duration_min": 5.3,
-        "system_delay_h": 605.6,
-        "queue_km": 3.4,
-        "blocked_vehicles": 254,
-        "peak_waiting": 572,
-        "emergency_avg_min": 4.3,
-        "snaroya_avg_min": 6.7
+        "system_delay_h": 594.6,
+        "queue_km": 3.3,
+        "blocked_vehicles": 251,
+        "peak_waiting": 550,
+        "emergency_avg_min": 4.2,
+        "snaroya_avg_min": 6.6
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -370,10 +180,10 @@
       },
       "kpis": {
         "avg_duration_min": 5.3,
-        "system_delay_h": 495.0,
+        "system_delay_h": 491.3,
         "queue_km": 2.3,
-        "blocked_vehicles": 98,
-        "peak_waiting": 444,
+        "blocked_vehicles": 100,
+        "peak_waiting": 437,
         "emergency_avg_min": 4.8,
         "snaroya_avg_min": 5.2
       },
@@ -392,12 +202,12 @@
       },
       "kpis": {
         "avg_duration_min": 5.9,
-        "system_delay_h": 704.7,
+        "system_delay_h": 709.4,
         "queue_km": 4.4,
-        "blocked_vehicles": 358,
-        "peak_waiting": 694,
-        "emergency_avg_min": 3.7,
-        "snaroya_avg_min": 6.6
+        "blocked_vehicles": 360,
+        "peak_waiting": 700,
+        "emergency_avg_min": 4.0,
+        "snaroya_avg_min": 6.7
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -413,13 +223,13 @@
         "interval_s": 15
       },
       "kpis": {
-        "avg_duration_min": 5.7,
-        "system_delay_h": 545.5,
+        "avg_duration_min": 5.8,
+        "system_delay_h": 549.7,
         "queue_km": 2.9,
-        "blocked_vehicles": 167,
-        "peak_waiting": 526,
+        "blocked_vehicles": 169,
+        "peak_waiting": 531,
         "emergency_avg_min": 4.8,
-        "snaroya_avg_min": 5.0
+        "snaroya_avg_min": 5.3
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -436,11 +246,11 @@
       },
       "kpis": {
         "avg_duration_min": 5.0,
-        "system_delay_h": 570.1,
-        "queue_km": 3.1,
-        "blocked_vehicles": 251,
-        "peak_waiting": 503,
-        "emergency_avg_min": 5.6,
+        "system_delay_h": 571.9,
+        "queue_km": 3.2,
+        "blocked_vehicles": 255,
+        "peak_waiting": 508,
+        "emergency_avg_min": 5.3,
         "snaroya_avg_min": 5.3
       },
       "has_event_overlay": false,
@@ -457,13 +267,13 @@
         "interval_s": 15
       },
       "kpis": {
-        "avg_duration_min": 5.2,
-        "system_delay_h": 490.7,
-        "queue_km": 2.2,
-        "blocked_vehicles": 100,
-        "peak_waiting": 442,
+        "avg_duration_min": 5.3,
+        "system_delay_h": 497.1,
+        "queue_km": 2.3,
+        "blocked_vehicles": 103,
+        "peak_waiting": 444,
         "emergency_avg_min": 4.9,
-        "snaroya_avg_min": 5.1
+        "snaroya_avg_min": 5.2
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -479,13 +289,13 @@
         "interval_s": 15
       },
       "kpis": {
-        "avg_duration_min": 7.3,
-        "system_delay_h": 1033.4,
-        "queue_km": 6.0,
-        "blocked_vehicles": 458,
-        "peak_waiting": 986,
-        "emergency_avg_min": 4.9,
-        "snaroya_avg_min": 13.9
+        "avg_duration_min": 7.4,
+        "system_delay_h": 1039.6,
+        "queue_km": 6.1,
+        "blocked_vehicles": 462,
+        "peak_waiting": 990,
+        "emergency_avg_min": 7.2,
+        "snaroya_avg_min": 14.3
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -501,13 +311,13 @@
         "interval_s": 15
       },
       "kpis": {
-        "avg_duration_min": 5.6,
-        "system_delay_h": 530.9,
+        "avg_duration_min": 5.7,
+        "system_delay_h": 527.5,
         "queue_km": 2.4,
-        "blocked_vehicles": 101,
-        "peak_waiting": 487,
-        "emergency_avg_min": 4.3,
-        "snaroya_avg_min": 4.7
+        "blocked_vehicles": 104,
+        "peak_waiting": 474,
+        "emergency_avg_min": 4.7,
+        "snaroya_avg_min": 4.8
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -523,13 +333,13 @@
         "interval_s": 15
       },
       "kpis": {
-        "avg_duration_min": 5.6,
-        "system_delay_h": 3803.4,
-        "queue_km": 44.7,
-        "blocked_vehicles": 5269,
-        "peak_waiting": 5465,
-        "emergency_avg_min": 7.9,
-        "snaroya_avg_min": 8.0
+        "avg_duration_min": 5.5,
+        "system_delay_h": 3800.7,
+        "queue_km": 44.9,
+        "blocked_vehicles": 5291,
+        "peak_waiting": 5480,
+        "emergency_avg_min": 6.2,
+        "snaroya_avg_min": 7.4
       },
       "has_event_overlay": true,
       "source": "sumo_seed1"
@@ -545,13 +355,13 @@
         "interval_s": 15
       },
       "kpis": {
-        "avg_duration_min": 7.0,
-        "system_delay_h": 3892.0,
-        "queue_km": 45.9,
-        "blocked_vehicles": 5427,
-        "peak_waiting": 5596,
-        "emergency_avg_min": 4.8,
-        "snaroya_avg_min": 6.5
+        "avg_duration_min": 7.1,
+        "system_delay_h": 3900.1,
+        "queue_km": 45.8,
+        "blocked_vehicles": 5422,
+        "peak_waiting": 5580,
+        "emergency_avg_min": 5.0,
+        "snaroya_avg_min": 6.3
       },
       "has_event_overlay": true,
       "source": "sumo_seed1"
@@ -589,27 +399,23 @@
     },
     "event_multipliers": {
       "base": {
-        "avg_duration": 1.51,
-        "system_delay": 9.36,
-        "queue": 22.35,
-        "emergency": 2.14
+        "avg_duration": 1.49,
+        "system_delay": 9.45,
+        "queue": 23.63,
+        "emergency": 1.68
       },
       "v1": {
-        "avg_duration": 1.32,
-        "system_delay": 7.86,
-        "queue": 19.96,
-        "emergency": 1.0
+        "avg_duration": 1.34,
+        "system_delay": 7.94,
+        "queue": 19.91,
+        "emergency": 1.04
       }
     },
     "fallback_event_multipliers": {
       "avg_duration": 1.42,
-      "system_delay": 8.61,
-      "queue": 21.16,
-      "emergency": 1.57
-    },
-    "bus_penalty_per_100pct": 0.08,
-    "pedestrian_penalty_per_100pct": 0.12,
-    "pulse_penalty_max": 0.25,
-    "pulse_period_s": 450
+      "system_delay": 8.7,
+      "queue": 21.77,
+      "emergency": 1.36
+    }
   }
 }

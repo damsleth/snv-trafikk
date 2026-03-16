@@ -23,6 +23,22 @@ SEGMENT_BOUNDS = {
     "A": (2505, 3050),
 }
 BUS_LANE_ALLOWED = "bus coach taxi emergency"
+FUTURE_CONNECTOR_ID = "custom_5000"
+FUTURE_CONNECTOR_NAME = "Fremtidig forbindelse"
+FUTURE_CONNECTOR_SPEED = 11.11  # 40 km/h
+FUTURE_CONNECTOR_LANES = 1
+FUTURE_CONNECTOR_SHAPES = {
+    FUTURE_CONNECTOR_ID: (
+        "1304784222",
+        "671838807",
+        "3269.79,1691.76 3248.00,1720.00 3220.00,1756.00 3190.00,1797.00 3155.79,1845.39",
+    ),
+    f"-{FUTURE_CONNECTOR_ID}": (
+        "671838807",
+        "1304784222",
+        "3155.79,1845.39 3190.00,1797.00 3220.00,1756.00 3248.00,1720.00 3269.79,1691.76",
+    ),
+}
 
 def find_tool(name: str) -> str:
     """Find a SUMO binary in venv or PATH."""
@@ -109,6 +125,64 @@ def step1_osm_to_base():
     print(f"  Base network → {BASE_NET}")
     print(f"  Edge definitions → {BASE_EDG}")
     print(f"  Node definitions → {BASE_NOD}")
+
+
+def step1b_add_future_connector() -> None:
+    """Add the future 1+1 connector between søndre rundkjøring and Spydkasteren.
+
+    OSM currently reflects the Fornebubanen worksite and does not show the
+    near-term reopening of the direct link west of Rolfsbuktveien. We patch the
+    plain edge definitions so the simulation network matches the intended future
+    street layout instead of today's temporary closure.
+    """
+    tree = ET.parse(str(BASE_EDG))
+    root = tree.getroot()
+    existing_ids = {edge.get("id") for edge in root.findall("edge")}
+
+    updated = False
+    for edge_id, (from_node, to_node, shape) in FUTURE_CONNECTOR_SHAPES.items():
+        if edge_id in existing_ids:
+            continue
+        edge = ET.SubElement(root, "edge")
+        edge.set("id", edge_id)
+        edge.set("from", from_node)
+        edge.set("to", to_node)
+        edge.set("name", FUTURE_CONNECTOR_NAME)
+        edge.set("priority", "2")
+        edge.set("type", "highway.tertiary")
+        edge.set("numLanes", str(FUTURE_CONNECTOR_LANES))
+        edge.set("speed", f"{FUTURE_CONNECTOR_SPEED:.2f}")
+        edge.set("shape", shape)
+        edge.set("spreadType", "center")
+        updated = True
+
+    if updated:
+        ET.indent(tree, space="    ")
+        tree.write(str(BASE_EDG), xml_declaration=True, encoding="utf-8")
+        print(f"  Added future connector to plain edges → {BASE_EDG}")
+    else:
+        print("  Future connector already present in plain edges")
+
+
+def step1c_rebuild_base_from_plain() -> None:
+    """Rebuild the base network so custom future links become routable."""
+    netconvert = find_tool("netconvert")
+    cmd = [
+        netconvert,
+        "--node-files", str(BASE_NOD),
+        "--edge-files", str(BASE_EDG),
+        "--connection-files", str(BASE_CON),
+        "--tllogic-files", str(BASE_TLL),
+        "--output-file", str(BASE_NET),
+        "--output.street-names", "true",
+    ]
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0 or not BASE_NET.exists():
+        print(f"FATAL: failed to rebuild base network with future connector:\n{result.stderr[:1000]}")
+        sys.exit(1)
+
+    print(f"  Rebuilt base network with future connector → {BASE_NET}")
 
 
 def classify_segment(mid_y: float) -> str | None:
@@ -318,6 +392,8 @@ def build_all():
 
     # Step 1: OSM → base network + plain XML
     step1_osm_to_base()
+    step1b_add_future_connector()
+    step1c_rebuild_base_from_plain()
 
     # Step 2: Identify Snarøyveien edges
     print("\nIdentifying Snarøyveien corridor edges...")
