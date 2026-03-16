@@ -55,6 +55,15 @@ L.tileLayer(
 
 map.fitBounds(manifest.default_bounds);
 
+map.on("moveend zoomend", () => {
+  if (localStorage.getItem("debug") === "true") {
+    const c = map.getCenter();
+    const b = map.getBounds();
+    console.debug("[map] center:", [c.lat, c.lng], "zoom:", map.getZoom());
+    console.debug("[map] bounds:", [[b.getSouth(), b.getWest()], [b.getNorth(), b.getEast()]]);
+  }
+});
+
 let networkLayer = null;
 let edgeLayers = new Map();
 let activeEdges = new Set();
