@@ -1,6 +1,6 @@
 # Snarøyveien Trafikksimulering
 
-Dette prosjektet er en åpen SUMO-simulering av trafikken på Snarøyveien og Fornebu, med særlig fokus på hva som skjer når veien forbi Flytårnet stasjon får lavere kapasitet enn tidligere.
+Dette prosjektet er en åpen SUMO (Simulation of Urban MObility)-simulering av trafikken på Snarøyveien og Fornebu, med fokus på hva som skjer når veien forbi Flytårnet stasjon får lavere kapasitet enn tidligere.
 
 Målet er å gjøre trafikkdiskusjonen mer etterprøvbar:
 
@@ -8,18 +8,18 @@ Målet er å gjøre trafikkdiskusjonen mer etterprøvbar:
 - Hvor mye dårligere blir framkommeligheten når veinettet strammes inn?
 - Hvilke varianter ser ut til å fungere best og dårligst?
 
-Prosjektet er laget som et uavhengig, åpent supplement til de offisielle utredningene. Det er ikke en offisiell rapport fra Bærum kommune eller Fornebubanen.
+Prosjektet er laget som et uavhengig, åpent supplement til de offisielle utredningene, og er ikke en offisiell rapport fra Bærum kommune eller Fornebubanen.
 
 ## Kort fortalt
 
 Den siste 5-seed-kjøringen i dette repoet peker i samme retning i både morgen- og ettermiddagsrush:
 
-- Dagens profil kommer best ut.
-- Variant V1 kommer tydelig dårligere ut enn dagens profil.
-- Variant V3 kommer litt bedre ut enn V1, men fortsatt dårligere enn dagens profil.
-- Variant V2 kommer dårligst ut av de utredede variantene.
+- Dagens profil (ingen innsnevring) kommer best ut.
+- Variant V1 (KDP3-forslaget, 2+2 bygate) kommer tydelig dårligere ut enn dagens profil.
+- Variant V3 (hybridvariant) kommer litt bedre ut enn V1, men fortsatt dårligere enn dagens profil.
+- Variant V2 (lavkapasitetsvariant, 1+1 + kollektivfelt) kommer dårligst ut av de utredede variantene.
 
-For scenario 4A viser de oppdaterte 5-seed-resultatene blant annet:
+For scenariet som helhet viser de oppdaterte 5-seed-resultatene blant annet:
 
 - Morgenrush: gjennomsnittlig reisetid øker fra 3,7 til 5,3 minutter fra base til V1.
 - Morgenrush: systemforsinkelse øker fra 495,9 til 597,3 kjøretøy-timer fra base til V1.
