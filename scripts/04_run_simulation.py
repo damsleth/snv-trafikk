@@ -19,6 +19,10 @@ from utils.scenario_catalog import SCENARIOS, scenario_label
 
 def find_sumo_binary() -> str:
     """Find the SUMO binary."""
+    # Prefer the actual compiled binary inside the pip package
+    pkg_sumo = PROJECT_ROOT / ".venv" / "lib" / "python3.10" / "site-packages" / "sumo" / "bin" / "sumo"
+    if pkg_sumo.exists():
+        return str(pkg_sumo)
     venv_sumo = PROJECT_ROOT / ".venv" / "bin" / "sumo"
     if venv_sumo.exists():
         return str(venv_sumo)

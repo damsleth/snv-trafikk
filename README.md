@@ -92,14 +92,19 @@ Github viser ikke alltid videofiler like pent direkte i README, så de er lenket
 
 ## Presentasjonskart
 
-Det finnes også en egen lokal presentasjonsvisning med Kartverket-kart i bakgrunnen og SUMO-data oppå:
+Det finnes en interaktiv kartvisning med Kartverket-kart i bakgrunnen og SUMO-data oppå. Kartsiden er en ren statisk nettside (HTML + JS + JSON) uten noen backend, og publiseres automatisk som GitHub Pages via en Actions-workflow.
 
-- Vegvariant: base, V1, V2, V3 og V1 + miljøgate
-- Tidsrom: morgen, ettermiddag og et syntetisk estimat for midt på dagen
-- Lag for blålyskjøretøy
-- Konsertpåslag for Unity Arena
+**Live-versjon:** Se kartet direkte på [GitHub Pages-siden til dette repoet](https://damsleth.github.io/snv-trafikk/).
 
-Slik starter du den:
+Innhold:
+
+- **Vegvariant:** Base (dagens profil), V1, V2, V3 og V1 + miljøgate
+- **Tidsrom:** Morgenrush (07:45–08:45), ettermiddagsrush (15:30–16:30) og et syntetisk estimat for midt på dagen
+- **Blålyskjøretøy:** Eget lag for simulerte utrykningskjøretøy
+- **Konsertpåslag:** Unity Arena-konsert med ekstra trafikk ettermiddag/kveld
+- **Trafikkinnføring:** Viser innkommende/utgående trafikk fra Snarøya, E18 vest, E18 øst og Ring 3 nord (Granfosstunnelen)
+
+### Kjør lokalt
 
 ```bash
 uv run python scripts/07_export_presentation_data.py
