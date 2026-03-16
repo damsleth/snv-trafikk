@@ -16,8 +16,8 @@
     <div class="layout">
       <aside class="panel">
         <div class="panel-head">
-          <p class="eyebrow">Aksjonsgruppe Trafikk Fornebu</p>
-          <!-- <h1>Snarøyveien</h1> -->
+          <p class="eyebrow">/damsleth/snv-trafikk</p>
+          <h1>Snarøyveien</h1>
           <p class="lede">
 Simulering av trafikkforhold fra Snarøya til E18 under ulike scenarier
           </p>
@@ -25,13 +25,6 @@ Simulering av trafikkforhold fra Snarøya til E18 under ulike scenarier
 
         <section class="control-group">
           <label for="familySelect">Vegvariant</label>
-          <ul class="control-hint">
-            <li><strong>Base</strong> - dagens 2+3-profil</li>
-            <li><strong>V1</strong> - innsnevring Snarøyveien (2+2) + utvidet rundkjøring</li>
-            <li><strong>V2</strong> - V1 + redusert fart</li>
-            <li><strong>V3</strong> - V1 + signalregulert innkjøring</li>
-            <li><strong>V1 + miljøgate</strong> - V1 med bilfritt felt langs Rolfsbuktveien</li>
-          </ul>
           <select id="familySelect"></select>
         </section>
 
@@ -67,15 +60,17 @@ Simulering av trafikkforhold fra Snarøya til E18 under ulike scenarier
           <div class="timeline-head">
             <button id="playPauseButton" type="button">Spill av</button>
             <div>
-              <p id="timeLabel" class="time-label">00:00</p>
+              <span id="timeLabelPrefix" class="time-label">kl.
+
+              </span><span id="timeLabel" class="time-label">00:00</span>
             </div>
           </div>
           <div class="timeline-tools">
             <label class="control-inline" for="playbackRateSlider">
               <span>Hastighet</span>
               <div class="range-inline">
-                <input id="playbackRateSlider" type="range" min="1" max="60" step="1" value="1" />
-                <output id="playbackRateValue" for="playbackRateSlider">1x</output>
+                <input id="playbackRateSlider" type="range" min="1" max="60" step="1" value="10" />
+                <output id="playbackRateValue" for="playbackRateSlider">10x</output>
               </div>
             </label>
           </div>
@@ -104,16 +99,16 @@ Simulering av trafikkforhold fra Snarøya til E18 under ulike scenarier
                 <strong id="kpiDuration">-</strong>
               </article>
               <article class="kpi-card">
-                <span>Systemfors.</span>
+                <span>Utrykningstid</span>
+                <strong id="kpiEmergency">-</strong>
+              </article>
+              <article class="kpi-card">
+                <span>System-forsinkelse</span>
                 <strong id="kpiDelay">-</strong>
               </article>
               <article class="kpi-card">
-                <span>Estimert kø</span>
+                <span>Estimert kølengde</span>
                 <strong id="kpiQueue">-</strong>
-              </article>
-              <article class="kpi-card">
-                <span>Utrykningstid</span>
-                <strong id="kpiEmergency">-</strong>
               </article>
             </div>
           </article>

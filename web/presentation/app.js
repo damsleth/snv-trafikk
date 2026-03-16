@@ -8,7 +8,7 @@ const state = {
   visualMode: "vehicles",
   frameIndex: 0,
   frameProgress: 0,
-  playbackRate: 1,
+  playbackRate: 10,
   isPlaying: false,
 };
 
@@ -66,6 +66,14 @@ let playTimer = null;
 let lastAnimationTs = null;
 let currentMode = null;
 
+const familyDescriptions = {
+  scenario_4A_base: "dagens 2+3-profil",
+  scenario_4A_v1: "innsnevring Snarøyveien (2+2) + utvidet rundkjøring",
+  scenario_4A_v2: "V1 + redusert fart",
+  scenario_4A_v3: "V1 + signalregulert innkjøring",
+  scenario_4A_v1_rolfsbukt: "V1 med bilfritt felt langs Rolfsbuktveien",
+};
+
 initControls();
 renderAnchors();
 await renderAll();
@@ -74,7 +82,8 @@ function initControls() {
   for (const family of manifest.families) {
     const option = document.createElement("option");
     option.value = family.id;
-    option.textContent = family.label;
+    const desc = familyDescriptions[family.id];
+    option.textContent = desc ? `${family.label} – ${desc}` : family.label;
     ui.familySelect.appendChild(option);
   }
   ui.familySelect.value = state.family;
