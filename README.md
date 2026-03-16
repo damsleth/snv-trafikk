@@ -26,6 +26,32 @@ For scenario 4A viser de oppdaterte 5-seed-resultatene blant annet:
 - Ettermiddagsrush: gjennomsnittlig reisetid øker fra 3,7 til 5,2 minutter fra base til V1.
 - Ettermiddagsrush: systemforsinkelse øker fra 404,3 til 490,2 kjøretøy-timer fra base til V1.
 
+## Varianter og scenario
+
+### Scenario 4A
+
+Scenario 4A er trafikkgrunnlaget som brukes i alle simuleringene. Det er hentet fra PGF-rapporten og beskriver trafikken i 2040 med full utbygging av Fornebu og innstrammet parkeringsnorm – omtrent 31 300 turer per døgn. Morgenrush (07:45–08:45) og ettermiddagsrush (15:30–16:30) simuleres separat.
+
+### Base (dagens profil)
+
+Dagens veinett med 2+3 felt (2 sørgående + 3 nordgående). Dette er referansepunktet alle variantene måles mot.
+
+### V1 – KDP3-forslaget (2+2 bygate)
+
+Den offisielle anbefalingen fra kommunedelplan 3: Snarøyveien bygges om til en 2+2-felts bygate med 40 km/t, separate gang- og sykkelfelt, og busstasjon med kantstopp. Kapasiteten reduseres fra dagens 2+3 til 2+2. Simuleringene viser at reisetid og forsinkelse øker merkbart sammenlignet med dagens profil.
+
+### V2 – Lavkapasitetsvariant (1+1 + kollektivfelt)
+
+Den mest restriktive varianten: kun 1 kjørefelt + 1 kollektivfelt i hver retning. Testene viser at V2 gir dårligst framkommelighet av alle variantene, med høyest forsinkelse og lengst kø.
+
+### V3 – Hybridvariant
+
+En mellomløsning der noen strekninger beholder 3 felt nordover mens andre strammes inn til 2. V3 kommer bedre ut enn V1 i simuleringene, men fortsatt dårligere enn dagens profil.
+
+### V1 + miljøgate
+
+V1 kombinert med Rolfsbuktveien som miljøgate (15 km/t). Når alternativruten også begrenses, blir konsekvensene størst – simulering viser gjennomsnittlig reisetid på 7,4 min og over 1 000 kjøretøy-timer i systemforsinkelse i morgenrushet.
+
 ## Hva prosjektet inneholder
 
 - Et digitalt veinett for Fornebu/Snarøya-området.
