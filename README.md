@@ -12,14 +12,14 @@ Prosjektet er laget som et uavhengig, åpent supplement til de offisielle utredn
 
 ## Kort fortalt
 
-Den siste 5-frø-kjøringen i dette repoet peker i samme retning i både morgen- og ettermiddagsrush:
+Den siste 5-seed-kjøringen i dette repoet peker i samme retning i både morgen- og ettermiddagsrush:
 
 - Dagens profil kommer best ut.
 - Variant V1 kommer tydelig dårligere ut enn dagens profil.
 - Variant V3 kommer litt bedre ut enn V1, men fortsatt dårligere enn dagens profil.
 - Variant V2 kommer dårligst ut av de utredede variantene.
 
-For scenario 4A viser de oppdaterte 5-frø-resultatene blant annet:
+For scenario 4A viser de oppdaterte 5-seed-resultatene blant annet:
 
 - Morgenrush: gjennomsnittlig reisetid øker fra 3,7 til 5,3 minutter fra base til V1.
 - Morgenrush: systemforsinkelse øker fra 495,9 til 597,3 kjøretøy-timer fra base til V1.
