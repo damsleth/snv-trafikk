@@ -539,13 +539,18 @@ function vehicleStyle(speedKmh, kind, zoom) {
       iconAnchor: [Math.round(8 * scale), Math.round(13 * scale)],
     };
   }
-  const hue = clamp(120 - speedKmh * 2.4, 5, 120);
+  /* Colour follows the same logic as edge links:
+     standing still / slow = red (hue ≈ 5), flowing freely = green (hue ≈ 120).
+     This matches the edge severity colouring so vehicles and road segments
+     agree visually: congested = red everywhere, free-flow = green everywhere. */
+  const hue = clamp(speedKmh * 3, 5, 120);
+  const stopped = speedKmh < 8;
   return {
     color: `hsl(${hue} 78% 52%)`,
-    opacity: speedKmh < 8 ? 0.92 : 0.84,
+    opacity: stopped ? 0.92 : 0.84,
     shape: "car",
-    iconSize: [Math.round((speedKmh < 8 ? 15 : 13) * scale), Math.round((speedKmh < 8 ? 28 : 24) * scale)],
-    iconAnchor: [Math.round((speedKmh < 8 ? 7.5 : 6.5) * scale), Math.round((speedKmh < 8 ? 14 : 12) * scale)],
+    iconSize: [Math.round((stopped ? 15 : 13) * scale), Math.round((stopped ? 28 : 24) * scale)],
+    iconAnchor: [Math.round((stopped ? 7.5 : 6.5) * scale), Math.round((stopped ? 14 : 12) * scale)],
   };
 }
 
