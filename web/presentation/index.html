@@ -82,31 +82,11 @@ Simulering av trafikkforhold fra Snarøya til E18 under ulike scenarier
           <input id="timeSlider" type="range" min="0" max="0" step="1" value="0" />
         </section>
 
-        <section class="kpis">
-          <article class="kpi-card">
-            <span>Reisetid</span>
-            <strong id="kpiDuration">-</strong>
-          </article>
-          <article class="kpi-card">
-            <span>Systemforsinkelse</span>
-            <strong id="kpiDelay">-</strong>
-          </article>
-          <article class="kpi-card">
-            <span>Estimert kø</span>
-            <strong id="kpiQueue">-</strong>
-          </article>
-          <article class="kpi-card">
-            <span>Utrykningstid</span>
-            <strong id="kpiEmergency">-</strong>
-          </article>
-        </section>
-
         <section class="legend">
           <h2>Hva du ser</h2>
           <ul>
-            <li>Veglenker farges etter belastning og hastighet.</li>
-            <li>Røde symboler viser blålyskjøretøy når laget er aktivt.</li>
-            <li>Gule markører viser hvor målingen starter og slutter i sør og nord.</li>
+            <li>Veglenker/biler farges etter belastning og hastighet</li>
+            <li>Røde symboler viser blålyskjøretøy når laget er aktivt</li>
           </ul>
           <p id="scenarioNote" class="note">
             Lastet scenario.
@@ -117,11 +97,31 @@ Simulering av trafikkforhold fra Snarøya til E18 under ulike scenarier
       <main class="map-shell">
         <div id="map"></div>
         <section class="map-charts" aria-label="Synkrone ko-grafer">
+          <article class="chart-card kpis-card">
+            <div class="kpis">
+              <article class="kpi-card">
+                <span>Reisetid</span>
+                <strong id="kpiDuration">-</strong>
+              </article>
+              <article class="kpi-card">
+                <span>Systemfors.</span>
+                <strong id="kpiDelay">-</strong>
+              </article>
+              <article class="kpi-card">
+                <span>Estimert kø</span>
+                <strong id="kpiQueue">-</strong>
+              </article>
+              <article class="kpi-card">
+                <span>Utrykningstid</span>
+                <strong id="kpiEmergency">-</strong>
+              </article>
+            </div>
+          </article>
           <article class="chart-card">
             <div class="chart-head">
               <div>
                 <h2>Kø over tid</h2>
-                <p>Stillestående kjøretøy</p>
+                <p>Ventende og stillestående kjøretøy</p>
               </div>
               <strong id="queueChartValue">0 kjt</strong>
             </div>
@@ -130,8 +130,8 @@ Simulering av trafikkforhold fra Snarøya til E18 under ulike scenarier
           <article class="chart-card">
             <div class="chart-head">
               <div>
-                <h2>Ko-vekst</h2>
-                <p>Endring siden forrige maalepunkt</p>
+                <h2>Kø-vekst</h2>
+                <p>Endring siden forrige målepunkt</p>
               </div>
               <strong id="growthChartValue">0 kjt</strong>
             </div>
