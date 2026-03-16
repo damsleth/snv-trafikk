@@ -1,0 +1,615 @@
+{
+  "generated_from": "scripts/07_export_presentation_data.py",
+  "default_center": [
+    59.89600084555638,
+    10.598507288718736
+  ],
+  "default_bounds": [
+    [
+      59.87777665914748,
+      10.559943059236522
+    ],
+    [
+      59.91422503196528,
+      10.63707151820095
+    ]
+  ],
+  "networks": {
+    "scenario_4A_base": {
+      "file": "data/networks/scenario_4A_base.geojson",
+      "center": [
+        59.89600084555638,
+        10.598507288718736
+      ],
+      "bounds": [
+        [
+          59.87777665914748,
+          10.559943059236522
+        ],
+        [
+          59.91422503196528,
+          10.63707151820095
+        ]
+      ],
+      "bus_route": [
+        [
+          59.906559066516756,
+          10.629240168265778
+        ],
+        [
+          59.89774985861541,
+          10.624751363774958
+        ],
+        [
+          59.891976295919406,
+          10.628142094021545
+        ],
+        [
+          59.892808585194466,
+          10.620433147654072
+        ]
+      ],
+      "pedestrian_hotspots": [
+        {
+          "id": "flytarnet",
+          "label": "Flyt\u00e5rnet stasjon",
+          "lat": 59.89774985861541,
+          "lon": 10.624751363774958
+        },
+        {
+          "id": "rolfsbukt",
+          "label": "Rolfsbuktveien",
+          "lat": 59.891976295919406,
+          "lon": 10.628142094021545
+        },
+        {
+          "id": "nordre_rundkjoring",
+          "label": "Nordre rundkj\u00f8ring",
+          "lat": 59.906559066516756,
+          "lon": 10.629240168265778
+        }
+      ]
+    },
+    "scenario_4A_v1": {
+      "file": "data/networks/scenario_4A_v1.geojson",
+      "center": [
+        59.89600084555638,
+        10.598507288718736
+      ],
+      "bounds": [
+        [
+          59.87777665914748,
+          10.559943059236522
+        ],
+        [
+          59.91422503196528,
+          10.63707151820095
+        ]
+      ],
+      "bus_route": [
+        [
+          59.906559066516756,
+          10.629240168265778
+        ],
+        [
+          59.89774985861541,
+          10.624751363774958
+        ],
+        [
+          59.891976295919406,
+          10.628142094021545
+        ],
+        [
+          59.892808585194466,
+          10.620433147654072
+        ]
+      ],
+      "pedestrian_hotspots": [
+        {
+          "id": "flytarnet",
+          "label": "Flyt\u00e5rnet stasjon",
+          "lat": 59.89774985861541,
+          "lon": 10.624751363774958
+        },
+        {
+          "id": "rolfsbukt",
+          "label": "Rolfsbuktveien",
+          "lat": 59.891976295919406,
+          "lon": 10.628142094021545
+        },
+        {
+          "id": "nordre_rundkjoring",
+          "label": "Nordre rundkj\u00f8ring",
+          "lat": 59.906559066516756,
+          "lon": 10.629240168265778
+        }
+      ]
+    },
+    "scenario_4A_v1_rolfsbukt": {
+      "file": "data/networks/scenario_4A_v1_rolfsbukt.geojson",
+      "center": [
+        59.89600084555638,
+        10.598507288718736
+      ],
+      "bounds": [
+        [
+          59.87777665914748,
+          10.559943059236522
+        ],
+        [
+          59.91422503196528,
+          10.63707151820095
+        ]
+      ],
+      "bus_route": [
+        [
+          59.906559066516756,
+          10.629240168265778
+        ],
+        [
+          59.89774985861541,
+          10.624751363774958
+        ],
+        [
+          59.891976295919406,
+          10.628142094021545
+        ],
+        [
+          59.892808585194466,
+          10.620433147654072
+        ]
+      ],
+      "pedestrian_hotspots": [
+        {
+          "id": "flytarnet",
+          "label": "Flyt\u00e5rnet stasjon",
+          "lat": 59.89774985861541,
+          "lon": 10.624751363774958
+        },
+        {
+          "id": "rolfsbukt",
+          "label": "Rolfsbuktveien",
+          "lat": 59.891976295919406,
+          "lon": 10.628142094021545
+        },
+        {
+          "id": "nordre_rundkjoring",
+          "label": "Nordre rundkj\u00f8ring",
+          "lat": 59.906559066516756,
+          "lon": 10.629240168265778
+        }
+      ]
+    },
+    "scenario_4A_v2": {
+      "file": "data/networks/scenario_4A_v2.geojson",
+      "center": [
+        59.89600084555638,
+        10.598507288718736
+      ],
+      "bounds": [
+        [
+          59.87777665914748,
+          10.559943059236522
+        ],
+        [
+          59.91422503196528,
+          10.63707151820095
+        ]
+      ],
+      "bus_route": [
+        [
+          59.906559066516756,
+          10.629240168265778
+        ],
+        [
+          59.89774985861541,
+          10.624751363774958
+        ],
+        [
+          59.891976295919406,
+          10.628142094021545
+        ],
+        [
+          59.892808585194466,
+          10.620433147654072
+        ]
+      ],
+      "pedestrian_hotspots": [
+        {
+          "id": "flytarnet",
+          "label": "Flyt\u00e5rnet stasjon",
+          "lat": 59.89774985861541,
+          "lon": 10.624751363774958
+        },
+        {
+          "id": "rolfsbukt",
+          "label": "Rolfsbuktveien",
+          "lat": 59.891976295919406,
+          "lon": 10.628142094021545
+        },
+        {
+          "id": "nordre_rundkjoring",
+          "label": "Nordre rundkj\u00f8ring",
+          "lat": 59.906559066516756,
+          "lon": 10.629240168265778
+        }
+      ]
+    },
+    "scenario_4A_v3": {
+      "file": "data/networks/scenario_4A_v3.geojson",
+      "center": [
+        59.89600084555638,
+        10.598507288718736
+      ],
+      "bounds": [
+        [
+          59.87777665914748,
+          10.559943059236522
+        ],
+        [
+          59.91422503196528,
+          10.63707151820095
+        ]
+      ],
+      "bus_route": [
+        [
+          59.906559066516756,
+          10.629240168265778
+        ],
+        [
+          59.89774985861541,
+          10.624751363774958
+        ],
+        [
+          59.891976295919406,
+          10.628142094021545
+        ],
+        [
+          59.892808585194466,
+          10.620433147654072
+        ]
+      ],
+      "pedestrian_hotspots": [
+        {
+          "id": "flytarnet",
+          "label": "Flyt\u00e5rnet stasjon",
+          "lat": 59.89774985861541,
+          "lon": 10.624751363774958
+        },
+        {
+          "id": "rolfsbukt",
+          "label": "Rolfsbuktveien",
+          "lat": 59.891976295919406,
+          "lon": 10.628142094021545
+        },
+        {
+          "id": "nordre_rundkjoring",
+          "label": "Nordre rundkj\u00f8ring",
+          "lat": 59.906559066516756,
+          "lon": 10.629240168265778
+        }
+      ]
+    }
+  },
+  "scenarios": {
+    "scenario_4A_base_morning": {
+      "family": "scenario_4A_base",
+      "period": "morning",
+      "label": "Base (dagens profil) AM",
+      "network": "scenario_4A_base",
+      "playback": {
+        "file": "data/playback/scenario_4A_base_morning.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 3.6,
+        "system_delay_h": 489.1,
+        "queue_km": 2.8,
+        "blocked_vehicles": 203,
+        "peak_waiting": 469,
+        "emergency_avg_min": 4.2,
+        "snaroya_avg_min": 4.1
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1"
+    },
+    "scenario_4A_base_afternoon": {
+      "family": "scenario_4A_base",
+      "period": "afternoon",
+      "label": "Base (dagens profil) PM",
+      "network": "scenario_4A_base",
+      "playback": {
+        "file": "data/playback/scenario_4A_base_afternoon.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 3.7,
+        "system_delay_h": 406.4,
+        "queue_km": 2.0,
+        "blocked_vehicles": 79,
+        "peak_waiting": 399,
+        "emergency_avg_min": 3.7,
+        "snaroya_avg_min": 3.5
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1"
+    },
+    "scenario_4A_v1_morning": {
+      "family": "scenario_4A_v1",
+      "period": "morning",
+      "label": "V1 AM",
+      "network": "scenario_4A_v1",
+      "playback": {
+        "file": "data/playback/scenario_4A_v1_morning.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 5.3,
+        "system_delay_h": 605.6,
+        "queue_km": 3.4,
+        "blocked_vehicles": 254,
+        "peak_waiting": 572,
+        "emergency_avg_min": 4.3,
+        "snaroya_avg_min": 6.7
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1"
+    },
+    "scenario_4A_v1_afternoon": {
+      "family": "scenario_4A_v1",
+      "period": "afternoon",
+      "label": "V1 PM",
+      "network": "scenario_4A_v1",
+      "playback": {
+        "file": "data/playback/scenario_4A_v1_afternoon.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 5.3,
+        "system_delay_h": 495.0,
+        "queue_km": 2.3,
+        "blocked_vehicles": 98,
+        "peak_waiting": 444,
+        "emergency_avg_min": 4.8,
+        "snaroya_avg_min": 5.2
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1"
+    },
+    "scenario_4A_v2_morning": {
+      "family": "scenario_4A_v2",
+      "period": "morning",
+      "label": "V2 AM",
+      "network": "scenario_4A_v2",
+      "playback": {
+        "file": "data/playback/scenario_4A_v2_morning.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 5.9,
+        "system_delay_h": 704.7,
+        "queue_km": 4.4,
+        "blocked_vehicles": 358,
+        "peak_waiting": 694,
+        "emergency_avg_min": 3.7,
+        "snaroya_avg_min": 6.6
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1"
+    },
+    "scenario_4A_v2_afternoon": {
+      "family": "scenario_4A_v2",
+      "period": "afternoon",
+      "label": "V2 PM",
+      "network": "scenario_4A_v2",
+      "playback": {
+        "file": "data/playback/scenario_4A_v2_afternoon.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 5.7,
+        "system_delay_h": 545.5,
+        "queue_km": 2.9,
+        "blocked_vehicles": 167,
+        "peak_waiting": 526,
+        "emergency_avg_min": 4.8,
+        "snaroya_avg_min": 5.0
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1"
+    },
+    "scenario_4A_v3_morning": {
+      "family": "scenario_4A_v3",
+      "period": "morning",
+      "label": "V3 AM",
+      "network": "scenario_4A_v3",
+      "playback": {
+        "file": "data/playback/scenario_4A_v3_morning.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 5.0,
+        "system_delay_h": 570.1,
+        "queue_km": 3.1,
+        "blocked_vehicles": 251,
+        "peak_waiting": 503,
+        "emergency_avg_min": 5.6,
+        "snaroya_avg_min": 5.3
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1"
+    },
+    "scenario_4A_v3_afternoon": {
+      "family": "scenario_4A_v3",
+      "period": "afternoon",
+      "label": "V3 PM",
+      "network": "scenario_4A_v3",
+      "playback": {
+        "file": "data/playback/scenario_4A_v3_afternoon.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 5.2,
+        "system_delay_h": 490.7,
+        "queue_km": 2.2,
+        "blocked_vehicles": 100,
+        "peak_waiting": 442,
+        "emergency_avg_min": 4.9,
+        "snaroya_avg_min": 5.1
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1"
+    },
+    "scenario_4A_v1_rolfsbukt_morning": {
+      "family": "scenario_4A_v1_rolfsbukt",
+      "period": "morning",
+      "label": "V1 + milj\u00f8gate AM",
+      "network": "scenario_4A_v1_rolfsbukt",
+      "playback": {
+        "file": "data/playback/scenario_4A_v1_rolfsbukt_morning.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 7.3,
+        "system_delay_h": 1033.4,
+        "queue_km": 6.0,
+        "blocked_vehicles": 458,
+        "peak_waiting": 986,
+        "emergency_avg_min": 4.9,
+        "snaroya_avg_min": 13.9
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1"
+    },
+    "scenario_4A_v1_rolfsbukt_afternoon": {
+      "family": "scenario_4A_v1_rolfsbukt",
+      "period": "afternoon",
+      "label": "V1 + milj\u00f8gate PM",
+      "network": "scenario_4A_v1_rolfsbukt",
+      "playback": {
+        "file": "data/playback/scenario_4A_v1_rolfsbukt_afternoon.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 5.6,
+        "system_delay_h": 530.9,
+        "queue_km": 2.4,
+        "blocked_vehicles": 101,
+        "peak_waiting": 487,
+        "emergency_avg_min": 4.3,
+        "snaroya_avg_min": 4.7
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1"
+    },
+    "scenario_4A_base_event_afternoon": {
+      "family": "scenario_4A_base_event",
+      "period": "afternoon",
+      "label": "Base + konsert PM",
+      "network": "scenario_4A_base",
+      "playback": {
+        "file": "data/playback/scenario_4A_base_event_afternoon.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 5.6,
+        "system_delay_h": 3803.4,
+        "queue_km": 44.7,
+        "blocked_vehicles": 5269,
+        "peak_waiting": 5465,
+        "emergency_avg_min": 7.9,
+        "snaroya_avg_min": 8.0
+      },
+      "has_event_overlay": true,
+      "source": "sumo_seed1"
+    },
+    "scenario_4A_v1_event_afternoon": {
+      "family": "scenario_4A_v1_event",
+      "period": "afternoon",
+      "label": "V1 + konsert PM",
+      "network": "scenario_4A_v1",
+      "playback": {
+        "file": "data/playback/scenario_4A_v1_event_afternoon.json",
+        "frame_count": 360,
+        "interval_s": 15
+      },
+      "kpis": {
+        "avg_duration_min": 7.0,
+        "system_delay_h": 3892.0,
+        "queue_km": 45.9,
+        "blocked_vehicles": 5427,
+        "peak_waiting": 5596,
+        "emergency_avg_min": 4.8,
+        "snaroya_avg_min": 6.5
+      },
+      "has_event_overlay": true,
+      "source": "sumo_seed1"
+    }
+  },
+  "families": [
+    {
+      "id": "scenario_4A_base",
+      "label": "Base (dagens profil)"
+    },
+    {
+      "id": "scenario_4A_v1",
+      "label": "V1"
+    },
+    {
+      "id": "scenario_4A_v2",
+      "label": "V2"
+    },
+    {
+      "id": "scenario_4A_v3",
+      "label": "V3"
+    },
+    {
+      "id": "scenario_4A_v1_rolfsbukt",
+      "label": "V1 + milj\u00f8gate"
+    }
+  ],
+  "synthetic": {
+    "midday_factor": {
+      "edge_load": 0.58,
+      "avg_duration": 0.82,
+      "system_delay": 0.62,
+      "queue": 0.55,
+      "emergency": 0.9
+    },
+    "event_multipliers": {
+      "base": {
+        "avg_duration": 1.51,
+        "system_delay": 9.36,
+        "queue": 22.35,
+        "emergency": 2.14
+      },
+      "v1": {
+        "avg_duration": 1.32,
+        "system_delay": 7.86,
+        "queue": 19.96,
+        "emergency": 1.0
+      }
+    },
+    "fallback_event_multipliers": {
+      "avg_duration": 1.42,
+      "system_delay": 8.61,
+      "queue": 21.16,
+      "emergency": 1.57
+    },
+    "bus_penalty_per_100pct": 0.08,
+    "pedestrian_penalty_per_100pct": 0.12,
+    "pulse_penalty_max": 0.25,
+    "pulse_period_s": 450
+  }
+}

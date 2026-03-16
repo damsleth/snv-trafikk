@@ -64,6 +64,27 @@ Github viser ikke alltid videofiler like pent direkte i README, så de er lenket
 - [Trafikkavspilling for V1 (MP4)](output/visualizations/traffic_replay_scenario_4A_v1.mp4)
 - [Interaktivt dashboard (HTML)](output/visualizations/dashboard.html)
 
+## Presentasjonskart
+
+Det finnes også en egen lokal presentasjonsvisning med Kartverket-kart i bakgrunnen og SUMO-data oppå:
+
+- Vegvariant: base, V1, V2, V3 og V1 + miljøgate
+- Tidsrom: morgen, ettermiddag og et syntetisk estimat for midt på dagen
+- Lag for blålyskjøretøy
+- Konsertpåslag for Unity Arena
+- Presentasjonskontroller for busser og fotgjengerpuljer fra T-banen
+
+Slik starter du den:
+
+```bash
+uv run python scripts/07_export_presentation_data.py
+uv run python scripts/08_serve_presentation.py
+```
+
+Åpne deretter [http://127.0.0.1:8000](http://127.0.0.1:8000).
+
+Merk: morgen- og ettermiddagskartene bygger på reelle SUMO-kjøringer. Midt på dagen, busspåslag og fotgjengerpuljer er laget for presentasjon og utforskning, og er derfor tydelig merket som estimater i visningen.
+
 ## Les mer
 
 Hvis du vil gå dypere enn figurene:
