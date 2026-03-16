@@ -5,25 +5,34 @@ const state = {
   period: "morning",
   concert: false,
   showEmergency: true,
+  visualMode: "vehicles",
   frameIndex: 0,
+  frameProgress: 0,
+  playbackRate: 1,
   isPlaying: false,
 };
 
 const ui = {
   familySelect: document.getElementById("familySelect"),
   periodSelect: document.getElementById("periodSelect"),
+  visualModeSelect: document.getElementById("visualModeSelect"),
+  playbackRateSlider: document.getElementById("playbackRateSlider"),
+  playbackRateValue: document.getElementById("playbackRateValue"),
   concertToggleRow: document.getElementById("concertToggleRow"),
   concertToggle: document.getElementById("concertToggle"),
   emergencyToggle: document.getElementById("emergencyToggle"),
   playPauseButton: document.getElementById("playPauseButton"),
   timeSlider: document.getElementById("timeSlider"),
   timeLabel: document.getElementById("timeLabel"),
-  modeBadge: document.getElementById("modeBadge"),
   scenarioNote: document.getElementById("scenarioNote"),
   kpiDuration: document.getElementById("kpiDuration"),
   kpiDelay: document.getElementById("kpiDelay"),
   kpiQueue: document.getElementById("kpiQueue"),
   kpiEmergency: document.getElementById("kpiEmergency"),
+  queueTimelineChart: document.getElementById("queueTimelineChart"),
+  queueGrowthChart: document.getElementById("queueGrowthChart"),
+  queueChartValue: document.getElementById("queueChartValue"),
+  growthChartValue: document.getElementById("growthChartValue"),
 };
 
 const cache = {
@@ -49,11 +58,16 @@ map.fitBounds(manifest.default_bounds);
 let networkLayer = null;
 let edgeLayers = new Map();
 let activeEdges = new Set();
+const anchorLayer = L.layerGroup().addTo(map);
 const emergencyLayer = L.layerGroup().addTo(map);
+const vehicleLayer = L.layerGroup().addTo(map);
 
 let playTimer = null;
+let lastAnimationTs = null;
+let currentMode = null;
 
 initControls();
+renderAnchors();
 await renderAll();
 
 function initControls() {
@@ -65,6 +79,9 @@ function initControls() {
   }
   ui.familySelect.value = state.family;
   ui.periodSelect.value = state.period;
+  ui.visualModeSelect.value = state.visualMode;
+  ui.playbackRateSlider.value = String(state.playbackRate);
+  ui.playbackRateValue.textContent = `${state.playbackRate}x`;
   syncConcertVisibility();
 
   ui.familySelect.addEventListener("change", async (event) => {
@@ -78,6 +95,16 @@ function initControls() {
     syncConcertVisibility();
     state.frameIndex = 0;
     await renderAll();
+  });
+
+  ui.visualModeSelect.addEventListener("change", async (event) => {
+    state.visualMode = event.target.value;
+    await updateDynamicLayers();
+  });
+
+  ui.playbackRateSlider.addEventListener("input", (event) => {
+    state.playbackRate = Number(event.target.value);
+    ui.playbackRateValue.textContent = `${state.playbackRate}x`;
   });
 
   ui.concertToggle.addEventListener("change", async (event) => {
@@ -101,7 +128,18 @@ function initControls() {
 
   ui.timeSlider.addEventListener("input", async (event) => {
     state.frameIndex = Number(event.target.value);
+    state.frameProgress = 0;
     await updateDynamicLayers();
+  });
+
+  map.on("zoomend", () => {
+    if (state.visualMode === "vehicles") {
+      void updateDynamicLayers();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    void updateDynamicLayers();
   });
 }
 
@@ -119,15 +157,32 @@ async function renderAll() {
   await ensureNetworkLoaded(state.family, networkMeta);
 
   const mode = await resolveMode();
+  currentMode = mode;
+  syncVisualMode(mode);
   const frameCount = getFrameCount(mode);
   state.frameIndex = Math.min(state.frameIndex, Math.max(frameCount - 1, 0));
+  state.frameProgress = 0;
   ui.timeSlider.max = String(Math.max(frameCount - 1, 0));
   ui.timeSlider.value = String(state.frameIndex);
 
-  updateModeBadge(mode);
   updateScenarioNote(mode);
   updateKpis(mode);
   await updateDynamicLayers(mode);
+}
+
+function syncVisualMode(mode) {
+  const vehicleCapable = mode.kind === "real" && hasVehiclePlayback(mode.playback);
+  ui.visualModeSelect.querySelector('option[value="vehicles"]').disabled = !vehicleCapable;
+  if (!vehicleCapable && state.visualMode === "vehicles") {
+    state.visualMode = "edges";
+    ui.visualModeSelect.value = "edges";
+  }
+}
+
+function hasVehiclePlayback(playback) {
+  return Boolean(
+    playback?.frames?.some((frame) => Array.isArray(frame.vehicles) && frame.vehicles.length > 0),
+  );
 }
 
 async function resolveMode() {
@@ -174,43 +229,27 @@ function getFrameCount(mode) {
   return mode.playback?.frames?.length ?? 0;
 }
 
-function updateModeBadge(mode) {
-  if (mode.kind === "synthetic_midday") {
-    ui.modeBadge.textContent = "Syntetisk mellomrush";
-    return;
-  }
-  if (mode.kind === "real_with_estimate") {
-    ui.modeBadge.textContent = "SUMO + presentasjonsestimat";
-    return;
-  }
-  if (manifest.scenarios[mode.scenario]?.has_event_overlay) {
-    ui.modeBadge.textContent = "Ekte SUMO-konsertkjøring";
-    return;
-  }
-  ui.modeBadge.textContent = "Ekte SUMO-kjøring";
-}
-
 function updateScenarioNote(mode) {
   if (mode.kind === "synthetic_midday") {
     ui.scenarioNote.textContent =
-      "Midt på dagen er interpolert fra morgen- og ettermiddagsrush. Dette er et presentasjonsestimat, ikke en egen SUMO-kjøring.";
+      "Midt pa dagen er et presentasjonsestimat mellom morgen- og ettermiddagsrush.";
     return;
   }
 
   if (mode.kind === "real_with_estimate") {
     ui.scenarioNote.textContent =
-      "Konsertlag for denne varianten estimeres fra kjørte event-scenarioer for base og V1. Kartet viser SUMO-grunnscenario med påslag.";
+      "Konsertvisningen for denne varianten er beregnet fra de kjorte konsertscenarioene.";
     return;
   }
 
   if (manifest.scenarios[mode.scenario]?.has_event_overlay) {
     ui.scenarioNote.textContent =
-      "Konsertscenarioet bygger på reell SUMO-kjøring med Unity Arena-event-overlay.";
+      "Konsertvisningen bygger pa et eget kjort scenario.";
     return;
   }
 
   ui.scenarioNote.textContent =
-    "Veglenkene viser reell SUMO-avspilling for seed 1.";
+    "Kartet viser en kjort trafikkavspilling for seed 1.";
 }
 
 function updateKpis(mode) {
@@ -222,25 +261,33 @@ function updateKpis(mode) {
 }
 
 async function updateDynamicLayers(existingMode = null) {
-  const mode = existingMode ?? (await resolveMode());
-  const frame = buildFrame(mode, state.frameIndex);
+  const mode = existingMode ?? currentMode ?? (await resolveMode());
+  currentMode = mode;
+  const frame = buildFrame(mode, state.frameIndex, state.frameProgress);
   drawFrame(frame);
+  drawVehicles(frame);
   drawEmergency(frame);
+  drawCharts(mode, frame.time_s);
   ui.timeLabel.textContent = formatClock(frame.time_s, state.period);
   ui.timeSlider.value = String(state.frameIndex);
   updateKpis(mode);
 }
 
-function buildFrame(mode, index) {
+function buildFrame(mode, index, progress = 0) {
   if (mode.kind === "synthetic_midday") {
     return buildSyntheticMiddayFrame(mode, index);
   }
-  const frame = mode.playback.frames[index] ?? mode.playback.frames[0] ?? { t: 0, edges: {}, emergency: [] };
-  const adjusted = applyConcertStress(frame, mode);
+  const playback = mode.playback ?? { frames: [], interval_s: 5 };
+  const frame = playback.frames[index] ?? playback.frames[0] ?? { t: 0, edges: {}, emergency: [], vehicles: [] };
+  const nextIndex = Math.min(index + 1, Math.max(playback.frames.length - 1, 0));
+  const nextFrame = playback.frames[nextIndex] ?? frame;
+  const interpolated = interpolateRealFrame(frame, nextFrame, progress);
+  const adjusted = applyConcertStress(interpolated, mode);
   return {
-    time_s: frame.t,
+    time_s: lerp(frame.t, nextFrame.t ?? frame.t, progress),
     edges: adjusted.edges,
     emergency: adjusted.emergency,
+    vehicles: adjusted.vehicles ?? interpolated.vehicles ?? [],
   };
 }
 
@@ -267,11 +314,13 @@ function buildSyntheticMiddayFrame(mode, index) {
     t: morningFrame?.t ?? afternoonFrame?.t ?? 0,
     edges,
     emergency: morningFrame?.emergency ?? [],
+    vehicles: [],
   };
   return {
     time_s: syntheticFrame.t,
     edges: syntheticFrame.edges,
     emergency: syntheticFrame.emergency,
+    vehicles: syntheticFrame.vehicles,
   };
 }
 
@@ -289,6 +338,53 @@ function applyConcertStress(frame, mode) {
   return {
     edges,
     emergency: frame.emergency ?? [],
+    vehicles: frame.vehicles ?? [],
+  };
+}
+
+function interpolateRealFrame(frame, nextFrame, progress) {
+  const ratio = clamp(progress, 0, 1);
+  const edges = {};
+  const edgeIds = new Set([
+    ...Object.keys(frame.edges ?? {}),
+    ...Object.keys(nextFrame.edges ?? {}),
+  ]);
+
+  for (const edgeId of edgeIds) {
+    const a = frame.edges?.[edgeId] ?? [0, 0, 0, 0];
+    const b = nextFrame.edges?.[edgeId] ?? a;
+    edges[edgeId] = [
+      Math.round(lerp(a[0], b[0], ratio)),
+      round1(lerp(a[1], b[1], ratio)),
+      Math.round(lerp(a[2], b[2], ratio)),
+      Math.round(lerp(a[3], b[3], ratio)),
+    ];
+  }
+
+  const currentVehicles = new Map((frame.vehicles ?? []).map((vehicle) => [vehicle[0], vehicle]));
+  const nextVehicles = new Map((nextFrame.vehicles ?? []).map((vehicle) => [vehicle[0], vehicle]));
+  const vehicles = [];
+
+  for (const [vehicleId, vehicle] of currentVehicles) {
+    const nextVehicle = nextVehicles.get(vehicleId);
+    if (!nextVehicle) {
+      vehicles.push(vehicle);
+      continue;
+    }
+    vehicles.push([
+      vehicleId,
+      lerp(vehicle[1], nextVehicle[1], ratio),
+      lerp(vehicle[2], nextVehicle[2], ratio),
+      lerp(vehicle[3], nextVehicle[3], ratio),
+      vehicle[4],
+      lerpAngle(vehicle[5], nextVehicle[5], ratio),
+    ]);
+  }
+
+  return {
+    edges,
+    emergency: ratio < 0.5 ? frame.emergency ?? [] : nextFrame.emergency ?? [],
+    vehicles,
   };
 }
 
@@ -311,6 +407,10 @@ function getConcertMultiplier(mode) {
 }
 
 function drawFrame(frame) {
+  if (state.visualMode === "vehicles") {
+    resetEdgeStyling();
+    return;
+  }
   const nextActive = new Set();
 
   for (const edgeId of activeEdges) {
@@ -335,9 +435,19 @@ function drawFrame(frame) {
   activeEdges = nextActive;
 }
 
+function resetEdgeStyling() {
+  for (const edgeId of activeEdges) {
+    const layer = edgeLayers.get(edgeId);
+    if (layer) {
+      layer.setStyle(baseEdgeStyle(layer.feature.properties.lanes));
+    }
+  }
+  activeEdges = new Set();
+}
+
 function drawEmergency(frame) {
   emergencyLayer.clearLayers();
-  if (!state.showEmergency) {
+  if (!state.showEmergency || state.visualMode === "vehicles") {
     return;
   }
 
@@ -353,6 +463,299 @@ function drawEmergency(frame) {
     marker.bindTooltip(`Blålys: ${item.speed.toFixed(0)} km/t`);
     marker.addTo(emergencyLayer);
   }
+}
+
+function drawVehicles(frame) {
+  vehicleLayer.clearLayers();
+  if (state.visualMode !== "vehicles") {
+    return;
+  }
+
+  for (const vehicle of frame.vehicles ?? []) {
+    const [, lat, lon, speedKmh, kind, angle = 0] = vehicle;
+    if (!state.showEmergency && kind === 1) {
+      continue;
+    }
+    const style = vehicleStyle(speedKmh, kind, map.getZoom());
+    const marker = L.marker([lat, lon], {
+      icon: L.divIcon({
+        className: "vehicle-marker",
+        html: vehicleSvg(style, angle),
+        iconSize: style.iconSize,
+        iconAnchor: style.iconAnchor,
+      }),
+    }).addTo(vehicleLayer);
+    if (speedKmh > 0 || kind !== 0) {
+      marker.bindTooltip(`${Math.round(speedKmh)} km/t`, { direction: "top", offset: [0, -8] });
+    }
+  }
+}
+
+function vehicleStyle(speedKmh, kind, zoom) {
+  const scale = clamp(Math.pow(1.18, zoom - 15), 0.72, 2.2);
+  if (kind === 1) {
+    return {
+      color: "#d92d20",
+      opacity: 0.98,
+      shape: "emergency",
+      iconSize: [Math.round(18 * scale), Math.round(30 * scale)],
+      iconAnchor: [Math.round(9 * scale), Math.round(15 * scale)],
+    };
+  }
+  if (kind === 2) {
+    return {
+      color: "#f59e0b",
+      opacity: 0.92,
+      shape: "event",
+      iconSize: [Math.round(16 * scale), Math.round(26 * scale)],
+      iconAnchor: [Math.round(8 * scale), Math.round(13 * scale)],
+    };
+  }
+  const hue = clamp(120 - speedKmh * 2.4, 5, 120);
+  return {
+    color: `hsl(${hue} 78% 52%)`,
+    opacity: speedKmh < 8 ? 0.92 : 0.84,
+    shape: "car",
+    iconSize: [Math.round((speedKmh < 8 ? 15 : 13) * scale), Math.round((speedKmh < 8 ? 28 : 24) * scale)],
+    iconAnchor: [Math.round((speedKmh < 8 ? 7.5 : 6.5) * scale), Math.round((speedKmh < 8 ? 14 : 12) * scale)],
+  };
+}
+
+function vehicleSvg(style, angle) {
+  const rotation = Number.isFinite(angle) ? angle : 0;
+  if (style.shape === "emergency") {
+    return (
+      `<svg class="vehicle-svg" viewBox="0 0 20 36" width="${style.iconSize[0]}" height="${style.iconSize[1]}" ` +
+      `style="transform:rotate(${rotation}deg);transform-origin:center center">` +
+      `<path class="vehicle-body" d="M6 2h8l3 7v18l-3 7H6l-3-7V9z" style="--vehicle-color:${style.color};--vehicle-opacity:${style.opacity}"/>` +
+      `<rect class="vehicle-cabin" x="6.5" y="8" width="7" height="11" rx="2"/>` +
+      `<rect class="vehicle-lightbar-left" x="6" y="4" width="4" height="2" rx="1"/>` +
+      `<rect class="vehicle-lightbar-right" x="10" y="4" width="4" height="2" rx="1"/>` +
+      `<path class="vehicle-nose" d="M8 3h4v2H8z"/>` +
+      `</svg>`
+    );
+  }
+  if (style.shape === "event") {
+    return (
+      `<svg class="vehicle-svg" viewBox="0 0 20 34" width="${style.iconSize[0]}" height="${style.iconSize[1]}" ` +
+      `style="transform:rotate(${rotation}deg);transform-origin:center center">` +
+      `<path class="vehicle-body" d="M5 2h10l3 6v18l-3 6H5l-3-6V8z" style="--vehicle-color:${style.color};--vehicle-opacity:${style.opacity}"/>` +
+      `<rect class="vehicle-cabin" x="6" y="8" width="8" height="10" rx="2"/>` +
+      `<path class="vehicle-nose" d="M8 3h4v2H8z"/>` +
+      `</svg>`
+    );
+  }
+  return (
+    `<svg class="vehicle-svg" viewBox="0 0 18 32" width="${style.iconSize[0]}" height="${style.iconSize[1]}" ` +
+    `style="transform:rotate(${rotation}deg);transform-origin:center center">` +
+    `<path class="vehicle-body" d="M5 2h8l3 6v16l-3 6H5l-3-6V8z" style="--vehicle-color:${style.color};--vehicle-opacity:${style.opacity}"/>` +
+    `<rect class="vehicle-cabin" x="5.5" y="8" width="7" height="9" rx="2"/>` +
+    `<path class="vehicle-nose" d="M7 3h4v2H7z"/>` +
+    `</svg>`
+  );
+}
+
+function renderAnchors() {
+  anchorLayer.clearLayers();
+  for (const anchor of manifest.anchors ?? []) {
+    const marker = L.marker([anchor.lat, anchor.lon], {
+      icon: L.divIcon({
+        className: "",
+        html: '<div class="anchor-icon"></div>',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+      }),
+      interactive: false,
+    }).addTo(anchorLayer);
+    marker.bindTooltip(
+      `<strong>${anchor.title}</strong>${anchor.detail}`,
+      {
+        permanent: true,
+        direction: anchor.id === "south" ? "right" : "left",
+        offset: anchor.id === "south" ? [14, 0] : [-14, 0],
+        className: "anchor-tooltip",
+      },
+    );
+  }
+}
+
+function drawCharts(mode, timeS) {
+  const series = buildSummarySeries(mode);
+  const current = nearestSeriesPoint(series, timeS);
+  ui.queueChartValue.textContent = current ? `${Math.round(current.queue)} kjt` : "0 kjt";
+  ui.growthChartValue.textContent = current ? `${formatSigned(Math.round(current.growth))} kjt` : "0 kjt";
+  drawSeriesChart(ui.queueTimelineChart, series, timeS, {
+    stroke: "#fbcd5a",
+    fill: "rgba(251, 205, 90, 0.16)",
+    valueKey: "queue",
+    baseline: 0,
+  });
+  drawSeriesChart(ui.queueGrowthChart, series, timeS, {
+    stroke: "#73d2de",
+    fill: "rgba(115, 210, 222, 0.16)",
+    valueKey: "growth",
+    baseline: 0,
+  });
+}
+
+function buildSummarySeries(mode) {
+  if (mode.kind === "synthetic_midday") {
+    const morning = mode.morning?.summary?.queue ?? [];
+    const afternoon = mode.afternoon?.summary?.queue ?? [];
+    const length = Math.min(morning.length, afternoon.length);
+    const series = [];
+    for (let index = 0; index < length; index += 1) {
+      const a = morning[index];
+      const b = afternoon[index];
+      const queue = ((a?.[3] ?? 0) + (b?.[3] ?? 0)) / 2 * manifest.synthetic.midday_factor.queue;
+      const waiting = ((a?.[1] ?? 0) + (b?.[1] ?? 0)) / 2 * manifest.synthetic.midday_factor.queue;
+      const halting = ((a?.[2] ?? 0) + (b?.[2] ?? 0)) / 2 * manifest.synthetic.midday_factor.queue;
+      series.push({
+        t: a?.[0] ?? b?.[0] ?? 0,
+        waiting,
+        halting,
+        queue,
+        growth: 0,
+      });
+    }
+    return withGrowth(series);
+  }
+
+  const baseSeries = (mode.playback?.summary?.queue ?? []).map((row) => ({
+    t: row[0],
+    waiting: row[1],
+    halting: row[2],
+    queue: row[3],
+    growth: row[4],
+  }));
+
+  if (state.concert && state.period === "afternoon" && !(mode.kind === "real" && manifest.scenarios[mode.scenario]?.has_event_overlay)) {
+    const multiplier = getConcertQueueMultiplier(mode);
+    return withGrowth(
+      baseSeries.map((point) => ({
+        ...point,
+        waiting: point.waiting * multiplier,
+        halting: point.halting * multiplier,
+        queue: point.queue * multiplier,
+      })),
+    );
+  }
+
+  return baseSeries;
+}
+
+function getConcertQueueMultiplier(mode) {
+  if (!(state.concert && state.period === "afternoon")) {
+    return 1;
+  }
+  if (mode.kind === "real" && manifest.scenarios[mode.scenario]?.has_event_overlay) {
+    return 1;
+  }
+  const mapping = {
+    scenario_4A_base: "base",
+    scenario_4A_v1: "v1",
+  };
+  const key = mapping[state.family];
+  if (key) {
+    return manifest.synthetic.event_multipliers[key].queue;
+  }
+  return manifest.synthetic.fallback_event_multipliers.queue;
+}
+
+function withGrowth(series) {
+  let previousQueue = null;
+  return series.map((point) => {
+    const growth = previousQueue == null ? 0 : point.queue - previousQueue;
+    previousQueue = point.queue;
+    return { ...point, growth };
+  });
+}
+
+function nearestSeriesPoint(series, timeS) {
+  if (!series.length) {
+    return null;
+  }
+  const interval = Math.max(series[1]?.t - series[0]?.t || 5, 1);
+  const index = clamp(Math.round(timeS / interval), 0, series.length - 1);
+  return series[index];
+}
+
+function drawSeriesChart(canvas, series, timeS, options) {
+  const context = canvas.getContext("2d");
+  if (!context) {
+    return;
+  }
+  const width = canvas.clientWidth || 300;
+  const height = canvas.clientHeight || 120;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.round(width * dpr);
+  canvas.height = Math.round(height * dpr);
+  context.setTransform(dpr, 0, 0, dpr, 0, 0);
+  context.clearRect(0, 0, width, height);
+
+  const padding = { top: 12, right: 12, bottom: 18, left: 12 };
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
+  const baseline = options.baseline ?? 0;
+  const values = series.length ? series.map((point) => point[options.valueKey]) : [0];
+  const minValue = Math.min(...values, baseline);
+  const maxValue = Math.max(...values, baseline, 1);
+  const valueSpan = Math.max(maxValue - minValue, 1);
+  const maxTime = series.at(-1)?.t ?? 0;
+
+  context.strokeStyle = "rgba(255,255,255,0.14)";
+  context.lineWidth = 1;
+  context.beginPath();
+  context.moveTo(padding.left, padding.top + chartHeight);
+  context.lineTo(padding.left + chartWidth, padding.top + chartHeight);
+  context.stroke();
+
+  if (!series.length) {
+    return;
+  }
+
+  const yForValue = (value) => padding.top + chartHeight - ((value - minValue) / valueSpan) * chartHeight;
+  const xForTime = (value) => padding.left + (maxTime > 0 ? (value / maxTime) * chartWidth : 0);
+  const baselineY = yForValue(baseline);
+
+  context.fillStyle = options.fill;
+  context.beginPath();
+  context.moveTo(xForTime(series[0].t), baselineY);
+  for (const point of series) {
+    context.lineTo(xForTime(point.t), yForValue(point[options.valueKey]));
+  }
+  context.lineTo(xForTime(series.at(-1).t), baselineY);
+  context.closePath();
+  context.fill();
+
+  context.strokeStyle = options.stroke;
+  context.lineWidth = 2;
+  context.beginPath();
+  for (const [index, point] of series.entries()) {
+    const x = xForTime(point.t);
+    const y = yForValue(point[options.valueKey]);
+    if (index === 0) {
+      context.moveTo(x, y);
+    } else {
+      context.lineTo(x, y);
+    }
+  }
+  context.stroke();
+
+  const playheadX = xForTime(Math.min(Math.max(timeS, 0), maxTime));
+  context.strokeStyle = "rgba(255,255,255,0.88)";
+  context.lineWidth = 1.25;
+  context.beginPath();
+  context.moveTo(playheadX, padding.top);
+  context.lineTo(playheadX, padding.top + chartHeight);
+  context.stroke();
+}
+
+function formatSigned(value) {
+  if (value > 0) {
+    return `+${value}`;
+  }
+  return String(value);
 }
 
 function calculateKpis(mode) {
@@ -472,10 +875,12 @@ function formatClock(timeSeconds, period) {
     afternoon: [15, 30],
   };
   const [hour, minute] = starts[period] ?? [12, 0];
-  const totalMinutes = hour * 60 + minute + Math.floor(timeSeconds / 60);
-  const hh = String(Math.floor(totalMinutes / 60) % 24).padStart(2, "0");
-  const mm = String(totalMinutes % 60).padStart(2, "0");
-  return `${hh}:${mm}`;
+  const startSeconds = hour * 3600 + minute * 60;
+  const totalSeconds = Math.max(0, Math.floor(startSeconds + timeSeconds));
+  const hh = String(Math.floor(totalSeconds / 3600) % 24).padStart(2, "0");
+  const mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+  const ss = String(totalSeconds % 60).padStart(2, "0");
+  return `${hh}:${mm}:${ss}`;
 }
 
 function startPlayback() {
@@ -484,21 +889,54 @@ function startPlayback() {
   }
   state.isPlaying = true;
   ui.playPauseButton.textContent = "Pause";
-  playTimer = window.setInterval(async () => {
-    const mode = await resolveMode();
-    const max = Math.max(getFrameCount(mode) - 1, 0);
-    state.frameIndex = state.frameIndex >= max ? 0 : state.frameIndex + 1;
-    await updateDynamicLayers(mode);
-  }, 420);
+  lastAnimationTs = null;
+  playTimer = window.requestAnimationFrame(stepPlayback);
 }
 
 function stopPlayback() {
   state.isPlaying = false;
   ui.playPauseButton.textContent = "Spill av";
   if (playTimer) {
-    window.clearInterval(playTimer);
+    window.cancelAnimationFrame(playTimer);
     playTimer = null;
   }
+  lastAnimationTs = null;
+}
+
+async function stepPlayback(timestamp) {
+  if (!state.isPlaying) {
+    return;
+  }
+  const mode = currentMode ?? (await resolveMode());
+  currentMode = mode;
+  const frameCount = getFrameCount(mode);
+  if (frameCount < 2) {
+    stopPlayback();
+    return;
+  }
+
+  if (lastAnimationTs == null) {
+    lastAnimationTs = timestamp;
+  }
+  const deltaMs = timestamp - lastAnimationTs;
+  lastAnimationTs = timestamp;
+
+  const frameDurationMs = getFrameDurationMs(mode);
+  const totalDurationMs = Math.max((frameCount - 1) * frameDurationMs, frameDurationMs);
+  let playheadMs = (state.frameIndex + state.frameProgress) * frameDurationMs;
+  playheadMs = (playheadMs + deltaMs * state.playbackRate) % totalDurationMs;
+
+  state.frameIndex = Math.floor(playheadMs / frameDurationMs);
+  state.frameProgress = (playheadMs % frameDurationMs) / frameDurationMs;
+  await updateDynamicLayers(mode);
+  playTimer = window.requestAnimationFrame(stepPlayback);
+}
+
+function getFrameDurationMs(mode) {
+  if (mode.kind === "synthetic_midday") {
+    return (mode.morning?.interval_s ?? 5) * 1000;
+  }
+  return (mode.playback?.interval_s ?? 5) * 1000;
 }
 
 async function loadNetwork(path) {
@@ -518,6 +956,15 @@ async function loadPlayback(scenarioName) {
     cache.playbacks.set(key, fetchJson(`./${key}`));
   }
   return cache.playbacks.get(key);
+}
+
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function lerpAngle(a, b, t) {
+  let delta = ((b - a + 540) % 360) - 180;
+  return (a + delta * t + 360) % 360;
 }
 
 async function fetchJson(path) {

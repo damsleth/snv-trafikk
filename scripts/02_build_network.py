@@ -39,6 +39,10 @@ FUTURE_CONNECTOR_SHAPES = {
         "3155.79,1845.39 3190.00,1797.00 3220.00,1756.00 3248.00,1720.00 3269.79,1691.76",
     ),
 }
+FUTURE_CONNECTOR_CONNECTIONS = [
+    {"from": "13798308#2", "to": FUTURE_CONNECTOR_ID, "fromLane": "0", "toLane": "0"},
+    {"from": "13798308#2", "to": FUTURE_CONNECTOR_ID, "fromLane": "1", "toLane": "0"},
+]
 
 def find_tool(name: str) -> str:
     """Find a SUMO binary in venv or PATH."""
@@ -162,6 +166,34 @@ def step1b_add_future_connector() -> None:
         print(f"  Added future connector to plain edges → {BASE_EDG}")
     else:
         print("  Future connector already present in plain edges")
+
+    con_tree = ET.parse(str(BASE_CON))
+    con_root = con_tree.getroot()
+    existing_connections = {
+        (
+            conn.get("from"),
+            conn.get("to"),
+            conn.get("fromLane"),
+            conn.get("toLane"),
+        )
+        for conn in con_root.findall("connection")
+    }
+    added_connections = 0
+    for attrs in FUTURE_CONNECTOR_CONNECTIONS:
+        key = (attrs["from"], attrs["to"], attrs["fromLane"], attrs["toLane"])
+        if key in existing_connections:
+            continue
+        connection = ET.SubElement(con_root, "connection")
+        for attr_name, attr_value in attrs.items():
+            connection.set(attr_name, attr_value)
+        added_connections += 1
+
+    if added_connections:
+        ET.indent(con_tree, space="    ")
+        con_tree.write(str(BASE_CON), xml_declaration=True, encoding="utf-8")
+        print(f"  Added future connector routing to plain connections → {BASE_CON}")
+    else:
+        print("  Future connector routing already present in plain connections")
 
 
 def step1c_rebuild_base_from_plain() -> None:

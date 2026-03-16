@@ -19,7 +19,7 @@
           <p class="eyebrow">Snarøyveien</p>
           <h1>Presentasjonskart</h1>
           <p class="lede">
-            Reell SUMO-avspilling for kjørte scenarioer, med tydelig merket
+            Kjørt trafikkavspilling for scenarioene, med tydelig merket
             presentasjonsestimat for midt på dagen.
           </p>
         </div>
@@ -38,6 +38,14 @@
           </select>
         </section>
 
+        <section class="control-group">
+          <label for="visualModeSelect">Visning</label>
+          <select id="visualModeSelect">
+            <option value="vehicles">Kjøretøy</option>
+            <option value="edges">Belastning</option>
+          </select>
+        </section>
+
         <section class="toggle-grid">
           <label class="toggle" id="concertToggleRow">
             <input type="checkbox" id="concertToggle" />
@@ -53,9 +61,17 @@
           <div class="timeline-head">
             <button id="playPauseButton" type="button">Spill av</button>
             <div>
-              <p id="modeBadge" class="badge">Laster</p>
               <p id="timeLabel" class="time-label">00:00</p>
             </div>
+          </div>
+          <div class="timeline-tools">
+            <label class="control-inline" for="playbackRateSlider">
+              <span>Hastighet</span>
+              <div class="range-inline">
+                <input id="playbackRateSlider" type="range" min="1" max="60" step="1" value="1" />
+                <output id="playbackRateValue" for="playbackRateSlider">1x</output>
+              </div>
+            </label>
           </div>
           <input id="timeSlider" type="range" min="0" max="0" step="1" value="0" />
         </section>
@@ -84,6 +100,7 @@
           <ul>
             <li>Veglenker farges etter belastning og hastighet.</li>
             <li>Røde symboler viser blålyskjøretøy når laget er aktivt.</li>
+            <li>Gule markører viser hvor målingen starter og slutter i sør og nord.</li>
           </ul>
           <p id="scenarioNote" class="note">
             Lastet scenario.
@@ -93,6 +110,28 @@
 
       <main class="map-shell">
         <div id="map"></div>
+        <section class="map-charts" aria-label="Synkrone ko-grafer">
+          <article class="chart-card">
+            <div class="chart-head">
+              <div>
+                <h2>Ko over tid</h2>
+                <p>Ventende + halterende kjoretoy</p>
+              </div>
+              <strong id="queueChartValue">0 kjt</strong>
+            </div>
+            <canvas id="queueTimelineChart" height="120"></canvas>
+          </article>
+          <article class="chart-card">
+            <div class="chart-head">
+              <div>
+                <h2>Ko-vekst</h2>
+                <p>Endring siden forrige maalepunkt</p>
+              </div>
+              <strong id="growthChartValue">0 kjt</strong>
+            </div>
+            <canvas id="queueGrowthChart" height="120"></canvas>
+          </article>
+        </section>
       </main>
     </div>
 

@@ -40,7 +40,11 @@ SCENARIOS_TO_EXPORT = [
     "scenario_4A_v1_event_afternoon",
 ]
 
-PLAYBACK_INTERVAL_S = 15
+PLAYBACK_INTERVAL_S = 5
+ANCHOR_EDGES = {
+    "south": ("115505254", 0),
+    "north": ("32321957", 0),
+}
 
 
 def stats_value(stats: dict, key: str, default: float = 0.0) -> float:
@@ -75,6 +79,61 @@ def midpoint(shape: list[tuple[float, float]]) -> tuple[float, float]:
     if not shape:
         return (0.0, 0.0)
     return shape[len(shape) // 2]
+
+
+def build_anchor_points(net: sumolib.net.Net) -> list[dict]:
+    anchors = []
+    labels = {
+        "south": {
+            "title": "Snaroya / sor",
+            "detail": "Start mot nord. Slutt mot sor.",
+        },
+        "north": {
+            "title": "E18-retning / nord",
+            "detail": "Slutt mot nord. Start mot sor.",
+        },
+    }
+    for anchor_id, (edge_id, point_index) in ANCHOR_EDGES.items():
+        edge = net.getEdge(edge_id)
+        shape = edge.getShape()
+        x, y = shape[point_index]
+        lon, lat = net.convertXY2LonLat(x, y)
+        anchors.append(
+            {
+                "id": anchor_id,
+                "lat": round(lat, 6),
+                "lon": round(lon, 6),
+                "title": labels[anchor_id]["title"],
+                "detail": labels[anchor_id]["detail"],
+            }
+        )
+    return anchors
+
+
+def export_summary_series(scenario_name: str) -> list[list[int]]:
+    summary_path = OUTPUT_DIR / scenario_name / "seed_1" / "summary.xml"
+    if not summary_path.exists():
+        return []
+
+    queue_series = []
+    previous_queue = None
+    context = ET.iterparse(str(summary_path), events=("end",))
+    for _, elem in context:
+        if elem.tag != "step":
+            continue
+        time_s = int(round(float(elem.get("time", "0"))))
+        if time_s % PLAYBACK_INTERVAL_S != 0:
+            elem.clear()
+            continue
+        waiting = int(elem.get("waiting", "0"))
+        halting = int(elem.get("halting", "0"))
+        queue = waiting + halting
+        growth = 0 if previous_queue is None else queue - previous_queue
+        queue_series.append([time_s, waiting, halting, queue, growth])
+        previous_queue = queue
+        elem.clear()
+
+    return queue_series
 
 
 def export_network_geojson(network_path: Path, family_name: str) -> dict:
@@ -167,11 +226,13 @@ def export_playback(scenario_name: str, scenario_def: dict) -> dict | None:
 
         edge_stats: dict[str, list[float]] = defaultdict(lambda: [0, 0.0, 0, 0])
         emergency_positions = []
+        vehicle_positions = []
 
         for vehicle in elem.findall("vehicle"):
             lane_id = vehicle.get("lane", "")
             edge_id = lane_id.rsplit("_", 1)[0] if "_" in lane_id else lane_id
             speed = float(vehicle.get("speed", "0"))
+            angle = float(vehicle.get("angle", "0"))
             vehicle_id = vehicle.get("id", "")
             vehicle_type = vehicle.get("type", "car")
 
@@ -194,6 +255,23 @@ def export_playback(scenario_name: str, scenario_def: dict) -> dict | None:
             if vehicle_type == "event_car" or vehicle_id.startswith("event_"):
                 row[3] += 1
 
+            lon, lat = net.convertXY2LonLat(float(vehicle.get("x", "0")), float(vehicle.get("y", "0")))
+            kind = 0
+            if vehicle_type == "emergency" or vehicle_id.startswith("emer_"):
+                kind = 1
+            elif vehicle_type == "event_car" or vehicle_id.startswith("event_"):
+                kind = 2
+            vehicle_positions.append(
+                [
+                    vehicle_id,
+                    round(lat, 6),
+                    round(lon, 6),
+                    round(speed * 3.6, 1),
+                    kind,
+                    round(angle, 1),
+                ]
+            )
+
         edge_payload = {}
         for edge_id, values in edge_stats.items():
             count, speed_sum, emergency_count, event_count = values
@@ -202,7 +280,14 @@ def export_playback(scenario_name: str, scenario_def: dict) -> dict | None:
             max_edge_count = max(max_edge_count, int(count))
             max_event_count = max(max_event_count, int(event_count))
 
-        frames.append({"t": time_s, "edges": edge_payload, "emergency": emergency_positions})
+        frames.append(
+            {
+                "t": time_s,
+                "edges": edge_payload,
+                "emergency": emergency_positions,
+                "vehicles": vehicle_positions,
+            }
+        )
         elem.clear()
 
     out_path = PLAYBACK_DIR / f"{scenario_name}.json"
@@ -211,6 +296,9 @@ def export_playback(scenario_name: str, scenario_def: dict) -> dict | None:
             {
                 "interval_s": PLAYBACK_INTERVAL_S,
                 "frames": frames,
+                "summary": {
+                    "queue": export_summary_series(scenario_name),
+                },
                 "max_edge_count": max_edge_count,
                 "max_event_count": max_event_count,
             },
@@ -255,6 +343,7 @@ def build_manifest() -> dict:
     networks = {}
     for family_name in family_ids:
         networks[family_name] = export_network_geojson(Path(SCENARIOS[f"{family_name}_morning"]["network"]), family_name)
+    base_net = sumolib.net.readNet(str(Path(SCENARIOS["scenario_4A_base_morning"]["network"])))
 
     scenarios = {}
     for scenario_name in available_scenarios:
@@ -305,6 +394,7 @@ def build_manifest() -> dict:
         "generated_from": "scripts/07_export_presentation_data.py",
         "default_center": default_network.get("center", [59.9, 10.61]),
         "default_bounds": default_network.get("bounds", [[59.88, 10.57], [59.92, 10.66]]),
+        "anchors": build_anchor_points(base_net),
         "networks": networks,
         "scenarios": scenarios,
         "families": [

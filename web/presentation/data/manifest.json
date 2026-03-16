@@ -14,6 +14,22 @@
       10.63707151820095
     ]
   ],
+  "anchors": [
+    {
+      "id": "south",
+      "lat": 59.892061,
+      "lon": 10.619175,
+      "title": "Snaroya / sor",
+      "detail": "Start mot nord. Slutt mot sor."
+    },
+    {
+      "id": "north",
+      "lat": 59.901947,
+      "lon": 10.624349,
+      "title": "E18-retning / nord",
+      "detail": "Slutt mot nord. Start mot sor."
+    }
+  ],
   "networks": {
     "scenario_4A_base": {
       "file": "data/networks/scenario_4A_base.geojson",
@@ -109,8 +125,8 @@
       "network": "scenario_4A_base",
       "playback": {
         "file": "data/playback/scenario_4A_base_morning.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 3.6,
@@ -131,8 +147,8 @@
       "network": "scenario_4A_base",
       "playback": {
         "file": "data/playback/scenario_4A_base_afternoon.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 3.7,
@@ -153,8 +169,8 @@
       "network": "scenario_4A_v1",
       "playback": {
         "file": "data/playback/scenario_4A_v1_morning.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 5.3,
@@ -175,8 +191,8 @@
       "network": "scenario_4A_v1",
       "playback": {
         "file": "data/playback/scenario_4A_v1_afternoon.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 5.3,
@@ -197,8 +213,8 @@
       "network": "scenario_4A_v2",
       "playback": {
         "file": "data/playback/scenario_4A_v2_morning.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 5.9,
@@ -219,8 +235,8 @@
       "network": "scenario_4A_v2",
       "playback": {
         "file": "data/playback/scenario_4A_v2_afternoon.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 5.8,
@@ -241,8 +257,8 @@
       "network": "scenario_4A_v3",
       "playback": {
         "file": "data/playback/scenario_4A_v3_morning.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 5.0,
@@ -263,8 +279,8 @@
       "network": "scenario_4A_v3",
       "playback": {
         "file": "data/playback/scenario_4A_v3_afternoon.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 5.3,
@@ -285,8 +301,8 @@
       "network": "scenario_4A_v1_rolfsbukt",
       "playback": {
         "file": "data/playback/scenario_4A_v1_rolfsbukt_morning.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 7.4,
@@ -307,8 +323,8 @@
       "network": "scenario_4A_v1_rolfsbukt",
       "playback": {
         "file": "data/playback/scenario_4A_v1_rolfsbukt_afternoon.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 5.7,
@@ -329,8 +345,8 @@
       "network": "scenario_4A_base",
       "playback": {
         "file": "data/playback/scenario_4A_base_event_afternoon.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 5.5,
@@ -351,8 +367,8 @@
       "network": "scenario_4A_v1",
       "playback": {
         "file": "data/playback/scenario_4A_v1_event_afternoon.json",
-        "frame_count": 360,
-        "interval_s": 15
+        "frame_count": 1080,
+        "interval_s": 5
       },
       "kpis": {
         "avg_duration_min": 7.1,
