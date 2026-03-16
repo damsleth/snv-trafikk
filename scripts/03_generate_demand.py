@@ -109,8 +109,8 @@ OD_MATRICES = {
 # Base-network boundary edges selected to represent the OD zones from appendix 1.
 ZONE_EDGE_CANDIDATES = {
     "snv_syd": {
-        "origin": ["115505254"],
-        "destination": ["115505232"],
+        "origin": ["-27195187#3"],
+        "destination": ["27195187#2"],
     },
     "bbv_west": {
         "origin": ["-53141119"],

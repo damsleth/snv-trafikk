@@ -42,7 +42,7 @@ SCENARIOS_TO_EXPORT = [
 
 PLAYBACK_INTERVAL_S = 5
 ANCHOR_EDGES = {
-    "south": ("115505254", 0),
+    "south": ("-27195187#3", 0),
     "north": ("32321957", 0),
 }
 
