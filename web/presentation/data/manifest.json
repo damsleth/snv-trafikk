@@ -17,17 +17,17 @@
   "anchors": [
     {
       "id": "south",
-      "lat": 59.892061,
-      "lon": 10.619175,
-      "title": "Snaroya / sor",
-      "detail": "Start mot nord. Slutt mot sor."
+      "lat": 59.890187,
+      "lon": 10.622347,
+      "title": "Snarøyeien / Hundsund",
+      "detail": "Start nordover"
     },
     {
       "id": "north",
-      "lat": 59.901947,
-      "lon": 10.624349,
-      "title": "E18-retning / nord",
-      "detail": "Slutt mot nord. Start mot sor."
+      "lat": 59.908487,
+      "lon": 10.627992,
+      "title": "E18 / Teleplan",
+      "detail": "Start sørover"
     }
   ],
   "networks": {

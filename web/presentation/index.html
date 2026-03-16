@@ -16,16 +16,22 @@
     <div class="layout">
       <aside class="panel">
         <div class="panel-head">
-          <p class="eyebrow">Snarøyveien</p>
-          <h1>Presentasjonskart</h1>
+          <p class="eyebrow">Aksjonsgruppe Trafikk Fornebu</p>
+          <!-- <h1>Snarøyveien</h1> -->
           <p class="lede">
-            Kjørt trafikkavspilling for scenarioene, med tydelig merket
-            presentasjonsestimat for midt på dagen.
+Simulering av trafikkforhold fra Snarøya til E18 under ulike scenarier
           </p>
         </div>
 
         <section class="control-group">
           <label for="familySelect">Vegvariant</label>
+          <ul class="control-hint">
+            <li><strong>Base</strong> - dagens 2+3-profil</li>
+            <li><strong>V1</strong> - innsnevring Snarøyveien (2+2) + utvidet rundkjøring</li>
+            <li><strong>V2</strong> - V1 + redusert fart</li>
+            <li><strong>V3</strong> - V1 + signalregulert innkjøring</li>
+            <li><strong>V1 + miljøgate</strong> - V1 med bilfritt felt langs Rolfsbuktveien</li>
+          </ul>
           <select id="familySelect"></select>
         </section>
 
@@ -52,7 +58,7 @@
             <span>Unity Arena-konsert</span>
           </label>
           <label class="toggle">
-            <input type="checkbox" id="emergencyToggle" checked />
+            <input type="checkbox" id="emergencyToggle" />
             <span>Vis blålyskjøretøy</span>
           </label>
         </section>
@@ -114,8 +120,8 @@
           <article class="chart-card">
             <div class="chart-head">
               <div>
-                <h2>Ko over tid</h2>
-                <p>Ventende + halterende kjoretoy</p>
+                <h2>Kø over tid</h2>
+                <p>Stillestående kjøretøy</p>
               </div>
               <strong id="queueChartValue">0 kjt</strong>
             </div>

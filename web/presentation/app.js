@@ -1,10 +1,10 @@
 const manifest = await fetchJson("./data/manifest.json");
 
 const state = {
-  family: "scenario_4A_base",
+  family: "scenario_4A_v1",
   period: "morning",
   concert: false,
-  showEmergency: true,
+  showEmergency: false,
   visualMode: "vehicles",
   frameIndex: 0,
   frameProgress: 0,
@@ -238,18 +238,18 @@ function updateScenarioNote(mode) {
 
   if (mode.kind === "real_with_estimate") {
     ui.scenarioNote.textContent =
-      "Konsertvisningen for denne varianten er beregnet fra de kjorte konsertscenarioene.";
+      "Konsertvisningen for denne varianten er beregnet fra de kjørte konsertscenarioene.";
     return;
   }
 
   if (manifest.scenarios[mode.scenario]?.has_event_overlay) {
     ui.scenarioNote.textContent =
-      "Konsertvisningen bygger pa et eget kjort scenario.";
+      "Konsertvisningen bygger pa et eget kjørt scenario.";
     return;
   }
 
   ui.scenarioNote.textContent =
-    "Kartet viser en kjort trafikkavspilling for seed 1.";
+    "Kartet viser simulering av seed 1";
 }
 
 function updateKpis(mode) {

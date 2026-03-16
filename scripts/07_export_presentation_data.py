@@ -85,12 +85,12 @@ def build_anchor_points(net: sumolib.net.Net) -> list[dict]:
     anchors = []
     labels = {
         "south": {
-            "title": "Snaroya / sor",
-            "detail": "Start mot nord. Slutt mot sor.",
+            "title": "Snarøya / sør",
+            "detail": "Start mot nord. Slutt mot sør.",
         },
         "north": {
             "title": "E18-retning / nord",
-            "detail": "Slutt mot nord. Start mot sor.",
+            "detail": "Slutt mot nord. Start mot sør.",
         },
     }
     for anchor_id, (edge_id, point_index) in ANCHOR_EDGES.items():
