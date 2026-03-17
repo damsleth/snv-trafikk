@@ -717,13 +717,28 @@ function vehicleStyle(speedKmh, kind, zoom) {
 function vehicleSvg(style, angle) {
   const rotation = Number.isFinite(angle) ? angle : 0;
   if (style.shape === "emergency") {
+    /* Blink phase from wall-clock time — survives DOM redraws.
+       Alternates left/right every 250ms at a constant rate,
+       completely independent of simulation playback speed. */
+    const phase = Math.floor(Date.now() / 250) % 2 === 0;
+    const leftFill = phase ? "#2563eb" : "#1e3a8a";
+    const leftOpacity = phase ? 1 : 0.25;
+    const rightFill = phase ? "#1e3a8a" : "#2563eb";
+    const rightOpacity = phase ? 0.25 : 1;
+    /* Glow intensity pulses on a sine wave (period ≈1s) */
+    const glowT = (Math.sin(Date.now() / 160) + 1) / 2;
+    const glowR = Math.round(8 + glowT * 12);
+    const glowA = (0.5 + glowT * 0.4).toFixed(2);
+    const glowFilter =
+      `drop-shadow(0 0 ${glowR}px rgba(37,99,235,${glowA})) ` +
+      `drop-shadow(0 0 ${glowR * 2}px rgba(37,99,235,${(glowA * 0.5).toFixed(2)}))`;
     return (
       `<svg class="vehicle-svg vehicle-svg-emergency" viewBox="0 0 20 36" width="${style.iconSize[0]}" height="${style.iconSize[1]}" ` +
-      `style="transform:rotate(${rotation}deg);transform-origin:center center">` +
+      `style="transform:rotate(${rotation}deg);transform-origin:center center;filter:${glowFilter}">` +
       `<path class="vehicle-body" d="M6 2h8l3 7v18l-3 7H6l-3-7V9z" style="--vehicle-color:${style.color};--vehicle-opacity:${style.opacity}"/>` +
       `<rect class="vehicle-cabin" x="6.5" y="8" width="7" height="11" rx="2"/>` +
-      `<rect class="vehicle-lightbar-left" x="5" y="3.5" width="5" height="3" rx="1.2"/>` +
-      `<rect class="vehicle-lightbar-right" x="10" y="3.5" width="5" height="3" rx="1.2"/>` +
+      `<rect class="vehicle-lightbar-left" x="5" y="3.5" width="5" height="3" rx="1.2" style="fill:${leftFill};opacity:${leftOpacity}"/>` +
+      `<rect class="vehicle-lightbar-right" x="10" y="3.5" width="5" height="3" rx="1.2" style="fill:${rightFill};opacity:${rightOpacity}"/>` +
       `<path class="vehicle-nose" d="M8 2h4v2H8z"/>` +
       `</svg>`
     );

@@ -469,24 +469,12 @@ output,
   fill: rgba(255, 255, 255, 0.65);
 }
 
-.vehicle-lightbar-left {
-  fill: #2563eb;
-  animation: blink-left 0.5s step-end infinite;
-}
-
+/* Lightbar fills are set inline by vehicleSvg() based on Date.now()
+   so the blink phase survives DOM redraws at a constant 500ms rate. */
+.vehicle-lightbar-left,
 .vehicle-lightbar-right {
+  /* fallback — overridden by inline style */
   fill: #2563eb;
-  animation: blink-right 0.5s step-end infinite;
-}
-
-@keyframes blink-left {
-  0% { fill: #2563eb; opacity: 1; }
-  50% { fill: #1e40af; opacity: 0.3; }
-}
-
-@keyframes blink-right {
-  0% { fill: #1e40af; opacity: 0.3; }
-  50% { fill: #2563eb; opacity: 1; }
 }
 
 .entry-point-marker {
