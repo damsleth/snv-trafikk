@@ -118,8 +118,13 @@ def run_scenario(scenario_name: str, seed: int, verbose: bool = False) -> dict:
         print(f"    WARNING: SUMO returned code {result.returncode}")
         if verbose:
             print(result.stderr[:1000])
+        stats = {
+            "failed": True,
+            "error": result.stderr[:1000].strip(),
+        }
+    else:
+        stats = parse_stats(output_dir)
 
-    stats = parse_stats(output_dir)
     stats["seed"] = seed
     stats["scenario"] = scenario_name
     stats["returncode"] = result.returncode

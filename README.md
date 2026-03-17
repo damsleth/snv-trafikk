@@ -150,3 +150,40 @@ uv run python scripts/04_run_simulation.py --all --seeds 5
 uv run python scripts/05_analyze_results.py
 uv run python scripts/06_generate_report.py
 ```
+
+## Dataflyt i pipeline
+
+Pipeline-kjedene er bevisst enkle og filbaserte:
+
+1. `scripts/01_fetch_osm.py`
+	Leser fra Overpass API og skriver `network/osm/fornebu.osm.xml`.
+2. `scripts/02_build_network.py`
+	Leser OSM-data og skriver base- og variantnett i `network/base/` og `network/proposed/`.
+3. `scripts/03_generate_demand.py`
+	Leser OD-matriser i koden og skriver ruter og CSV-er i `demand/routes/` og `demand/od_matrices/`.
+4. `scripts/04_run_simulation.py`
+	Leser nett og ruter, kjører SUMO og skriver seed-resultater i `output/<scenario>/seed_<n>/` samt `output/all_results.json`.
+5. `scripts/05_analyze_results.py`
+	Leser `output/all_results.json` og `summary.xml`, og skriver figurer til `output/visualizations/`.
+6. `scripts/06_generate_report.py`
+	Leser `output/all_results.json` og skriver rapport og aggregater til `output/report/`.
+7. `scripts/07_export_presentation_data.py`
+	Leser rapportaggregater og SUMO-output og skriver presentasjonsdata til `web/presentation/data/`.
+8. `scripts/08_serve_presentation.py`
+	Serverer `web/presentation/` lokalt som en statisk side.
+
+## Lokal QA
+
+Anbefalt minimumssekvens før større endringer merges:
+
+```bash
+uv run --extra dev pytest -q
+uv run python -m compileall scripts tests
+```
+
+Ved endringer i presentasjonsdata eller rapportlogikk er det også naturlig å kjøre:
+
+```bash
+uv run python scripts/06_generate_report.py
+uv run python scripts/07_export_presentation_data.py
+```

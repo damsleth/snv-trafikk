@@ -23,7 +23,8 @@ SUMMARY_FILE = OUTPUT_DIR / "report" / "summary_stats.json"
 
 sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 from config import SNAROYA_DESTINATION_EDGE_IDS, SNAROYA_ORIGIN_EDGE_IDS, lane_edge_id, queue_length_km
-from utils.scenario_catalog import SCENARIOS, scenario_family, scenario_label, scenario_period
+from utils.results import load_scenario_stats, load_summary_stats
+from utils.scenario_catalog import SCENARIO_FAMILIES, SCENARIOS, scenario_family, scenario_label, scenario_period
 
 
 SCENARIOS_TO_EXPORT = [
@@ -54,21 +55,6 @@ def stats_value(stats: dict, key: str, default: float = 0.0) -> float:
     if key in stats:
         return float(stats[key])
     return default
-
-
-def load_summary_stats() -> dict:
-    if not SUMMARY_FILE.exists():
-        return {}
-    return json.loads(SUMMARY_FILE.read_text(encoding="utf-8"))
-
-
-def load_scenario_stats(scenario_name: str, summary_stats: dict) -> dict:
-    if scenario_name in summary_stats:
-        return summary_stats[scenario_name]
-    run_stats = OUTPUT_DIR / scenario_name / "seed_1" / "run_stats.json"
-    if run_stats.exists():
-        return json.loads(run_stats.read_text(encoding="utf-8"))
-    return {}
 
 
 def lonlat(net: sumolib.net.Net, x: float, y: float) -> list[float]:
@@ -431,7 +417,7 @@ def network_family_id(family_name: str) -> str:
 
 
 def build_manifest() -> dict:
-    summary_stats = load_summary_stats()
+    summary_stats = load_summary_stats(SUMMARY_FILE)
     available_scenarios = [name for name in SCENARIOS_TO_EXPORT if name in SCENARIOS]
     family_ids = sorted({network_family_id(scenario_family(name)) for name in available_scenarios})
 
@@ -445,7 +431,7 @@ def build_manifest() -> dict:
 
     scenarios = {}
     for scenario_name in available_scenarios:
-        stats = load_scenario_stats(scenario_name, summary_stats)
+        stats = load_scenario_stats(OUTPUT_DIR, summary_stats, scenario_name)
         playback = export_playback(scenario_name, SCENARIOS[scenario_name])
         if not playback:
             continue
@@ -496,11 +482,12 @@ def build_manifest() -> dict:
         "networks": networks,
         "scenarios": scenarios,
         "families": [
-            {"id": "scenario_4A_base", "label": "Base (dagens profil)"},
-            {"id": "scenario_4A_v1", "label": "V1"},
-            {"id": "scenario_4A_v2", "label": "V2"},
-            {"id": "scenario_4A_v3", "label": "V3"},
-            {"id": "scenario_4A_v1_rolfsbukt", "label": "V1 + miljøgate"},
+            {
+                "id": family_id,
+                "label": SCENARIO_FAMILIES[family_id]["label"],
+                "description": SCENARIO_FAMILIES[family_id].get("ui_description", ""),
+            }
+            for family_id in family_ids
         ],
         "synthetic": {
             "midday_factor": {

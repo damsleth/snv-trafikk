@@ -7,6 +7,7 @@ flattening intersection turning counts into unrelated trips.
 """
 
 import random
+import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -453,4 +454,8 @@ def generate_all_demand() -> None:
 
 
 if __name__ == "__main__":
-    generate_all_demand()
+    try:
+        generate_all_demand()
+    except ValueError as exc:
+        print(f"ERROR: {exc}")
+        sys.exit(1)

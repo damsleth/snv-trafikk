@@ -22,15 +22,8 @@ VIZ_DIR = OUTPUT_DIR / "visualizations"
 import sys
 
 sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
+from utils.results import group_scenarios_by_period, load_all_results, metric_mean
 from utils.scenario_catalog import PERIODS, SCENARIOS, scenario_color, scenario_label, scenario_period
-
-
-def load_all_results() -> dict:
-    results_file = OUTPUT_DIR / "all_results.json"
-    if not results_file.exists():
-        print(f"No results file found at {results_file}")
-        return {}
-    return json.loads(results_file.read_text(encoding="utf-8"))
 
 
 def load_summary(scenario_name: str, seed: int = 1) -> pd.DataFrame:
@@ -57,20 +50,7 @@ def load_summary(scenario_name: str, seed: int = 1) -> pd.DataFrame:
 
 
 def available_scenarios_by_period(results: dict) -> dict[str, list[str]]:
-    grouped = {period: [] for period in PERIODS}
-    for scenario_name, runs in results.items():
-        if runs and scenario_period(scenario_name) in grouped:
-            grouped[scenario_period(scenario_name)].append(scenario_name)
-    for period_name in grouped:
-        grouped[period_name].sort()
-    return grouped
-
-
-def metric_mean(runs: list[dict], key: str) -> float:
-    values = [run.get(key, 0) for run in runs if key in run]
-    if not values:
-        return 0.0
-    return float(np.mean(values))
+    return group_scenarios_by_period(results, PERIODS, scenario_period)
 
 
 def chart_metric(results: dict, period_name: str, metric: str, xlabel: str, title: str, filename: str) -> None:
@@ -180,7 +160,7 @@ def analyze_all() -> None:
     print("=" * 60)
     VIZ_DIR.mkdir(parents=True, exist_ok=True)
 
-    results = load_all_results()
+    results = load_all_results(OUTPUT_DIR)
     if not results:
         print("No simulation results found.")
         return

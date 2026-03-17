@@ -86,6 +86,7 @@ body {
 .panel {
   padding: 2rem 1rem;
   background: var(--paper);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-right: 1px solid var(--line);
   display: flex;
@@ -326,8 +327,18 @@ output,
   border-radius: 8px;
   background: rgba(28, 35, 39, 0.84);
   color: #f7faf9;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
+}
+
+.app-error {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  text-align: center;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
 }
 
 .chart-head {

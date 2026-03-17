@@ -1,4 +1,4 @@
-const manifest = await fetchJson("./data/manifest.json");
+const manifest = await loadManifest();
 
 const state = {
   family: "scenario_4A_v1",
@@ -91,14 +91,6 @@ let playTimer = null;
 let lastAnimationTs = null;
 let currentMode = null;
 
-const familyDescriptions = {
-  scenario_4A_base: "dagens 2+3-profil",
-  scenario_4A_v1: "innsnevring Snarøyveien (2+2) + utvidet rundkjøring",
-  scenario_4A_v2: "V1 + redusert fart",
-  scenario_4A_v3: "V1 + signalregulert innkjøring",
-  scenario_4A_v1_rolfsbukt: "V1 med bilfritt felt langs Rolfsbuktveien",
-};
-
 initControls();
 initThemeToggle();
 renderAnchors();
@@ -110,7 +102,7 @@ function initControls() {
   for (const family of manifest.families) {
     const option = document.createElement("option");
     option.value = family.id;
-    const desc = familyDescriptions[family.id];
+    const desc = family.description;
     option.textContent = desc ? `${family.label} – ${desc}` : family.label;
     ui.familySelect.appendChild(option);
   }
@@ -1211,9 +1203,26 @@ function lerpAngle(a, b, t) {
 async function fetchJson(path) {
   const response = await fetch(path);
   if (!response.ok) {
-    throw new Error(`Kunne ikke laste ${path}`);
+    const error = new Error(`Kunne ikke laste ${path}`);
+    showAppError(error.message);
+    throw error;
   }
   return response.json();
+}
+
+async function loadManifest() {
+  try {
+    return await fetchJson("./data/manifest.json");
+  } catch (error) {
+    document.body.innerHTML = `<main class="app-error"><h1>Presentasjonen kunne ikke lastes</h1><p>${error.message}</p></main>`;
+    throw error;
+  }
+}
+
+function showAppError(message) {
+  if (ui.scenarioNote) {
+    ui.scenarioNote.textContent = message;
+  }
 }
 
 function round1(value) {

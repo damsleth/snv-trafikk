@@ -88,9 +88,7 @@ def create_typemap(output: Path):
 def step1_osm_to_base():
     """Convert OSM to base SUMO network."""
     if not OSM_FILE.exists():
-        print(f"ERROR: OSM file not found at {OSM_FILE}")
-        print("Run scripts/01_fetch_osm.py first.")
-        sys.exit(1)
+        raise RuntimeError(f"OSM file not found at {OSM_FILE}. Run scripts/01_fetch_osm.py first.")
 
     netconvert = find_tool("netconvert")
     BASE_NET.parent.mkdir(parents=True, exist_ok=True)
@@ -124,8 +122,7 @@ def step1_osm_to_base():
     if result.returncode != 0:
         print(f"netconvert warnings:\n{result.stderr[:1000]}")
     if not BASE_NET.exists():
-        print("FATAL: netconvert failed to produce network")
-        sys.exit(1)
+        raise RuntimeError("netconvert failed to produce network")
     print(f"  Base network → {BASE_NET}")
     print(f"  Edge definitions → {BASE_EDG}")
     print(f"  Node definitions → {BASE_NOD}")
@@ -211,8 +208,7 @@ def step1c_rebuild_base_from_plain() -> None:
 
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0 or not BASE_NET.exists():
-        print(f"FATAL: failed to rebuild base network with future connector:\n{result.stderr[:1000]}")
-        sys.exit(1)
+        raise RuntimeError(f"failed to rebuild base network with future connector:\n{result.stderr[:1000]}")
 
     print(f"  Rebuilt base network with future connector → {BASE_NET}")
 
@@ -476,4 +472,8 @@ def build_all():
 
 
 if __name__ == "__main__":
-    build_all()
+    try:
+        build_all()
+    except Exception as exc:
+        print(f"ERROR: {exc}")
+        sys.exit(1)

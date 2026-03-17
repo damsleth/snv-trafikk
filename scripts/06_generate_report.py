@@ -16,48 +16,8 @@ REPORT_DIR = OUTPUT_DIR / "report"
 import sys
 
 sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
+from utils.results import aggregate_stats, group_scenarios_by_period, load_all_results
 from utils.scenario_catalog import PERIODS, SCENARIOS, scenario_color, scenario_family, scenario_label, scenario_period
-
-
-def load_results() -> dict:
-    results_file = OUTPUT_DIR / "all_results.json"
-    if not results_file.exists():
-        return {}
-    return json.loads(results_file.read_text(encoding="utf-8"))
-
-
-def compute_stats(runs: list[dict]) -> dict:
-    if not runs:
-        return {}
-    keys = [
-        "avg_duration_s",
-        "max_duration_s",
-        "avg_waiting_time_s",
-        "system_delay_h",
-        "completed_time_loss_h",
-        "blocked_vehicle_h",
-        "peak_waiting",
-        "peak_queue_proxy",
-        "waiting",
-        "not_inserted",
-        "inserted",
-        "loaded",
-        # New metrics
-        "emergency_avg_duration_s",
-        "emergency_max_duration_s",
-        "emergency_avg_time_loss_s",
-        "snaroya_origin_count",
-        "snaroya_avg_duration_s",
-        "snaroya_avg_time_loss_s",
-        "queue_length_km",
-    ]
-    stats = {}
-    for key in keys:
-        values = [run.get(key, 0) for run in runs if key in run]
-        if values:
-            stats[f"{key}_mean"] = float(np.mean(values))
-            stats[f"{key}_std"] = float(np.std(values))
-    return stats
 
 
 def compare_text(base_value: float, candidate_value: float, unit: str, precision: int = 1) -> str:
@@ -67,13 +27,7 @@ def compare_text(base_value: float, candidate_value: float, unit: str, precision
 
 
 def group_scenarios(results: dict) -> dict[str, list[str]]:
-    grouped = {period_name: [] for period_name in PERIODS}
-    for scenario_name, runs in results.items():
-        if runs and scenario_period(scenario_name) in grouped:
-            grouped[scenario_period(scenario_name)].append(scenario_name)
-    for period_name in grouped:
-        grouped[period_name].sort()
-    return grouped
+    return group_scenarios_by_period(results, PERIODS, scenario_period)
 
 
 def generate_report() -> None:
@@ -82,9 +36,9 @@ def generate_report() -> None:
     print("=" * 60)
 
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
-    results = load_results()
+    results = load_all_results(OUTPUT_DIR)
     grouped = group_scenarios(results)
-    stats_by_scenario = {scenario_name: compute_stats(runs) for scenario_name, runs in results.items()}
+    stats_by_scenario = {scenario_name: aggregate_stats(runs) for scenario_name, runs in results.items()}
 
     def img(name: str) -> str:
         return f"../visualizations/{name}"
