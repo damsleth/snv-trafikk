@@ -25,6 +25,8 @@ const state = {
   showRoundabouts: true,
   showLabels: false,
   selectedEdgeId: null,
+  patchedRun: null,
+  isRunningPatchedScenario: false,
 }
 
 const ui = {
@@ -72,6 +74,7 @@ const ui = {
   crossingPartnerSelect: document.getElementById("crossingPartnerSelect"),
   addArtifactButton: document.getElementById("addArtifactButton"),
   artifactList: document.getElementById("artifactList"),
+  runPatchedScenarioButton: document.getElementById("runPatchedScenarioButton"),
   exportPatchButton: document.getElementById("exportPatchButton"),
   clearWorkbenchButton: document.getElementById("clearWorkbenchButton"),
   queueTimelineChart: document.getElementById("queueTimelineChart"),
@@ -125,12 +128,14 @@ function initControls() {
     state.family = event.target.value
     state.frameIndex = 0
     state.selectedEdgeId = null
+    invalidatePatchedRun()
     await renderAll()
   })
 
   ui.periodSelect.addEventListener("change", async (event) => {
     state.period = event.target.value
     state.frameIndex = 0
+    invalidatePatchedRun()
     syncConcertVisibility()
     await renderAll()
   })
@@ -148,6 +153,7 @@ function initControls() {
   ui.concertToggle.addEventListener("change", async (event) => {
     state.concert = event.target.checked
     state.frameIndex = 0
+    invalidatePatchedRun()
     await renderAll()
   })
 
@@ -189,6 +195,7 @@ function initControls() {
       capacity_vph_estimate: Number(ui.editCapacityInput.value),
     })
     saveWorkbenchState(workbench)
+    invalidatePatchedRun("Lokale edge-endringer krever ny kjøring før patched-resultatet oppdateres.")
     await updateDynamicLayers()
     populateEdgeEditor(feature)
     renderArtifactList()
@@ -201,6 +208,7 @@ function initControls() {
     }
     removeEdgeEdit(workbench, state.family, feature.properties.id)
     saveWorkbenchState(workbench)
+    invalidatePatchedRun("Patch-resultatet ble ugyldig etter at edge-endringen ble nullstilt.")
     populateEdgeEditor(feature)
     await updateDynamicLayers()
   })
@@ -229,8 +237,13 @@ function initControls() {
     }
     addArtifact(workbench, state.family, artifact)
     saveWorkbenchState(workbench)
+    invalidatePatchedRun("Artefaktendringer krever ny kjøring før patched-resultatet oppdateres.")
     renderArtifactList()
     await updateDynamicLayers()
+  })
+
+  ui.runPatchedScenarioButton.addEventListener("click", async () => {
+    await runPatchedScenario()
   })
 
   ui.exportPatchButton.addEventListener("click", () => {
@@ -248,6 +261,7 @@ function initControls() {
   ui.clearWorkbenchButton.addEventListener("click", async () => {
     clearFamilyWorkbench(workbench, state.family)
     saveWorkbenchState(workbench)
+    invalidatePatchedRun("Lokale endringer er fjernet. Viser igjen basisresultatet for scenarioet.")
     renderArtifactList()
     if (state.selectedEdgeId) {
       populateEdgeEditor(selectedFeature())
@@ -326,8 +340,79 @@ function syncConcertVisibility() {
   }
 }
 
+function invalidatePatchedRun(message = null) {
+  state.patchedRun = null
+  if (currentMode?.patchedRun) {
+    currentMode = null
+  }
+  if (message) {
+    ui.scenarioNote.textContent = message
+  }
+}
+
 function showAppError(message) {
   ui.scenarioNote.textContent = message
+}
+
+function setPatchedRunBusy(isBusy) {
+  state.isRunningPatchedScenario = isBusy
+  ui.runPatchedScenarioButton.disabled = isBusy
+  ui.runPatchedScenarioButton.textContent = isBusy ? "Kjører..." : "Kjør patched scenario"
+}
+
+async function runPatchedScenario() {
+  if (state.period === "midday") {
+    showAppError("Patched reruns kan bare kjøres for morgen- eller ettermiddagsrush.")
+    return
+  }
+
+  const familyState = familyWorkbench(workbench, state.family)
+  const payload = buildPatchPackage({
+    familyId: state.family,
+    manifest,
+    familyState,
+    edgeLookup: (edgeId) => mapController.getEdgeFeature(edgeId),
+  })
+
+  if (!payload.edge_edits.length && !payload.artifacts.length) {
+    showAppError("Legg inn minst en edge-endring eller et artefakt før du kjører patched scenario.")
+    return
+  }
+
+  setPatchedRunBusy(true)
+  ui.scenarioNote.textContent = "Starter patched SUMO-kjøring lokalt..."
+
+  try {
+    const response = await fetch("/api/patched-run", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        family: state.family,
+        period: state.period,
+        concert: state.concert,
+        seed: 1,
+        package: payload,
+      }),
+    })
+    const body = await response.json()
+    if (!response.ok) {
+      throw new Error(body.error || "Klarte ikke å kjøre patched scenario.")
+    }
+
+    state.patchedRun = body
+    state.frameIndex = 0
+    state.frameProgress = 0
+    ui.scenarioNote.textContent = body.warnings?.length
+      ? body.warnings.join(" ")
+      : `Patched scenario ferdig: ${body.scenario}`
+    await renderAll()
+  } catch (error) {
+    showAppError(error.message || "Patched scenario feilet.")
+  } finally {
+    setPatchedRunBusy(false)
+  }
 }
 
 function renderAdvancedPopup(feature) {
@@ -401,7 +486,14 @@ async function renderAll() {
     loadNetwork: (path) => loadNetwork(path, cache, { onError: showAppError }),
   })
 
-  currentMode = await resolveMode({ manifest, state, cache, onError: showAppError })
+  currentMode = state.patchedRun
+    ? {
+        kind: "real",
+        scenario: state.patchedRun.scenario,
+        playback: state.patchedRun.playback,
+        patchedRun: state.patchedRun,
+      }
+    : await resolveMode({ manifest, state, cache, onError: showAppError })
   mapController.syncVisualMode(currentMode, state)
   const frameCount = getFrameCount(currentMode)
   state.frameIndex = Math.min(state.frameIndex, Math.max(frameCount - 1, 0))
@@ -420,6 +512,18 @@ function updateScenarioSummary(mode) {
     ui.metricPeakWaiting.textContent = "syntetisk"
     ui.metricMaxEdgeCount.textContent = "-"
     ui.scenarioNote.textContent = "Avansert midtpadag-visning er beregnet mellom morgen- og ettermiddagsrush."
+    return
+  }
+
+  if (mode.patchedRun) {
+    const kpis = mode.patchedRun.kpis ?? {}
+    ui.metricSystemDelay.textContent = `${(kpis.system_delay_h ?? 0).toFixed(1)} t`
+    ui.metricBlockedVehicles.textContent = `${Math.round(kpis.blocked_vehicles ?? 0)} kjt`
+    ui.metricPeakWaiting.textContent = `${Math.round(kpis.peak_waiting ?? 0)} kjt`
+    ui.metricMaxEdgeCount.textContent = `${mode.playback?.max_edge_count ?? 0} kjt`
+    ui.scenarioNote.textContent = mode.patchedRun.warnings?.length
+      ? mode.patchedRun.warnings.join(" ")
+      : `Patched kjøring for ${mode.patchedRun.scenario} (seed ${mode.patchedRun.seed}).`
     return
   }
 

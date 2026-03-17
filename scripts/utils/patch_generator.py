@@ -18,9 +18,30 @@ def build_edge_patches(package: dict) -> ET.Element:
     for artifact in package.get("artifacts", []):
         artifacts_by_edge.setdefault(artifact["edge_id"], []).append(artifact)
 
-    for patch in package.get("edge_edits", []):
+    edge_edits = {patch["edge_id"]: patch for patch in package.get("edge_edits", [])}
+    supported_lane_artifacts = {"sidewalk", "cycleway"}
+    patched_edge_ids = {
+        edge_id
+        for edge_id, artifacts in artifacts_by_edge.items()
+        if any(artifact.get("type") in supported_lane_artifacts for artifact in artifacts)
+    }
+    patched_edge_ids.update(edge_edits)
+
+    for edge_id in sorted(patched_edge_ids):
+        patch = edge_edits.get(edge_id, {"edge_id": edge_id})
+        artifacts = artifacts_by_edge.get(edge_id, [])
         base = patch.get("base", {})
-        artifacts = artifacts_by_edge.get(patch["edge_id"], [])
+        if not base:
+            for artifact in artifacts:
+                artifact_edge = artifact.get("edge", {})
+                if artifact_edge:
+                    base = {
+                        "from_node": artifact_edge.get("from_node", ""),
+                        "to_node": artifact_edge.get("to_node", ""),
+                        "lanes": artifact_edge.get("lanes", 1),
+                        "speed_kmh": artifact_edge.get("speed_kmh", 0),
+                    }
+                    break
         added_sidewalks = sum(1 for artifact in artifacts if artifact.get("type") == "sidewalk")
         added_cycleways = sum(1 for artifact in artifacts if artifact.get("type") == "cycleway")
         num_lanes = int(patch.get("lanes") or base.get("lanes") or 1) + added_sidewalks + added_cycleways
@@ -29,7 +50,7 @@ def build_edge_patches(package: dict) -> ET.Element:
             root,
             "edge",
             {
-                "id": patch["edge_id"],
+                "id": edge_id,
                 "from": base.get("from_node", ""),
                 "to": base.get("to_node", ""),
                 "speed": f"{speed_mps:.2f}",

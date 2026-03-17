@@ -116,6 +116,8 @@ uv run python scripts/08_serve_presentation.py
 
 Den rene simulatoren ligger på `index.html`, mens den avanserte arbeidsflaten ligger på `advanced.html`.
 
+`advanced.html` kan nå også sende lokale edge-/artefaktpatcher til den lokale presentasjonsserveren og kjøre et patched scenario direkte. Dette krever at siden kjøres via `scripts/08_serve_presentation.py`, siden API-et eksponeres derfra på samme origin.
+
 For å oversette en nedlastet patchpakke fra `advanced.html` til SUMO-filer kan du kjøre:
 
 ```bash
