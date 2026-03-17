@@ -151,6 +151,14 @@ uv run python scripts/05_analyze_results.py
 uv run python scripts/06_generate_report.py
 ```
 
+For sensitivitetskjøringer kan du i tillegg generere skalerte OD-varianter, for eksempel:
+
+```bash
+uv run python scripts/03_generate_demand.py --demand-scale 0.8
+```
+
+Dette skriver egne `*_scale_0_8`-ruter/CSV-er og inkluderer også skalaer som er deklarert i `scripts/utils/scenario_catalog.py`.
+
 ## Dataflyt i pipeline
 
 Pipeline-kjedene er bevisst enkle og filbaserte:
@@ -160,7 +168,7 @@ Pipeline-kjedene er bevisst enkle og filbaserte:
 2. `scripts/02_build_network.py`
 	Leser OSM-data og skriver base- og variantnett i `network/base/` og `network/proposed/`.
 3. `scripts/03_generate_demand.py`
-	Leser OD-matriser i koden og skriver ruter og CSV-er i `demand/routes/` og `demand/od_matrices/`.
+	Leser OD-matriser i koden og skriver ruter og CSV-er i `demand/routes/` og `demand/od_matrices/`, inkludert eventuelle skalerte varianter.
 4. `scripts/04_run_simulation.py`
 	Leser nett og ruter, kjører SUMO og skriver seed-resultater i `output/<scenario>/seed_<n>/` samt `output/all_results.json`.
 5. `scripts/05_analyze_results.py`

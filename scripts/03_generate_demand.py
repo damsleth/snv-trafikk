@@ -6,10 +6,14 @@ both peak hours. This script encodes those matrices directly instead of
 flattening intersection turning counts into unrelated trips.
 """
 
+import argparse
 import random
 import sys
 import xml.etree.ElementTree as ET
+from math import floor
 from pathlib import Path
+
+from utils.scenario_catalog import declared_demand_variants, demand_route_path, format_demand_scale
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -165,6 +169,62 @@ def matrix_to_flows(matrix: dict[str, list[int]]) -> list[tuple[str, str, int]]:
                 continue
             flows.append((from_zone, to_zone, vehicles_per_hour))
     return flows
+
+
+def round_half_up(value: float) -> int:
+    return int(value + 0.5)
+
+
+def scale_matrix(matrix: dict[str, list[int]], demand_scale: float) -> dict[str, list[int]]:
+    """Scale an OD matrix while preserving the rounded total via largest remainder."""
+    if demand_scale <= 0:
+        raise ValueError("demand_scale must be positive")
+
+    if demand_scale == 1.0:
+        return {zone: list(row) for zone, row in matrix.items()}
+
+    scaled_matrix = {zone: [0] * len(row) for zone, row in matrix.items()}
+    remainders: list[tuple[float, str, int]] = []
+    total_floor = 0
+    total_raw = 0.0
+
+    for from_zone, row in matrix.items():
+        for column_index, vehicles_per_hour in enumerate(row):
+            if vehicles_per_hour <= 0:
+                continue
+            scaled_value = vehicles_per_hour * demand_scale
+            base_value = floor(scaled_value)
+            scaled_matrix[from_zone][column_index] = base_value
+            total_floor += base_value
+            total_raw += scaled_value
+            remainders.append((scaled_value - base_value, from_zone, column_index))
+
+    target_total = round_half_up(total_raw)
+    additional_vehicles = max(target_total - total_floor, 0)
+    for _, from_zone, column_index in sorted(remainders, key=lambda item: item[0], reverse=True)[:additional_vehicles]:
+        scaled_matrix[from_zone][column_index] += 1
+
+    return scaled_matrix
+
+
+def resolve_demand_variants(extra_scales: list[float] | None = None) -> dict[str, list[float]]:
+    """Resolve which demand scales should be emitted for each declared demand profile."""
+    variants = {demand_name: {1.0} for demand_name in OD_MATRICES}
+
+    for demand_name, demand_scale in declared_demand_variants():
+        if demand_name in variants:
+            variants[demand_name].add(demand_scale)
+
+    for demand_scale in extra_scales or []:
+        if demand_scale <= 0:
+            raise ValueError("demand_scale must be positive")
+        for demand_name in variants:
+            variants[demand_name].add(float(demand_scale))
+
+    return {
+        demand_name: sorted(demand_scales)
+        for demand_name, demand_scales in variants.items()
+    }
 
 
 def validate_zone_edges(net_file: Path) -> None:
@@ -419,8 +479,8 @@ def generate_event_overlay(
     return len(vehicles)
 
 
-def generate_all_demand() -> None:
-    """Generate OD CSVs and route files for both scenarios and both peak hours."""
+def generate_all_demand(demand_scales: list[float] | None = None) -> None:
+    """Generate OD CSVs and route files for the declared demand profiles and scales."""
     print("=" * 60)
     print("PHASE 2: Generating traffic demand from appendix OD matrices")
     print("=" * 60)
@@ -428,17 +488,26 @@ def generate_all_demand() -> None:
     routes_dir = DEMAND_DIR / "routes"
     od_dir = DEMAND_DIR / "od_matrices"
     base_net = PROJECT_ROOT / "network" / "base" / "fornebu.net.xml"
+    demand_variants = resolve_demand_variants(demand_scales)
+
+    print("Demand scales:")
+    for demand_name, scales in demand_variants.items():
+        labels = ", ".join(format_demand_scale(scale) for scale in scales)
+        print(f"  {demand_name}: {labels}x")
 
     for scenario_name, periods in OD_MATRICES.items():
         for period_name, matrix in periods.items():
-            suffix = f"{period_name}_{scenario_name}"
-            generate_od_csv(matrix, od_dir / f"{suffix}.csv")
-            generate_routes(
-                base_net,
-                matrix,
-                routes_dir / f"{suffix}.rou.xml",
-                seed=42,
-            )
+            for demand_scale in demand_variants[scenario_name]:
+                scaled_matrix = scale_matrix(matrix, demand_scale)
+                route_path = demand_route_path(period_name, scenario_name, demand_scale)
+                suffix = route_path.stem.replace(".rou", "")
+                generate_od_csv(scaled_matrix, od_dir / f"{suffix}.csv")
+                generate_routes(
+                    base_net,
+                    scaled_matrix,
+                    routes_dir / f"{suffix}.rou.xml",
+                    seed=42,
+                )
 
     # Generate Unity Arena event overlay
     print("\nGenerating Unity Arena event-night overlay...")
@@ -455,7 +524,16 @@ def generate_all_demand() -> None:
 
 if __name__ == "__main__":
     try:
-        generate_all_demand()
+        parser = argparse.ArgumentParser(description="Generate SUMO demand from PGF OD matrices")
+        parser.add_argument(
+            "--demand-scale",
+            action="append",
+            type=float,
+            default=[],
+            help="Generate additional scaled demand variants (for example 0.8 for 80%% demand). May be repeated.",
+        )
+        args = parser.parse_args()
+        generate_all_demand(demand_scales=args.demand_scale)
     except ValueError as exc:
         print(f"ERROR: {exc}")
         sys.exit(1)
