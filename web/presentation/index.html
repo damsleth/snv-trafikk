@@ -16,10 +16,13 @@
     <div class="layout">
       <aside class="panel">
         <div class="panel-head">
-          <h1>Snarøyveien</h1>
-          <p class="lede">
+          <div>
+            <h1>Snarøyveien</h1>
+            <p class="lede">
 Simulering av trafikkforhold mellom Snarøya og E18 under ulike scenarier
-          </p>
+            </p>
+          </div>
+          <button id="themeToggle" class="theme-toggle" type="button" title="Bytt mellom lys og mørk modus" aria-label="Bytt tema">☀️</button>
         </div>
 
         <section class="control-group">
@@ -74,6 +77,22 @@ Simulering av trafikkforhold mellom Snarøya og E18 under ulike scenarier
             </label>
           </div>
           <input id="timeSlider" type="range" min="0" max="0" step="1" value="0" />
+        </section>
+
+        <section class="compare-section" id="compareSection">
+          <h2>Sammenligning av varianter</h2>
+          <table class="compare-table" id="compareTable">
+            <thead>
+              <tr>
+                <th>Variant</th>
+                <th>Reisetid</th>
+                <th>Kølengde</th>
+                <th>Forsinkelse</th>
+                <th>Utrykn.</th>
+              </tr>
+            </thead>
+            <tbody id="compareBody"></tbody>
+          </table>
         </section>
 
         <section class="legend">

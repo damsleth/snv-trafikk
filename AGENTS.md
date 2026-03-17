@@ -43,3 +43,11 @@ uv run python scripts/06_generate_report.py
 ## SUMO_HOME
 Set automatically by eclipse-sumo pip package. The tools (netconvert, duarouter, etc.)
 are available via `uv run netconvert`, `uv run duarouter`, etc.
+
+## Code conventions
+- Python scripts use type hints and docstrings
+- SUMO network modifications are preferrably done via Python scripts, not manual netedit
+- Data files are in CSV/JSON/GeoJSON for easy analysis and visualization
+- Results are stored in `output/` with scenario-specific subfolders
+- JavaScript code in `web/presentation/app.js` uses modular functions and event listeners for interactivity
+- JavaScript does not have any unnecessary semicolons.

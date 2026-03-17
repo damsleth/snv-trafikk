@@ -10,6 +10,7 @@ const state = {
   frameProgress: 0,
   playbackRate: 10,
   isPlaying: false,
+  darkMode: localStorage.getItem("theme") === "dark",
 };
 
 const ui = {
@@ -33,6 +34,8 @@ const ui = {
   queueGrowthChart: document.getElementById("queueGrowthChart"),
   queueChartValue: document.getElementById("queueChartValue"),
   growthChartValue: document.getElementById("growthChartValue"),
+  themeToggle: document.getElementById("themeToggle"),
+  compareBody: document.getElementById("compareBody"),
 };
 
 const cache = {
@@ -45,13 +48,25 @@ const map = L.map("map", {
   minZoom: 12,
 });
 
-L.tileLayer(
-  "https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png",
-  {
+const TILES = {
+  light: {
+    url: "https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png",
     attribution: "&copy; Kartverket",
-    maxZoom: 19,
   },
-).addTo(map);
+  dark: {
+    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  },
+};
+
+const activeTile = TILES[state.darkMode ? "dark" : "light"];
+let tileLayer = L.tileLayer(activeTile.url, {
+  attribution: activeTile.attribution,
+  maxZoom: 19,
+  subdomains: "abcd",
+}).addTo(map);
+
+applyTheme(state.darkMode);
 
 map.fitBounds(manifest.default_bounds);
 
@@ -85,9 +100,11 @@ const familyDescriptions = {
 };
 
 initControls();
+initThemeToggle();
 renderAnchors();
 renderEntryPoints();
 await renderAll();
+renderComparisonTable();
 
 function initControls() {
   for (const family of manifest.families) {
@@ -108,6 +125,7 @@ function initControls() {
     state.family = event.target.value;
     state.frameIndex = 0;
     await renderAll();
+    renderComparisonTable();
   });
 
   ui.periodSelect.addEventListener("change", async (event) => {
@@ -115,6 +133,7 @@ function initControls() {
     syncConcertVisibility();
     state.frameIndex = 0;
     await renderAll();
+    renderComparisonTable();
   });
 
   ui.visualModeSelect.addEventListener("change", async (event) => {
@@ -169,6 +188,100 @@ function syncConcertVisibility() {
   if (!visible && state.concert) {
     state.concert = false;
     ui.concertToggle.checked = false;
+  }
+}
+
+function applyTheme(dark) {
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  ui.themeToggle.textContent = dark ? "🌙" : "☀️";
+}
+
+function initThemeToggle() {
+  ui.themeToggle.addEventListener("click", () => {
+    state.darkMode = !state.darkMode;
+    localStorage.setItem("theme", state.darkMode ? "dark" : "light");
+    applyTheme(state.darkMode);
+    /* Swap tile layer (new layer needed for different attribution) */
+    const tile = TILES[state.darkMode ? "dark" : "light"];
+    map.removeLayer(tileLayer);
+    tileLayer = L.tileLayer(tile.url, {
+      attribution: tile.attribution,
+      maxZoom: 19,
+      subdomains: "abcd",
+    }).addTo(map);
+  });
+}
+
+function renderComparisonTable() {
+  const period = state.period === "midday" ? "morning" : state.period;
+  const rows = manifest.families.map((family) => {
+    const scenarioKey = `${family.id}_${period}`;
+    const kpis = manifest.scenarios[scenarioKey]?.kpis ?? {};
+    return {
+      id: family.id,
+      label: family.label,
+      travel_time: kpis.snaroya_avg_min ?? null,
+      queue_km: kpis.queue_km ?? null,
+      system_delay: kpis.system_delay_h ?? null,
+      emergency: kpis.emergency_avg_min ?? null,
+    };
+  });
+
+  /* Find best/worst for highlighting */
+  const metrics = ["travel_time", "queue_km", "system_delay", "emergency"];
+  const best = {};
+  const worst = {};
+  for (const m of metrics) {
+    const values = rows.map((r) => r[m]).filter((v) => v != null);
+    if (values.length > 0) {
+      best[m] = Math.min(...values);
+      worst[m] = Math.max(...values);
+    }
+  }
+
+  const units = {
+    travel_time: " min",
+    queue_km: " km",
+    system_delay: " t",
+    emergency: " min",
+  };
+
+  ui.compareBody.innerHTML = "";
+  for (const row of rows) {
+    const tr = document.createElement("tr");
+    if (row.id === state.family) {
+      tr.classList.add("compare-active");
+    }
+
+    const tdLabel = document.createElement("td");
+    tdLabel.textContent = row.label;
+    tr.appendChild(tdLabel);
+
+    for (const m of metrics) {
+      const td = document.createElement("td");
+      if (row[m] != null) {
+        const decimals = m === "system_delay" ? 0 : 1;
+        td.textContent = `${row[m].toFixed(decimals)}${units[m]}`;
+        if (best[m] != null && worst[m] != null && best[m] !== worst[m]) {
+          if (row[m] === best[m]) td.classList.add("compare-best");
+          else if (row[m] === worst[m]) td.classList.add("compare-worst");
+        }
+      } else {
+        td.textContent = "–";
+      }
+      tr.appendChild(td);
+    }
+
+    tr.style.cursor = "pointer";
+    tr.addEventListener("click", () => {
+      state.family = row.id;
+      ui.familySelect.value = row.id;
+      state.frameIndex = 0;
+      renderAll();
+      renderComparisonTable();
+    });
+
+    ui.compareBody.appendChild(tr);
   }
 }
 
@@ -494,22 +607,28 @@ function resetEdgeStyling() {
 
 function drawEmergency(frame) {
   emergencyLayer.clearLayers();
-  if (!state.showEmergency || state.visualMode === "vehicles") {
+  if (!state.showEmergency) {
     return;
   }
 
-  for (const item of frame.emergency ?? []) {
-    const marker = L.marker([item.lat, item.lon], {
-      icon: L.divIcon({
-        className: "",
-        html: '<div class="emergency-marker"></div>',
-        iconSize: [16, 16],
-        iconAnchor: [8, 8],
-      }),
-    });
-    marker.bindTooltip(`Blålys: ${item.speed.toFixed(0)} km/t`);
-    marker.addTo(emergencyLayer);
+  /* In "edges" mode, show emergency as dot markers from the edge-level data */
+  if (state.visualMode !== "vehicles") {
+    for (const item of frame.emergency ?? []) {
+      const marker = L.marker([item.lat, item.lon], {
+        icon: L.divIcon({
+          className: "",
+          html: '<div class="emergency-marker"></div>',
+          iconSize: [16, 16],
+          iconAnchor: [8, 8],
+        }),
+        zIndexOffset: 10000,
+      });
+      marker.bindTooltip(`Blålys: ${item.speed.toFixed(0)} km/t`);
+      marker.addTo(emergencyLayer);
+    }
   }
+  /* In "vehicles" mode, emergency vehicles are drawn by drawVehicles
+     with high zIndexOffset — nothing extra needed here. */
 }
 
 function drawVehicles(frame) {
@@ -523,7 +642,18 @@ function drawVehicles(frame) {
 
   const allVehicles = frame.vehicles ?? [];
 
+  /* Draw normal vehicles first, then emergency on top */
+  const normalVehicles = [];
+  const emergencyVehicles = [];
   for (const vehicle of allVehicles) {
+    if (vehicle[4] === 1) {
+      emergencyVehicles.push(vehicle);
+    } else {
+      normalVehicles.push(vehicle);
+    }
+  }
+
+  for (const vehicle of [...normalVehicles, ...emergencyVehicles]) {
     const [, lat, lon, speedKmh, kind, angle = 0] = vehicle;
     if (!state.showEmergency && kind === 1) {
       continue;
@@ -531,13 +661,16 @@ function drawVehicles(frame) {
     const style = vehicleStyle(speedKmh, kind, map.getZoom());
     const marker = L.marker([lat, lon], {
       icon: L.divIcon({
-        className: "vehicle-marker",
+        className: kind === 1 ? "vehicle-marker vehicle-marker-emergency" : "vehicle-marker",
         html: vehicleSvg(style, angle),
         iconSize: style.iconSize,
         iconAnchor: style.iconAnchor,
       }),
+      zIndexOffset: kind === 1 ? 10000 : 0,
     }).addTo(vehicleLayer);
-    if (speedKmh > 0 || kind !== 0) {
+    if (kind === 1) {
+      marker.bindTooltip(`Utrykningskjøretøy: ${Math.round(speedKmh)} km/t`, { direction: "top", offset: [0, -12] });
+    } else if (speedKmh > 0) {
       marker.bindTooltip(`${Math.round(speedKmh)} km/t`, { direction: "top", offset: [0, -8] });
     }
   }
@@ -547,14 +680,14 @@ function drawVehicles(frame) {
    (e18_vest, e18_ost, ring3_nord) and included in the FCD playback data. */
 
 function vehicleStyle(speedKmh, kind, zoom) {
-  const scale = clamp(Math.pow(1.18, zoom - 15), 0.72, 2.2) * 0.88;
+  const scale = clamp(Math.pow(1.18, zoom - 15), 0.72, 2.2) * 0.75;
   if (kind === 1) {
     return {
-      color: "#d92d20",
+      color: "#facc15",
       opacity: 0.98,
       shape: "emergency",
-      iconSize: [Math.round(18 * scale), Math.round(30 * scale)],
-      iconAnchor: [Math.round(9 * scale), Math.round(15 * scale)],
+      iconSize: [Math.round(22 * scale), Math.round(36 * scale)],
+      iconAnchor: [Math.round(11 * scale), Math.round(18 * scale)],
     };
   }
   if (kind === 2) {
@@ -585,13 +718,13 @@ function vehicleSvg(style, angle) {
   const rotation = Number.isFinite(angle) ? angle : 0;
   if (style.shape === "emergency") {
     return (
-      `<svg class="vehicle-svg" viewBox="0 0 20 36" width="${style.iconSize[0]}" height="${style.iconSize[1]}" ` +
+      `<svg class="vehicle-svg vehicle-svg-emergency" viewBox="0 0 20 36" width="${style.iconSize[0]}" height="${style.iconSize[1]}" ` +
       `style="transform:rotate(${rotation}deg);transform-origin:center center">` +
       `<path class="vehicle-body" d="M6 2h8l3 7v18l-3 7H6l-3-7V9z" style="--vehicle-color:${style.color};--vehicle-opacity:${style.opacity}"/>` +
       `<rect class="vehicle-cabin" x="6.5" y="8" width="7" height="11" rx="2"/>` +
-      `<rect class="vehicle-lightbar-left" x="6" y="4" width="4" height="2" rx="1"/>` +
-      `<rect class="vehicle-lightbar-right" x="10" y="4" width="4" height="2" rx="1"/>` +
-      `<path class="vehicle-nose" d="M8 3h4v2H8z"/>` +
+      `<rect class="vehicle-lightbar-left" x="5" y="3.5" width="5" height="3" rx="1.2"/>` +
+      `<rect class="vehicle-lightbar-right" x="10" y="3.5" width="5" height="3" rx="1.2"/>` +
+      `<path class="vehicle-nose" d="M8 2h4v2H8z"/>` +
       `</svg>`
     );
   }
