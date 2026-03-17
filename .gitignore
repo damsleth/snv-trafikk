@@ -13,3 +13,6 @@ QA*.md
 docs
 _misc
 trafikkdata/
+tmp/
+.tmp
+.pytest_cache/
