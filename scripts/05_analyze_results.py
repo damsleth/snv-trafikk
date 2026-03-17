@@ -2,11 +2,10 @@
 """Analyze SUMO simulation results and generate comparison visualizations."""
 
 import os
-import json
 import xml.etree.ElementTree as ET
-from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+from config import OUTPUT_DIR, PROJECT_ROOT, VISUALIZATIONS_DIR
+
 os.environ.setdefault("MPLCONFIGDIR", str(PROJECT_ROOT / ".tmp" / "matplotlib"))
 
 import matplotlib
@@ -16,12 +15,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-OUTPUT_DIR = PROJECT_ROOT / "output"
-VIZ_DIR = OUTPUT_DIR / "visualizations"
-
-import sys
-
-sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 from utils.results import group_scenarios_by_period, load_all_results, metric_mean
 from utils.scenario_catalog import PERIODS, SCENARIOS, scenario_color, scenario_label, scenario_period
 
@@ -76,7 +69,7 @@ def chart_metric(results: dict, period_name: str, metric: str, xlabel: str, titl
         ax.text(bar.get_width(), bar.get_y() + bar.get_height() / 2, f"  {label}", va="center", fontsize=10)
 
     plt.tight_layout()
-    plt.savefig(VIZ_DIR / filename, dpi=150)
+    plt.savefig(VISUALIZATIONS_DIR / filename, dpi=150)
     plt.close()
     print(f"Saved {filename}")
 
@@ -105,7 +98,7 @@ def chart_queue_timeline(results: dict, period_name: str) -> None:
     ax.legend(fontsize=9, loc="upper left")
     ax.grid(True, alpha=0.3)
     plt.tight_layout()
-    out_file = VIZ_DIR / f"{period_name}_queue_timeline.png"
+    out_file = VISUALIZATIONS_DIR / f"{period_name}_queue_timeline.png"
     plt.savefig(out_file, dpi=150)
     plt.close()
     print(f"Saved {out_file.name}")
@@ -149,7 +142,7 @@ def generate_dashboard(results: dict) -> None:
         )
 
     fig.update_layout(height=800, template="plotly_white", title="Snarøyveien scenariosammenligning")
-    dashboard_file = VIZ_DIR / "dashboard.html"
+    dashboard_file = VISUALIZATIONS_DIR / "dashboard.html"
     fig.write_html(str(dashboard_file), include_plotlyjs=True)
     print(f"Saved {dashboard_file.name}")
 
@@ -158,7 +151,7 @@ def analyze_all() -> None:
     print("=" * 60)
     print("PHASE 4: Analysis and Visualization")
     print("=" * 60)
-    VIZ_DIR.mkdir(parents=True, exist_ok=True)
+    VISUALIZATIONS_DIR.mkdir(parents=True, exist_ok=True)
 
     results = load_all_results(OUTPUT_DIR)
     if not results:
@@ -193,7 +186,7 @@ def analyze_all() -> None:
         chart_queue_timeline(results, period_name)
 
     generate_dashboard(results)
-    print(f"\nVisualizations written to {VIZ_DIR}")
+    print(f"\nVisualizations written to {VISUALIZATIONS_DIR}")
 
 
 if __name__ == "__main__":

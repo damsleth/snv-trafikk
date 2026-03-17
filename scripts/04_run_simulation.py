@@ -4,17 +4,10 @@
 import argparse
 import json
 import subprocess
-import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-OUTPUT_DIR = PROJECT_ROOT / "output"
-SCENARIOS_DIR = PROJECT_ROOT / "scenarios"
-
-sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
-from config import SNAROYA_ORIGIN_EDGE_IDS, lane_edge_id, queue_length_km
+from config import OUTPUT_DIR, PROJECT_ROOT, SCENARIOS_DIR, SNAROYA_ORIGIN_EDGE_IDS, lane_edge_id, queue_length_km
 from utils.scenario_catalog import SCENARIOS, scenario_label
 
 

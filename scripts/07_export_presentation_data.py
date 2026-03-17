@@ -6,23 +6,24 @@ from __future__ import annotations
 import json
 import xml.etree.ElementTree as ET
 from collections import defaultdict
-from pathlib import Path
 
 import sumolib
 
-import sys
+from pathlib import Path
 
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-OUTPUT_DIR = PROJECT_ROOT / "output"
-PRESENTATION_DIR = PROJECT_ROOT / "web" / "presentation"
-DATA_DIR = PRESENTATION_DIR / "data"
-NETWORKS_DIR = DATA_DIR / "networks"
-PLAYBACK_DIR = DATA_DIR / "playback"
-SUMMARY_FILE = OUTPUT_DIR / "report" / "summary_stats.json"
-
-sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
-from config import SNAROYA_DESTINATION_EDGE_IDS, SNAROYA_ORIGIN_EDGE_IDS, lane_edge_id, queue_length_km
+from config import (
+    OUTPUT_DIR,
+    PRESENTATION_DATA_DIR as DATA_DIR,
+    PRESENTATION_DIR,
+    PRESENTATION_NETWORKS_DIR as NETWORKS_DIR,
+    PRESENTATION_PLAYBACK_DIR as PLAYBACK_DIR,
+    PROJECT_ROOT,
+    SUMMARY_STATS_FILE as SUMMARY_FILE,
+    SNAROYA_DESTINATION_EDGE_IDS,
+    SNAROYA_ORIGIN_EDGE_IDS,
+    lane_edge_id,
+    queue_length_km,
+)
 from utils.results import load_scenario_stats, load_summary_stats
 from utils.scenario_catalog import SCENARIO_FAMILIES, SCENARIOS, scenario_family, scenario_label, scenario_period
 

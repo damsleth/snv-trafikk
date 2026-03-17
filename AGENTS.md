@@ -9,7 +9,6 @@ from 2+3 to 2+2 lanes (KDP3 bygate proposal) on Snarøya peninsula residents.
 - demand/ — OD matrices and generated vehicle routes
 - scenarios/ — Runnable SUMO configurations
 - scripts/ — Python pipeline (numbered 01-06, run in order)
-- notebooks/ — Jupyter analysis notebooks
 
 ## How to Run
 ```bash
@@ -54,3 +53,22 @@ are available via `uv run netconvert`, `uv run duarouter`, etc.
 
 ## Devlog conventions
 - All changes are documented reverse chronologically in the `DEVLOG.md` file, with date, timestamp, and a short description of the change
+
+### Code Intelligence
+
+Prefer LSP over Grep/Glob/Read for code navigation:
+- `goToDefinition` / `goToImplementation` to jump to source
+- `findReferences` to see all usages across the codebase
+- `workspaceSymbol` to find where something is defined
+- `documentSymbol` to list all symbols in a file
+- `hover` for type info without reading the file
+- `incomingCalls` / `outgoingCalls` for call hierarchy
+
+Before renaming or changing a function signature, use
+`findReferences` to find all call sites first.
+
+Use Grep/Glob only for text/pattern searches (comments,
+strings, config values) where LSP doesn't help.
+
+After writing or editing code, check LSP diagnostics before
+moving on. Fix any type errors or missing imports immediately.

@@ -3,19 +3,10 @@
 
 import json
 from datetime import datetime
-from pathlib import Path
 
 import numpy as np
 
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-OUTPUT_DIR = PROJECT_ROOT / "output"
-VIZ_DIR = OUTPUT_DIR / "visualizations"
-REPORT_DIR = OUTPUT_DIR / "report"
-
-import sys
-
-sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
+from config import OUTPUT_DIR, REPORT_DIR, VISUALIZATIONS_DIR
 from utils.results import aggregate_stats, group_scenarios_by_period, load_all_results
 from utils.scenario_catalog import PERIODS, SCENARIOS, scenario_color, scenario_family, scenario_label, scenario_period
 

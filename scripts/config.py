@@ -1,8 +1,23 @@
-"""Shared constants and helpers for cross-script KPI consistency.
+"""Shared constants and helpers for cross-script consistency.
 
 These values are consumed by both batch analysis and presentation export so
-the same scenario data produces the same derived metrics everywhere.
+the same scenario data produces the same derived metrics and file locations
+everywhere.
 """
+
+from pathlib import Path
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+OUTPUT_DIR = PROJECT_ROOT / "output"
+SCENARIOS_DIR = PROJECT_ROOT / "scenarios"
+VISUALIZATIONS_DIR = OUTPUT_DIR / "visualizations"
+REPORT_DIR = OUTPUT_DIR / "report"
+SUMMARY_STATS_FILE = REPORT_DIR / "summary_stats.json"
+PRESENTATION_DIR = PROJECT_ROOT / "web" / "presentation"
+PRESENTATION_DATA_DIR = PRESENTATION_DIR / "data"
+PRESENTATION_NETWORKS_DIR = PRESENTATION_DATA_DIR / "networks"
+PRESENTATION_PLAYBACK_DIR = PRESENTATION_DATA_DIR / "playback"
 
 SNAROYA_ORIGIN_EDGE_IDS = frozenset({"-27195187#3"})
 SNAROYA_DESTINATION_EDGE_IDS = frozenset({"27195187#2"})
