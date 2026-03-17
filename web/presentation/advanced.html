@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Snarøyveien Trafikksimulering - Avansert</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="layout advanced-layout">
+      <aside class="panel advanced-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Avansert arbeidsflate</p>
+            <h1>Snarøyveien Lab</h1>
+            <p class="lede">Detaljvisning for nettverksanalyse, lokale edge-endringer og SUMO-patcheksport.</p>
+          </div>
+          <button id="themeToggle" class="theme-toggle" type="button" title="Bytt mellom lys og mørk modus" aria-label="Bytt tema">☀️</button>
+        </div>
+
+        <div class="panel-link-row">
+          <a class="panel-link" href="./index.html">Til ren simulator</a>
+          <span class="advanced-note">Klikk på en lenke i kartet for å inspisere og endre den.</span>
+        </div>
+
+        <section class="control-group advanced-control-grid">
+          <label for="familySelect">Vegvariant</label>
+          <select id="familySelect"></select>
+
+          <label for="periodSelect">Tidsrom</label>
+          <select id="periodSelect">
+            <option value="morning">Morgenrush</option>
+            <option value="midday">Midt på dagen</option>
+            <option value="afternoon">Ettermiddagsrush</option>
+          </select>
+
+          <label for="visualModeSelect">Kartmodus</label>
+          <select id="visualModeSelect">
+            <option value="utilization">Kapasitetsutnyttelse</option>
+            <option value="edges">Belastning</option>
+            <option value="vehicles">Kjøretøy</option>
+          </select>
+        </section>
+
+        <section class="toggle-grid advanced-toggle-grid">
+          <label class="toggle" id="concertToggleRow">
+            <input type="checkbox" id="concertToggle" />
+            <span>Unity Arena-konsert</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="emergencyToggle" checked />
+            <span>Vis utrykning</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="signalsToggle" checked />
+            <span>Signalpunkter</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="roundaboutsToggle" checked />
+            <span>Rundkjøringer</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="labelsToggle" />
+            <span>Lenkenavn</span>
+          </label>
+        </section>
+
+        <section class="timeline">
+          <div class="timeline-head">
+            <button id="playPauseButton" type="button">Spill av</button>
+            <div>
+              <span id="timeLabelPrefix" class="time-label">kl.</span><span id="timeLabel" class="time-label">00:00</span>
+            </div>
+          </div>
+          <div class="timeline-tools">
+            <label class="control-inline" for="playbackRateSlider">
+              <span>Hastighet</span>
+              <div class="range-inline">
+                <input id="playbackRateSlider" type="range" min="1" max="60" step="1" value="10" />
+                <output id="playbackRateValue" for="playbackRateSlider">10x</output>
+              </div>
+            </label>
+          </div>
+          <input id="timeSlider" type="range" min="0" max="0" step="1" value="0" aria-label="Tidslinje for simulering" title="Tidslinje for simulering" />
+        </section>
+
+        <section class="control-group">
+          <h2 class="section-title">Scenario-metrikker</h2>
+          <div class="metrics-grid metrics-grid-tight">
+            <article class="metric-chip"><span>Fra Snarøya</span><strong id="kpiFromSnaroya">-</strong></article>
+            <article class="metric-chip"><span>Til Snarøya</span><strong id="kpiToSnaroya">-</strong></article>
+            <article class="metric-chip"><span>Utrykning</span><strong id="kpiEmergency">-</strong></article>
+            <article class="metric-chip"><span>Kø</span><strong id="kpiQueue">-</strong></article>
+            <article class="metric-chip"><span>Systemforsinkelse</span><strong id="metricSystemDelay">-</strong></article>
+            <article class="metric-chip"><span>Blokkerte kjøretøy</span><strong id="metricBlockedVehicles">-</strong></article>
+            <article class="metric-chip"><span>Maks ventende</span><strong id="metricPeakWaiting">-</strong></article>
+            <article class="metric-chip"><span>Maks lenkelast</span><strong id="metricMaxEdgeCount">-</strong></article>
+          </div>
+        </section>
+
+        <section class="control-group inspector-section">
+          <div class="section-head">
+            <h2 class="section-title">Valgt lenke</h2>
+            <span id="selectedEdgePill" class="pill">Ingen valgt</span>
+          </div>
+          <p id="selectedEdgeTitle" class="inspector-title">Klikk på en lenke i kartet</p>
+          <dl id="selectedEdgeMeta" class="inspector-grid"></dl>
+          <div class="metrics-grid metrics-grid-tight">
+            <article class="metric-chip"><span>Nåværende last</span><strong id="edgeMetricLoad">-</strong></article>
+            <article class="metric-chip"><span>Nåværende fart</span><strong id="edgeMetricSpeed">-</strong></article>
+            <article class="metric-chip"><span>Utnyttelse</span><strong id="edgeMetricUtilization">-</strong></article>
+            <article class="metric-chip"><span>Signal</span><strong id="edgeMetricSignal">-</strong></article>
+          </div>
+        </section>
+
+        <section class="control-group inspector-section">
+          <h2 class="section-title">Rediger nett</h2>
+          <label for="editSpeedInput">Fart (km/t)</label>
+          <input id="editSpeedInput" type="number" min="5" max="120" step="1" />
+          <label for="editLanesInput">Felt</label>
+          <input id="editLanesInput" type="number" min="1" max="8" step="1" />
+          <label for="editCapacityInput">Kapasitetsanslag (kjt/t)</label>
+          <input id="editCapacityInput" type="number" min="100" max="10000" step="50" />
+          <div class="editor-actions">
+            <button id="saveEdgeEditButton" type="button">Lagre edge-patch</button>
+            <button id="resetEdgeEditButton" class="ghost-button" type="button">Nullstill</button>
+          </div>
+        </section>
+
+        <section class="control-group inspector-section">
+          <h2 class="section-title">SUMO-artefakter</h2>
+          <label for="artifactTypeSelect">Artefakttype</label>
+          <select id="artifactTypeSelect">
+            <option value="cycleway">Sykkelfelt</option>
+            <option value="sidewalk">Fortau</option>
+            <option value="median">Midtdeler</option>
+            <option value="crossing">Fotgjengerkryssing</option>
+          </select>
+          <label for="artifactSideSelect">Plassering</label>
+          <select id="artifactSideSelect">
+            <option value="right">Høyre</option>
+            <option value="left">Venstre</option>
+            <option value="both">Begge sider</option>
+            <option value="center">Midtstilt</option>
+          </select>
+          <label for="artifactWidthInput">Bredde (m)</label>
+          <input id="artifactWidthInput" type="number" min="0.5" max="8" step="0.1" value="2.0" />
+          <label for="crossingPartnerSelect">Kryssingspartner</label>
+          <select id="crossingPartnerSelect"></select>
+          <div class="editor-actions">
+            <button id="addArtifactButton" type="button">Legg til artefakt</button>
+          </div>
+          <div id="artifactList" class="artifact-list"></div>
+        </section>
+
+        <section class="control-group inspector-section">
+          <h2 class="section-title">Patchpakke</h2>
+          <p class="advanced-note">Eksporter JSON her og oversett den videre til `.edg.xml` / `.con.xml` med patch-generatoren.</p>
+          <div class="editor-actions">
+            <button id="exportPatchButton" type="button">Last ned patchpakke</button>
+            <button id="clearWorkbenchButton" class="ghost-button" type="button">Fjern lokale endringer</button>
+          </div>
+          <p id="patchCommandHint" class="advanced-note">Kommando: `uv run python scripts/09_generate_patch_files.py --input path/to/patch.json --output tmp/patch_bundle`</p>
+          <p id="scenarioNote" class="note">Avansert visning lastet.</p>
+        </section>
+      </aside>
+
+      <div
+        id="advancedResizeHandle"
+        class="advanced-resize-handle"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Juster bredde på sidepanel"
+        title="Dra for å justere sidepanelbredde"
+      ></div>
+
+      <main class="map-shell advanced-map-shell">
+        <div id="map"></div>
+        <section class="map-charts advanced-map-charts" aria-label="Synkrone ko-grafer">
+          <article class="chart-card">
+            <div class="chart-head">
+              <div>
+                <h2>Kø over tid</h2>
+                <p>Ventende og stillestående kjøretøy</p>
+              </div>
+              <strong id="queueChartValue">0 kjt</strong>
+            </div>
+            <canvas id="queueTimelineChart" height="120"></canvas>
+          </article>
+          <article class="chart-card">
+            <div class="chart-head">
+              <div>
+                <h2>Kø-vekst</h2>
+                <p>Endring siden forrige målepunkt</p>
+              </div>
+              <strong id="growthChartValue">0 kjt</strong>
+            </div>
+            <canvas id="queueGrowthChart" height="120"></canvas>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script type="module" src="./advanced.js"></script>
+  </body>
+</html>

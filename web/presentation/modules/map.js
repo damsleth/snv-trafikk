@@ -11,7 +11,7 @@ const TILES = {
   },
 }
 
-export function createMapController({ manifest, ui, darkMode }) {
+export function createMapController({ manifest, ui, darkMode, popupRenderer = defaultEdgePopup, onEdgeSelected = null }) {
   const map = L.map("map", {
     zoomControl: true,
     minZoom: 12,
@@ -37,12 +37,18 @@ export function createMapController({ manifest, ui, darkMode }) {
   })
 
   let networkLayer = null
+  let networkData = null
   let edgeLayers = new Map()
   let activeEdges = new Set()
   const anchorLayer = L.layerGroup().addTo(map)
   const entryPointLayer = L.layerGroup().addTo(map)
   const emergencyLayer = L.layerGroup().addTo(map)
   const vehicleLayer = L.layerGroup().addTo(map)
+  const signalLayer = L.layerGroup().addTo(map)
+  const roundaboutLayer = L.layerGroup().addTo(map)
+  const labelLayer = L.layerGroup().addTo(map)
+  const artifactLayer = L.layerGroup().addTo(map)
+  const selectionLayer = L.layerGroup().addTo(map)
 
   function applyTheme(dark) {
     document.documentElement.setAttribute("data-theme", dark ? "dark" : "light")
@@ -72,15 +78,15 @@ export function createMapController({ manifest, ui, darkMode }) {
     }
 
     const geojson = await loadNetwork(networkMeta.file)
+    networkData = geojson
     networkLayer = L.geoJSON(geojson, {
       style: (feature) => baseEdgeStyle(feature.properties.lanes),
       onEachFeature: (feature, layer) => {
         edgeLayers.set(feature.properties.id, layer)
-        layer.bindPopup(
-          `<strong>${feature.properties.name}</strong><br/>` +
-            `Felter: ${feature.properties.lanes}<br/>` +
-            `Skiltet fart: ${feature.properties.speed_kmh} km/t`,
-        )
+        layer.bindPopup(popupRenderer(feature))
+        if (onEdgeSelected) {
+          layer.on("click", () => onEdgeSelected(feature.properties.id))
+        }
       },
     }).addTo(map)
     networkLayer.familyId = family
@@ -175,8 +181,13 @@ export function createMapController({ manifest, ui, darkMode }) {
         continue
       }
       nextActive.add(edgeId)
-      const lanes = layer.feature.properties.lanes || 1
-      layer.setStyle(edgeStyle(values[0], values[1], lanes, values[2], values[3]))
+      const props = layer.feature.properties
+      const lanes = props.lanes || 1
+      layer.setStyle(
+        visualMode === "utilization"
+          ? utilizationEdgeStyle(values[0], values[1], props.capacity_vph_estimate, lanes, values[2], values[3])
+          : edgeStyle(values[0], values[1], lanes, values[2], values[3]),
+      )
     }
 
     activeEdges = nextActive
@@ -256,6 +267,144 @@ export function createMapController({ manifest, ui, darkMode }) {
     }
   }
 
+  function getEdgeFeature(edgeId) {
+    return edgeLayers.get(edgeId)?.feature ?? null
+  }
+
+  function getNetworkData() {
+    return networkData
+  }
+
+  function renderAdvancedOverlays({
+    showLabels = false,
+    showSignals = false,
+    showRoundabouts = false,
+    edgeEdits = {},
+    artifacts = [],
+    selectedEdgeId = null,
+  } = {}) {
+    labelLayer.clearLayers()
+    signalLayer.clearLayers()
+    roundaboutLayer.clearLayers()
+    artifactLayer.clearLayers()
+    selectionLayer.clearLayers()
+
+    if (!networkData) {
+      return
+    }
+
+    if (showSignals) {
+      for (const signal of networkData.meta?.signals ?? []) {
+        L.circleMarker([signal.lat, signal.lon], {
+          radius: 5,
+          color: "#f97316",
+          weight: 2,
+          fillColor: "#fff7ed",
+          fillOpacity: 0.92,
+        })
+          .bindTooltip(`Signal ${signal.id}`, { direction: "top", offset: [0, -10] })
+          .addTo(signalLayer)
+      }
+    }
+
+    if (showRoundabouts) {
+      for (const roundabout of networkData.meta?.roundabouts ?? []) {
+        const coords = (roundabout.coordinates ?? []).map(([lon, lat]) => [lat, lon])
+        if (coords.length > 2) {
+          L.polygon(coords, {
+            color: "#14b8a6",
+            weight: 2,
+            fillColor: "#2dd4bf",
+            fillOpacity: 0.08,
+            interactive: false,
+            dashArray: "6 4",
+          }).addTo(roundaboutLayer)
+        }
+        const [lon, lat] = roundabout.center ?? [0, 0]
+        L.marker([lat, lon], {
+          icon: L.divIcon({
+            className: "roundabout-label-marker",
+            html: `<span class="mini-map-label">${roundabout.label}</span>`,
+          }),
+          interactive: false,
+        }).addTo(roundaboutLayer)
+      }
+    }
+
+    if (showLabels) {
+      for (const feature of networkData.features ?? []) {
+        const [lon, lat] = feature.properties.midpoint ?? midpointFromCoords(feature.geometry.coordinates)
+        L.marker([lat, lon], {
+          icon: L.divIcon({
+            className: "edge-label-marker",
+            html: `<span class="mini-map-label">${feature.properties.name}</span>`,
+          }),
+          interactive: false,
+        }).addTo(labelLayer)
+      }
+    }
+
+    for (const edgeId of Object.keys(edgeEdits)) {
+      const feature = getEdgeFeature(edgeId)
+      if (!feature) {
+        continue
+      }
+      L.polyline(toLeafletCoords(feature.geometry.coordinates), {
+        color: edgeId === selectedEdgeId ? "#f97316" : "#7c3aed",
+        weight: edgeId === selectedEdgeId ? 8 : 6,
+        opacity: 0.55,
+        interactive: false,
+      }).addTo(selectionLayer)
+    }
+
+    if (selectedEdgeId && !edgeEdits[selectedEdgeId]) {
+      const feature = getEdgeFeature(selectedEdgeId)
+      if (feature) {
+        L.polyline(toLeafletCoords(feature.geometry.coordinates), {
+          color: "#f97316",
+          weight: 8,
+          opacity: 0.55,
+          interactive: false,
+        }).addTo(selectionLayer)
+      }
+    }
+
+    for (const artifact of artifacts) {
+      renderArtifact(artifact)
+    }
+  }
+
+  function renderArtifact(artifact) {
+    const feature = getEdgeFeature(artifact.edge_id)
+    if (!feature) {
+      return
+    }
+
+    if (artifact.type === "crossing") {
+      const [lon, lat] = feature.properties.to_node_coord ?? feature.properties.midpoint ?? midpointFromCoords(feature.geometry.coordinates)
+      L.marker([lat, lon], {
+        icon: L.divIcon({
+          className: "artifact-crossing-marker",
+          html: '<div class="artifact-crossing-icon"></div>',
+          iconSize: [22, 22],
+          iconAnchor: [11, 11],
+        }),
+      })
+        .bindTooltip("Planlagt kryssing", { direction: "top", offset: [0, -8] })
+        .addTo(artifactLayer)
+      return
+    }
+
+    const style = artifactStyle(artifact.type)
+    L.polyline(toLeafletCoords(feature.geometry.coordinates), {
+      color: style.color,
+      weight: style.weight,
+      opacity: style.opacity,
+      dashArray: style.dashArray,
+      interactive: false,
+    }).addTo(artifactLayer)
+  }
+
   return {
     map,
     toggleTheme,
@@ -264,7 +413,16 @@ export function createMapController({ manifest, ui, darkMode }) {
     renderDynamicLayers,
     renderAnchors,
     renderEntryPoints,
+    renderAdvancedOverlays,
+    getEdgeFeature,
+    getNetworkData,
   }
+}
+
+function defaultEdgePopup(feature) {
+  return `<strong>${feature.properties.name}</strong><br/>` +
+    `Felter: ${feature.properties.lanes}<br/>` +
+    `Skiltet fart: ${feature.properties.speed_kmh} km/t`
 }
 
 function hasVehiclePlayback(playback) {
@@ -291,6 +449,20 @@ function edgeStyle(count, speedKmh, lanes, emergencyCount, eventCount) {
     color: `hsl(${hue} ${saturation}% ${lightness}%)`,
     weight: 1.4 + Math.min(loadPerLane, 6) * 0.9 + emergencyCount * 0.4,
     opacity: 0.92,
+  }
+}
+
+function utilizationEdgeStyle(count, speedKmh, capacityEstimate, lanes, emergencyCount, eventCount) {
+  const capacityUnits = Math.max((capacityEstimate ?? lanes * 900) / 120, lanes * 6, 1)
+  const utilization = clamp(count / capacityUnits, 0, 1.6)
+  const speedPenalty = clamp((25 - speedKmh) / 25, 0, 1)
+  const severity = clamp(utilization * 0.8 + speedPenalty * 0.45, 0, 1.4)
+  const hue = clamp(145 - severity * 135, 8, 145)
+  const lightness = clamp(50 - severity * 12, 22, 50)
+  return {
+    color: `hsl(${hue} 82% ${lightness}%)`,
+    weight: 1.6 + Math.min(lanes, 5) * 0.9 + emergencyCount * 0.4 + eventCount * 0.2,
+    opacity: 0.94,
   }
 }
 
@@ -368,4 +540,28 @@ function vehicleSvg(style, angle) {
     `<path class="vehicle-nose" d="M7 3h4v2H7z"/>` +
     `</svg>`
   )
+}
+
+function midpointFromCoords(coords) {
+  if (!coords?.length) {
+    return [0, 0]
+  }
+  return coords[Math.floor(coords.length / 2)]
+}
+
+function toLeafletCoords(coords) {
+  return (coords ?? []).map(([lon, lat]) => [lat, lon])
+}
+
+function artifactStyle(type) {
+  switch (type) {
+    case "cycleway":
+      return { color: "#2563eb", weight: 5, opacity: 0.9, dashArray: "8 6" }
+    case "sidewalk":
+      return { color: "#f59e0b", weight: 4, opacity: 0.88, dashArray: "2 6" }
+    case "median":
+      return { color: "#111827", weight: 3, opacity: 0.78, dashArray: "10 4" }
+    default:
+      return { color: "#94a3b8", weight: 3, opacity: 0.8, dashArray: "4 4" }
+  }
 }

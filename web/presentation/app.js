@@ -1,4 +1,4 @@
-import { drawCharts, renderComparisonTable, updateKpis } from "./modules/charts.js"
+import { drawCharts, updateKpis } from "./modules/charts.js"
 import { buildFrame, getFrameCount, getFrameDurationMs, loadManifest, loadNetwork, resolveMode } from "./modules/data.js"
 import { createMapController } from "./modules/map.js"
 import { formatClock } from "./modules/utils.js"
@@ -40,7 +40,6 @@ const ui = {
   queueChartValue: document.getElementById("queueChartValue"),
   growthChartValue: document.getElementById("growthChartValue"),
   themeToggle: document.getElementById("themeToggle"),
-  compareBody: document.getElementById("compareBody"),
 }
 
 const cache = {
@@ -65,7 +64,6 @@ initThemeToggle()
 mapController.renderAnchors()
 mapController.renderEntryPoints()
 await renderAll()
-renderComparison()
 
 function initControls() {
   for (const family of manifest.families) {
@@ -92,7 +90,6 @@ function initControls() {
     syncConcertVisibility()
     state.frameIndex = 0
     await renderAll()
-    renderComparison()
   })
 
   ui.visualModeSelect.addEventListener("change", async (event) => {
@@ -163,16 +160,6 @@ async function selectFamily(familyId) {
   ui.familySelect.value = familyId
   state.frameIndex = 0
   await renderAll()
-  renderComparison()
-}
-
-function renderComparison() {
-  renderComparisonTable({
-    manifest,
-    state,
-    ui,
-    onSelectFamily: selectFamily,
-  })
 }
 
 async function renderAll() {

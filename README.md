@@ -103,6 +103,7 @@ Innhold:
 - **Blålyskjøretøy:** Eget lag for simulerte utrykningskjøretøy
 - **Konsertpåslag:** Unity Arena-konsert med ekstra trafikk ettermiddag/kveld
 - **Trafikkinnføring:** Viser innkommende/utgående trafikk fra Snarøya, E18 vest, E18 øst og Ring 3 nord (Granfosstunnelen)
+- **Avansert side:** `advanced.html` viser signalpunkter, rundkjøringer, edge-metadata, lokal redigeringsmodus og artefakt-/patcharbeidsflate uten å belaste hovedsiden
 
 ### Kjør lokalt
 
@@ -112,6 +113,16 @@ uv run python scripts/08_serve_presentation.py
 ```
 
 Åpne deretter [http://127.0.0.1:8000](http://127.0.0.1:8000).
+
+Den rene simulatoren ligger på `index.html`, mens den avanserte arbeidsflaten ligger på `advanced.html`.
+
+For å oversette en nedlastet patchpakke fra `advanced.html` til SUMO-filer kan du kjøre:
+
+```bash
+uv run python scripts/09_generate_patch_files.py --input path/to/patch.json --output tmp/patch_bundle
+```
+
+Dette skriver `.edg.xml`, `.con.xml` og en metadatafil for artefakter som ennå ikke kan oversettes direkte til netconvert-patcher.
 
 Merk: morgen- og ettermiddagskartene bygger på reelle SUMO-kjøringer. Midt på dagen er laget som et tydelig merket presentasjonsestimat.
 

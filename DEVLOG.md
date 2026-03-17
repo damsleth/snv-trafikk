@@ -3,6 +3,7 @@ løpende liste over endringer og forbedringer i snv-trafikk.
 omvendt kronologisk, med de nyeste endringene øverst.  
 endringer legges til med dato, timestamp og en kort beskrivelse av hva som er gjort, direkte under denne linjen.
 ---  
+2026-03-17 13:50:03 CET - la til separat advanced.html med edge-inspektør, lokal redigerings-/artefaktarbeidsflate, rikere nettverksmetadata i presentasjonseksporten og en patch-generator for `.edg.xml`/`.con.xml` fra nedlastede patchpakker.
 2026-03-17 11:20:24 CET - la til skalerbar OD-generering med `--demand-scale`, deklarative 80 %-scenarier i scenario-katalogen, nye skalerte rute/CSV-artefakter og testdekning for skalaoppløsning/avrunding.
 2026-03-17 11:19:09 CET - oppdaterte rapportgeneratorens begrensningstekst og regenererte rapport-/presentasjonsartefakter slik at avledede filer samsvarer med dagens kode og data.
 2026-03-17 10:46:21 CET - samlet delte output-/rapport-/presentasjonsstier i scripts/config.py og fjernet unødvendige sys.path-hacks fra analyse-, rapport- og eksportskriptene.

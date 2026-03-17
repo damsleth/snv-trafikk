@@ -48,6 +48,16 @@ ANCHOR_EDGES = {
     "south": ("-27195187#3", 0),
     "north": ("32321957", 0),
 }
+COMMON_VCLASSES = [
+    "passenger",
+    "bus",
+    "bicycle",
+    "pedestrian",
+    "emergency",
+    "delivery",
+    "taxi",
+    "truck",
+]
 
 
 def stats_value(stats: dict, key: str, default: float = 0.0) -> float:
@@ -67,6 +77,78 @@ def midpoint(shape: list[tuple[float, float]]) -> tuple[float, float]:
     if not shape:
         return (0.0, 0.0)
     return shape[len(shape) // 2]
+
+
+def allowed_classes(lane) -> list[str]:
+    return [vclass for vclass in COMMON_VCLASSES if lane.allows(vclass)]
+
+
+def capacity_estimate_vph(edge) -> int:
+    """Return a simple, stable per-edge capacity hint for UI use.
+
+    This is not a calibrated engineering capacity model. It is a lightweight
+    estimate used to express relative utilization in the advanced presentation.
+    """
+    return int(round(edge.getLaneNumber() * 900))
+
+
+def export_signal_points(net: sumolib.net.Net) -> list[dict]:
+    points = []
+    for node in net.getNodes():
+        node_type = node.getType() or ""
+        if "traffic_light" not in node_type:
+            continue
+        x, y = node.getCoord()
+        lon, lat = net.convertXY2LonLat(x, y)
+        points.append(
+            {
+                "id": node.getID(),
+                "type": node_type,
+                "lat": round(lat, 6),
+                "lon": round(lon, 6),
+            }
+        )
+    return points
+
+
+def export_roundabouts(net: sumolib.net.Net) -> tuple[dict[str, str], list[dict]]:
+    edge_to_roundabout: dict[str, str] = {}
+    overlays = []
+
+    for index, roundabout in enumerate(net.getRoundabouts(), start=1):
+        edge_ids = list(roundabout.getEdges() or [])
+        node_ids = list(roundabout.getNodes() or [])
+        coords = []
+        for node_id in node_ids:
+            node = net.getNode(node_id)
+            lon, lat = net.convertXY2LonLat(*node.getCoord())
+            coords.append([round(lon, 6), round(lat, 6)])
+        if coords and coords[0] != coords[-1]:
+            coords.append(coords[0])
+
+        roundabout_id = f"roundabout_{index}"
+        for edge_id in edge_ids:
+            edge_to_roundabout[edge_id] = roundabout_id
+
+        if coords:
+            center_lon = round(sum(point[0] for point in coords[:-1]) / max(len(coords) - 1, 1), 6)
+            center_lat = round(sum(point[1] for point in coords[:-1]) / max(len(coords) - 1, 1), 6)
+        else:
+            center_lon = 0.0
+            center_lat = 0.0
+
+        overlays.append(
+            {
+                "id": roundabout_id,
+                "label": f"Rundkjøring {index}",
+                "center": [center_lon, center_lat],
+                "coordinates": coords,
+                "edge_ids": edge_ids,
+                "node_ids": node_ids,
+            }
+        )
+
+    return edge_to_roundabout, overlays
 
 
 def build_anchor_points(net: sumolib.net.Net) -> list[dict]:
@@ -221,6 +303,8 @@ def export_summary_series(scenario_name: str) -> list[list[int]]:
 def export_network_geojson(network_path: Path, family_name: str) -> dict:
     net = sumolib.net.readNet(str(network_path))
     features = []
+    roundabout_lookup, roundabouts = export_roundabouts(net)
+    signals = export_signal_points(net)
 
     for edge in net.getEdges():
         if edge.getFunction() == "internal":
@@ -238,7 +322,52 @@ def export_network_geojson(network_path: Path, family_name: str) -> dict:
         if len(shape) < 2:
             continue
 
+        from_node = edge.getFromNode()
+        to_node = edge.getToNode()
+        from_lon, from_lat = net.convertXY2LonLat(*from_node.getCoord())
+        to_lon, to_lat = net.convertXY2LonLat(*to_node.getCoord())
+        target_edges = sorted(
+            target.getID()
+            for target in edge.getOutgoing().keys()
+            if target.getFunction() != "internal"
+        )
+        node_edge_ids = sorted(
+            {
+                candidate.getID()
+                for candidate in [*to_node.getIncoming(), *to_node.getOutgoing()]
+                if candidate.getFunction() != "internal" and candidate.getID() != edge.getID()
+            }
+        )
+        crossing_edges = sorted(crossing.getID() for crossing in edge.getCrossingEdges())
+        lane_details = []
+        lane_permissions = set()
+        lane_turn_targets = set()
+        for lane in edge.getLanes():
+            allowed = allowed_classes(lane)
+            lane_permissions.update(allowed)
+            outgoing_edges = sorted(
+                target.getID()
+                for target in lane.getOutgoingEdges()
+                if target.getFunction() != "internal"
+            )
+            lane_turn_targets.update(outgoing_edges)
+            lane_details.append(
+                {
+                    "id": lane.getID(),
+                    "index": lane.getIndex(),
+                    "length_m": round(lane.getLength(), 1),
+                    "speed_kmh": round(lane.getSpeed() * 3.6, 1),
+                    "width_m": round(lane.getWidth(), 1),
+                    "allowed": allowed,
+                    "outgoing_edge_ids": outgoing_edges,
+                }
+            )
+
         coords = [lonlat(net, x, y) for x, y in shape]
+        mid_lon, mid_lat = midpoint(coords)
+        to_node_type = to_node.getType() or ""
+        tls = edge.getTLS()
+        signal_id = tls.getID() if tls else (to_node.getID() if "traffic_light" in to_node_type else "")
         features.append(
             {
                 "type": "Feature",
@@ -251,6 +380,27 @@ def export_network_geojson(network_path: Path, family_name: str) -> dict:
                     "name": edge.getName() or edge.getID(),
                     "lanes": edge.getLaneNumber(),
                     "speed_kmh": round(edge.getSpeed() * 3.6, 1),
+                    "length_m": round(edge.getLength(), 1),
+                    "priority": edge.getPriority(),
+                    "function": edge.getFunction() or "normal",
+                    "type": edge.getType() or "",
+                    "capacity_vph_estimate": capacity_estimate_vph(edge),
+                    "from_node": from_node.getID(),
+                    "from_node_type": from_node.getType() or "",
+                    "from_node_coord": [round(from_lon, 6), round(from_lat, 6)],
+                    "to_node": to_node.getID(),
+                    "to_node_type": to_node_type,
+                    "to_node_coord": [round(to_lon, 6), round(to_lat, 6)],
+                    "signal_id": signal_id,
+                    "has_signal_control": bool(signal_id),
+                    "roundabout_id": roundabout_lookup.get(edge.getID()),
+                    "crossing_edge_ids": crossing_edges,
+                    "outgoing_edge_ids": target_edges,
+                    "node_edge_ids": node_edge_ids,
+                    "allowed_classes": sorted(lane_permissions),
+                    "turn_target_edge_ids": sorted(lane_turn_targets),
+                    "lane_details": lane_details,
+                    "midpoint": [round(mid_lon, 6), round(mid_lat, 6)],
                 },
             }
         )
@@ -273,6 +423,10 @@ def export_network_geojson(network_path: Path, family_name: str) -> dict:
             {
                 "type": "FeatureCollection",
                 "features": features,
+                "meta": {
+                    "signals": signals,
+                    "roundabouts": roundabouts,
+                },
             },
             separators=(",", ":"),
         ),
