@@ -22,6 +22,7 @@ PLAYBACK_DIR = DATA_DIR / "playback"
 SUMMARY_FILE = OUTPUT_DIR / "report" / "summary_stats.json"
 
 sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
+from config import SNAROYA_DESTINATION_EDGE_IDS, SNAROYA_ORIGIN_EDGE_IDS, lane_edge_id, queue_length_km
 from utils.scenario_catalog import SCENARIOS, scenario_family, scenario_label, scenario_period
 
 
@@ -128,10 +129,6 @@ def export_rolling_kpis(scenario_name: str, interval_s: int = PLAYBACK_INTERVAL_
     if not tripinfo_path.exists():
         return []
 
-    # Parse all completed trips
-    SNV_SYD_ORIGINS = {"-27195187#3"}
-    SNV_SYD_DESTS = {"27195187#2"}
-
     trips_snaroya_from = []  # departing FROM Snarøya (northbound)
     trips_snaroya_to = []    # arriving TO Snarøya (southbound)
     trips_emergency = []
@@ -145,15 +142,15 @@ def export_rolling_kpis(scenario_name: str, interval_s: int = PLAYBACK_INTERVAL_
             continue
 
         vid = t.get("id", "")
-        depart_edge = t.get("departLane", "").rsplit("_", 1)[0]
-        arrival_edge = t.get("arrivalLane", "").rsplit("_", 1)[0]
+        depart_edge = lane_edge_id(t.get("departLane", ""))
+        arrival_edge = lane_edge_id(t.get("arrivalLane", ""))
 
         if vid.startswith("emer_"):
             trips_emergency.append((depart, arrival, duration))
 
-        if depart_edge in SNV_SYD_ORIGINS:
+        if depart_edge in SNAROYA_ORIGIN_EDGE_IDS:
             trips_snaroya_from.append((depart, arrival, duration))
-        if arrival_edge in SNV_SYD_DESTS:
+        if arrival_edge in SNAROYA_DESTINATION_EDGE_IDS:
             trips_snaroya_to.append((depart, arrival, duration))
 
     # Also load summary queue data keyed by time
@@ -169,9 +166,6 @@ def export_rolling_kpis(scenario_name: str, interval_s: int = PLAYBACK_INTERVAL_
             h = int(elem.get("halting", "0"))
             queue_by_time[ts] = w + h
             elem.clear()
-
-    # Stopped vehicle density: ~120 veh/km/lane, 2 approach lanes
-    QUEUE_DENSITY = 120 * 2
 
     # Build rolling series: for each frame, average trips that completed
     # within a ±WINDOW_S window of the frame time.
@@ -192,7 +186,7 @@ def export_rolling_kpis(scenario_name: str, interval_s: int = PLAYBACK_INTERVAL_
         to_min = avg_duration_in_window(trips_snaroya_to, ts)
         emer_min = avg_duration_in_window(trips_emergency, ts)
         q = queue_by_time.get(ts, 0)
-        q_km = round(q / QUEUE_DENSITY, 1)
+        q_km = queue_length_km(q)
 
         # Combined Snarøya avg (from + to)
         combined = [dur for dep, arr, dur in trips_snaroya_from + trips_snaroya_to

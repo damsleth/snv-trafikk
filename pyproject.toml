@@ -16,3 +16,8 @@ dependencies = [
     "sumolib>=1.26.0",
     "traci>=1.26.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4.0",
+]

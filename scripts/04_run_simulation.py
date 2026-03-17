@@ -14,6 +14,7 @@ OUTPUT_DIR = PROJECT_ROOT / "output"
 SCENARIOS_DIR = PROJECT_ROOT / "scenarios"
 
 sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
+from config import SNAROYA_ORIGIN_EDGE_IDS, lane_edge_id, queue_length_km
 from utils.scenario_catalog import SCENARIOS, scenario_label
 
 
@@ -167,12 +168,10 @@ def parse_stats(output_dir: Path) -> dict:
             # Snarøya-origin trips (per-capita delay for peninsula residents).
             # tripinfo records departLane="edgeId_laneIndex", so we extract
             # the edge ID and match against the known snv_syd origin edges.
-            SNV_SYD_ORIGINS = {"115505254", "515410724#0"}
             snaroya_only = []
             for t in regular:
-                dl = t.get("departLane", "")
-                depart_edge = dl.rsplit("_", 1)[0] if "_" in dl else ""
-                if depart_edge in SNV_SYD_ORIGINS:
+                depart_edge = lane_edge_id(t.get("departLane", ""))
+                if depart_edge in SNAROYA_ORIGIN_EDGE_IDS:
                     snaroya_only.append(t)
             if snaroya_only:
                 snaroya_dur = [float(t.get("duration", 0)) for t in snaroya_only]
@@ -227,18 +226,9 @@ def parse_stats(output_dir: Path) -> dict:
     blocked_delay = float(stats.get("blocked_vehicle_h", 0))
     stats["system_delay_h"] = completed_delay + blocked_delay
 
-    # Approximate queue length in km.
-    # "not_inserted" vehicles are waiting outside the network boundary.
-    # Density assumption: ~120 vehicles/km for stopped single-lane traffic
-    # (avg vehicle length 4.5 m + ~3.8 m gap ≈ 8.3 m/veh → ~120 veh/km).
-    # Snarøyveien approach from E18 has 2 lanes, so divide by 2.
-    STOPPED_DENSITY_VEH_PER_KM = 120
-    APPROACH_LANES = 2
     not_inserted = int(stats.get("not_inserted", 0))
     peak_waiting = int(stats.get("peak_waiting", 0))
-    stats["queue_length_km"] = round(
-        (not_inserted + peak_waiting) / (STOPPED_DENSITY_VEH_PER_KM * APPROACH_LANES), 1
-    )
+    stats["queue_length_km"] = queue_length_km(not_inserted + peak_waiting)
 
     return stats
 
