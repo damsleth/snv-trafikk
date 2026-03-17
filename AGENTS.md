@@ -51,3 +51,6 @@ are available via `uv run netconvert`, `uv run duarouter`, etc.
 - Results are stored in `output/` with scenario-specific subfolders
 - JavaScript code in `web/presentation/app.js` uses modular functions and event listeners for interactivity
 - JavaScript does not have any unnecessary semicolons.
+
+## Devlog conventions
+- All changes are documented reverse chronologically in the `DEVLOG.md` file, with date, timestamp, and a short description of the change

@@ -680,7 +680,7 @@ function drawVehicles(frame) {
    (e18_vest, e18_ost, ring3_nord) and included in the FCD playback data. */
 
 function vehicleStyle(speedKmh, kind, zoom) {
-  const scale = clamp(Math.pow(1.18, zoom - 15), 0.72, 2.2) * 0.75;
+  const scale = clamp(Math.pow(1.8, zoom - 15), 0.72, 2.2) * 0.75;
   if (kind === 1) {
     return {
       color: "#facc15",
