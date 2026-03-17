@@ -25,8 +25,8 @@ const ui = {
   timeSlider: document.getElementById("timeSlider"),
   timeLabel: document.getElementById("timeLabel"),
   scenarioNote: document.getElementById("scenarioNote"),
-  kpiDuration: document.getElementById("kpiDuration"),
-  kpiDelay: document.getElementById("kpiDelay"),
+  kpiFromSnaroya: document.getElementById("kpiFromSnaroya"),
+  kpiToSnaroya: document.getElementById("kpiToSnaroya"),
   kpiQueue: document.getElementById("kpiQueue"),
   kpiEmergency: document.getElementById("kpiEmergency"),
   queueTimelineChart: document.getElementById("queueTimelineChart"),
@@ -186,7 +186,7 @@ async function renderAll() {
   ui.timeSlider.value = String(state.frameIndex);
 
   updateScenarioNote(mode);
-  updateKpis(mode);
+  updateKpis(mode, 0);
   await updateDynamicLayers(mode);
 }
 
@@ -272,12 +272,39 @@ function updateScenarioNote(mode) {
     "Kartet viser simulering av seed 1";
 }
 
-function updateKpis(mode) {
-  const kpis = calculateKpis(mode);
-  ui.kpiDuration.textContent = `${kpis.avg_duration_min.toFixed(1)} min`;
-  ui.kpiDelay.textContent = `${kpis.system_delay_h.toFixed(0)} kjt-t`;
+function updateKpis(mode, timeS) {
+  const kpis = rollingKpiAtTime(mode, timeS);
+  ui.kpiFromSnaroya.textContent = kpis.snaroya_from != null ? `${kpis.snaroya_from.toFixed(1)} min` : "–";
+  ui.kpiToSnaroya.textContent = kpis.snaroya_to != null ? `${kpis.snaroya_to.toFixed(1)} min` : "–";
+  ui.kpiEmergency.textContent = kpis.emergency != null ? `${kpis.emergency.toFixed(1)} min` : "–";
   ui.kpiQueue.textContent = `${kpis.queue_km.toFixed(1)} km`;
-  ui.kpiEmergency.textContent = `${kpis.emergency_avg_min.toFixed(1)} min`;
+}
+
+function rollingKpiAtTime(mode, timeS) {
+  const rolling = mode.playback?.rolling_kpis;
+  if (!rolling || rolling.length === 0) {
+    /* Fallback to static KPIs from manifest */
+    const kpis = manifest.scenarios[mode.scenario]?.kpis ?? {};
+    return {
+      snaroya_from: kpis.snaroya_avg_min ?? null,
+      snaroya_to: kpis.snaroya_avg_min ?? null,
+      emergency: kpis.emergency_avg_min ?? null,
+      queue_km: kpis.queue_km ?? 0,
+    };
+  }
+  /* Binary search for nearest entry */
+  let lo = 0, hi = rolling.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1;
+    if (rolling[mid].t <= timeS) lo = mid; else hi = mid - 1;
+  }
+  const entry = rolling[lo];
+  return {
+    snaroya_from: entry.snaroya_from ?? null,
+    snaroya_to: entry.snaroya_to ?? null,
+    emergency: entry.emergency ?? null,
+    queue_km: entry.queue_km ?? 0,
+  };
 }
 
 async function updateDynamicLayers(existingMode = null) {
@@ -290,7 +317,7 @@ async function updateDynamicLayers(existingMode = null) {
   drawCharts(mode, frame.time_s);
   ui.timeLabel.textContent = formatClock(frame.time_s, state.period);
   ui.timeSlider.value = String(state.frameIndex);
-  updateKpis(mode);
+  updateKpis(mode, frame.time_s);
 }
 
 function buildFrame(mode, index, progress = 0) {

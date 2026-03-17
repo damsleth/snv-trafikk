@@ -110,6 +110,107 @@ def build_anchor_points(net: sumolib.net.Net) -> list[dict]:
     return anchors
 
 
+def export_rolling_kpis(scenario_name: str, interval_s: int = PLAYBACK_INTERVAL_S) -> list[dict]:
+    """Compute rolling Snarøya-specific KPIs from tripinfo.xml.
+
+    For each playback frame we report metrics for trips that *completed* within
+    a sliding window centred on that frame's time.  This gives a dynamic view
+    of how travel time / emergency time / queue length evolve through the rush.
+
+    The KPIs are:
+      - snaroya_dur_min: avg trip duration for Snarøya-origin vehicles
+      - snaroya_to_min:  avg for trips departing FROM Snarøya (northbound)
+      - snaroya_from_min: avg for trips arriving TO Snarøya (southbound)
+      - emergency_min: avg emergency vehicle duration
+      - queue_km: estimated queue from summary.xml (waiting + halting)
+    """
+    tripinfo_path = OUTPUT_DIR / scenario_name / "seed_1" / "tripinfo.xml"
+    if not tripinfo_path.exists():
+        return []
+
+    # Parse all completed trips
+    SNV_SYD_ORIGINS = {"-27195187#3"}
+    SNV_SYD_DESTS = {"27195187#2"}
+
+    trips_snaroya_from = []  # departing FROM Snarøya (northbound)
+    trips_snaroya_to = []    # arriving TO Snarøya (southbound)
+    trips_emergency = []
+
+    tree = ET.parse(str(tripinfo_path))
+    for t in tree.getroot().findall("tripinfo"):
+        depart = float(t.get("depart", "0"))
+        arrival = float(t.get("arrival", "-1"))
+        duration = float(t.get("duration", "0"))
+        if arrival < 0:
+            continue
+
+        vid = t.get("id", "")
+        depart_edge = t.get("departLane", "").rsplit("_", 1)[0]
+        arrival_edge = t.get("arrivalLane", "").rsplit("_", 1)[0]
+
+        if vid.startswith("emer_"):
+            trips_emergency.append((depart, arrival, duration))
+
+        if depart_edge in SNV_SYD_ORIGINS:
+            trips_snaroya_from.append((depart, arrival, duration))
+        if arrival_edge in SNV_SYD_DESTS:
+            trips_snaroya_to.append((depart, arrival, duration))
+
+    # Also load summary queue data keyed by time
+    summary_path = OUTPUT_DIR / scenario_name / "seed_1" / "summary.xml"
+    queue_by_time: dict[int, int] = {}
+    if summary_path.exists():
+        ctx = ET.iterparse(str(summary_path), events=("end",))
+        for _, elem in ctx:
+            if elem.tag != "step":
+                continue
+            ts = int(round(float(elem.get("time", "0"))))
+            w = int(elem.get("waiting", "0"))
+            h = int(elem.get("halting", "0"))
+            queue_by_time[ts] = w + h
+            elem.clear()
+
+    # Stopped vehicle density: ~120 veh/km/lane, 2 approach lanes
+    QUEUE_DENSITY = 120 * 2
+
+    # Build rolling series: for each frame, average trips that completed
+    # within a ±WINDOW_S window of the frame time.
+    WINDOW_S = 300  # 5-minute sliding window
+    max_time = max(
+        max((a for _, a, _ in trips_snaroya_from), default=0),
+        max((a for _, a, _ in trips_snaroya_to), default=0),
+        5400,
+    )
+
+    def avg_duration_in_window(trips, centre_s):
+        durs = [dur for dep, arr, dur in trips if abs(arr - centre_s) <= WINDOW_S]
+        return round(sum(durs) / len(durs) / 60, 1) if durs else None
+
+    rolling = []
+    for ts in range(0, int(max_time) + 1, interval_s):
+        from_min = avg_duration_in_window(trips_snaroya_from, ts)
+        to_min = avg_duration_in_window(trips_snaroya_to, ts)
+        emer_min = avg_duration_in_window(trips_emergency, ts)
+        q = queue_by_time.get(ts, 0)
+        q_km = round(q / QUEUE_DENSITY, 1)
+
+        # Combined Snarøya avg (from + to)
+        combined = [dur for dep, arr, dur in trips_snaroya_from + trips_snaroya_to
+                    if abs(arr - ts) <= WINDOW_S]
+        snaroya_min = round(sum(combined) / len(combined) / 60, 1) if combined else None
+
+        rolling.append({
+            "t": ts,
+            "snaroya_dur": snaroya_min,
+            "snaroya_from": from_min,
+            "snaroya_to": to_min,
+            "emergency": emer_min,
+            "queue_km": q_km,
+        })
+
+    return rolling
+
+
 def export_summary_series(scenario_name: str) -> list[list[int]]:
     summary_path = OUTPUT_DIR / scenario_name / "seed_1" / "summary.xml"
     if not summary_path.exists():
@@ -290,6 +391,8 @@ def export_playback(scenario_name: str, scenario_def: dict) -> dict | None:
         )
         elem.clear()
 
+    rolling_kpis = export_rolling_kpis(scenario_name)
+
     out_path = PLAYBACK_DIR / f"{scenario_name}.json"
     out_path.write_text(
         json.dumps(
@@ -299,6 +402,7 @@ def export_playback(scenario_name: str, scenario_def: dict) -> dict | None:
                 "summary": {
                     "queue": export_summary_series(scenario_name),
                 },
+                "rolling_kpis": rolling_kpis,
                 "max_edge_count": max_edge_count,
                 "max_event_count": max_event_count,
             },
