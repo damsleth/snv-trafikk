@@ -1,6 +1,6 @@
 # Trafikkanalyse Snarøyveien
 
-*Automatisk generert 16.03.2026 kl. 11:30*
+*Automatisk generert 17.03.2026 kl. 11:14*
 
 ## QA-status
 
@@ -12,15 +12,15 @@ Det betyr at tallene under ikke er direkte sammenlignbare med tidligere repo-utg
 
 ### Morgenrush 07:45-08:45
 
-- Base: 3.6 min gjennomsnittlig reisetid, 487.6 kjt-t systemforsinkelse, 462 maks ventende kjøretøy.
-- V1: 5.3 min gjennomsnittlig reisetid, 594.6 kjt-t systemforsinkelse, 550 maks ventende kjøretøy.
-- Endring V1 vs. base: 5.3 min (+1.7 min vs. base), 594.6 kjt-t (+107.0 kjt-t vs. base), 550 kjt (+88 kjt vs. base).
+- Base: 13.2 min gjennomsnittlig reisetid, 580.3 kjt-t systemforsinkelse, 212 maks ventende kjøretøy.
+- V1: 15.3 min gjennomsnittlig reisetid, 612.2 kjt-t systemforsinkelse, 126 maks ventende kjøretøy.
+- Endring V1 vs. base: 15.3 min (+2.1 min vs. base), 612.2 kjt-t (+31.9 kjt-t vs. base), 126 kjt (-86 kjt vs. base).
 
 ### Ettermiddagsrush 15:30-16:30
 
-- Base: 3.7 min gjennomsnittlig reisetid, 402.2 kjt-t systemforsinkelse, 390 maks ventende kjøretøy.
-- V1: 5.3 min gjennomsnittlig reisetid, 491.3 kjt-t systemforsinkelse, 437 maks ventende kjøretøy.
-- Endring V1 vs. base: 5.3 min (+1.5 min vs. base), 491.3 kjt-t (+89.1 kjt-t vs. base), 437 kjt (+47 kjt vs. base).
+- Base: 9.1 min gjennomsnittlig reisetid, 557.7 kjt-t systemforsinkelse, 362 maks ventende kjøretøy.
+- V1: 11.6 min gjennomsnittlig reisetid, 664.9 kjt-t systemforsinkelse, 332 maks ventende kjøretøy.
+- Endring V1 vs. base: 11.6 min (+2.5 min vs. base), 664.9 kjt-t (+107.2 kjt-t vs. base), 332 kjt (-30 kjt vs. base).
 
 ## Metode
 
@@ -43,22 +43,22 @@ Det betyr at tallene under ikke er direkte sammenlignbare med tidligere repo-utg
 
 | Scenario | Reisetid | Systemforsinkelse | Blokkerte avganger | Maks ventende |
 |---|---|---|---|---|
-| Base (Sc. 1A) PM | 4.1 min | 630.2 kjt-t | 144 | 667 |
-| Base (Sc. 1A) AM | 9.2 min | 1557.9 kjt-t | 781 | 1471 |
-| V1 (Sc. 1A) PM | 6.5 min | 861.6 kjt-t | 184 | 835 |
-| V1 (Sc. 1A) AM | 9.1 min | 1608.2 kjt-t | 972 | 1446 |
-| Base (dagens profil) PM | 3.7 min | 402.2 kjt-t | 77 | 390 |
-| Base + konsert PM | 5.5 min | 3800.7 kjt-t | 5291 | 5480 |
-| Base (dagens profil) AM | 3.6 min | 487.6 kjt-t | 201 | 462 |
-| V1 PM | 5.3 min | 491.3 kjt-t | 100 | 437 |
-| V1 + konsert PM | 7.1 min | 3900.1 kjt-t | 5422 | 5580 |
-| V1 AM | 5.3 min | 594.6 kjt-t | 251 | 550 |
-| V1 + miljøgate PM | 5.7 min | 527.5 kjt-t | 104 | 474 |
-| V1 + miljøgate AM | 7.4 min | 1039.6 kjt-t | 462 | 990 |
-| V2 PM | 5.8 min | 549.7 kjt-t | 169 | 531 |
-| V2 AM | 5.9 min | 709.4 kjt-t | 360 | 700 |
-| V3 PM | 5.3 min | 497.1 kjt-t | 103 | 444 |
-| V3 AM | 5.0 min | 571.9 kjt-t | 255 | 508 |
+| Base (Sc. 1A) PM | 12.6 min | 1003.9 kjt-t | 288 | 580 |
+| Base (Sc. 1A) AM | 15.7 min | 1137.8 kjt-t | 241 | 911 |
+| V1 (Sc. 1A) PM | 13.9 min | 1024.2 kjt-t | 233 | 588 |
+| V1 (Sc. 1A) AM | 14.5 min | 850.9 kjt-t | 64 | 563 |
+| Base (dagens profil) PM | 9.1 min | 557.7 kjt-t | 0 | 362 |
+| Base + konsert PM | 8.8 min | 3852.7 kjt-t | 5217 | 5467 |
+| Base (dagens profil) AM | 13.2 min | 580.3 kjt-t | 0 | 212 |
+| V1 PM | 11.6 min | 664.9 kjt-t | 0 | 332 |
+| V1 + konsert PM | 11.8 min | 3996.3 kjt-t | 5357 | 5557 |
+| V1 AM | 15.3 min | 612.2 kjt-t | 0 | 126 |
+| V1 + miljøgate PM | 14.2 min | 643.1 kjt-t | 154 | 288 |
+| V1 + miljøgate AM | 16.7 min | 633.2 kjt-t | 0 | 359 |
+| V2 PM | 10.2 min | 501.4 kjt-t | 102 | 389 |
+| V2 AM | 10.7 min | 559.1 kjt-t | 251 | 454 |
+| V3 PM | 11.3 min | 650.9 kjt-t | 0 | 319 |
+| V3 AM | 15.3 min | 617.6 kjt-t | 0 | 77 |
 
 ## Utrykningstid (beredskap)
 
@@ -66,22 +66,22 @@ Tre ambulanser er lagt inn i hver simuleringsperiode (snv_syd → snv_nordost, d
 
 | Scenario | Utrykningstid (gj.snitt) | Maks utrykningstid | Tidstap utrykn. |
 |---|---|---|---|
-| Base (Sc. 1A) PM | 4.8 min | 4.9 min | 169 s |
-| Base (Sc. 1A) AM | 41.0 min | 41.0 min | 2343 s |
-| V1 (Sc. 1A) PM | 5.8 min | 6.9 min | 172 s |
-| V1 (Sc. 1A) AM | 3.9 min | 3.9 min | 72 s |
-| Base (dagens profil) PM | 3.7 min | 4.2 min | 103 s |
-| Base + konsert PM | 6.2 min | 11.1 min | 252 s |
-| Base (dagens profil) AM | 4.7 min | 5.5 min | 167 s |
-| V1 PM | 4.8 min | 5.0 min | 125 s |
-| V1 + konsert PM | 5.0 min | 5.4 min | 135 s |
-| V1 AM | 4.2 min | 4.6 min | 87 s |
-| V1 + miljøgate PM | 4.7 min | 4.9 min | 120 s |
-| V1 + miljøgate AM | 7.2 min | 10.7 min | 271 s |
-| V2 PM | 4.8 min | 4.9 min | 126 s |
-| V2 AM | 4.0 min | 4.5 min | 75 s |
-| V3 PM | 4.9 min | 5.0 min | 127 s |
-| V3 AM | 5.3 min | 6.3 min | 157 s |
+| Base (Sc. 1A) PM | 37.0 min | 55.7 min | 1912 s |
+| Base (Sc. 1A) AM | 16.2 min | 19.8 min | 670 s |
+| V1 (Sc. 1A) PM | 16.8 min | 18.6 min | 685 s |
+| V1 (Sc. 1A) AM | 17.4 min | 31.8 min | 707 s |
+| Base (dagens profil) PM | 11.7 min | 13.7 min | 390 s |
+| Base + konsert PM | 31.4 min | 53.1 min | 1571 s |
+| Base (dagens profil) AM | 10.4 min | 12.2 min | 330 s |
+| V1 PM | 11.8 min | 15.2 min | 384 s |
+| V1 + konsert PM | 19.4 min | 27.5 min | 840 s |
+| V1 AM | 11.4 min | 17.1 min | 348 s |
+| V1 + miljøgate PM | 33.5 min | 33.5 min | 1579 s |
+| V1 + miljøgate AM | 11.5 min | 12.2 min | 258 s |
+| V2 PM | 11.4 min | 13.7 min | 357 s |
+| V2 AM | 8.4 min | 9.5 min | 180 s |
+| V3 PM | 29.9 min | 46.9 min | 1456 s |
+| V3 AM | 9.1 min | 9.6 min | 219 s |
 
 ## Forsinkelse for Snarøya-beboere
 
@@ -89,22 +89,6 @@ Kun turer med avgang fra Snarøya (snv_syd-sonen). Viser forsinkelsen for beboer
 
 | Scenario | Ant. turer | Gj.snitt reisetid | Gj.snitt tidstap |
 |---|---|---|---|
-| Base (Sc. 1A) PM | 670 | 4.0 min | 132 s |
-| Base (Sc. 1A) AM | 316 | 27.9 min | 1562 s |
-| V1 (Sc. 1A) PM | 670 | 7.6 min | 287 s |
-| V1 (Sc. 1A) AM | 245 | 21.8 min | 1162 s |
-| Base (dagens profil) PM | 538 | 3.5 min | 100 s |
-| Base + konsert PM | 538 | 7.4 min | 331 s |
-| Base (dagens profil) AM | 652 | 4.4 min | 153 s |
-| V1 PM | 538 | 5.2 min | 165 s |
-| V1 + konsert PM | 538 | 6.3 min | 229 s |
-| V1 AM | 652 | 6.6 min | 247 s |
-| V1 + miljøgate PM | 538 | 4.8 min | 131 s |
-| V1 + miljøgate AM | 369 | 14.3 min | 704 s |
-| V2 PM | 538 | 5.3 min | 169 s |
-| V2 AM | 652 | 6.7 min | 254 s |
-| V3 PM | 538 | 5.2 min | 161 s |
-| V3 AM | 652 | 5.3 min | 168 s |
 
 ## Estimert kølengde
 
@@ -112,26 +96,26 @@ Beregnet fra antall blokkerte + ventende kjøretøy, konvertert med 120 kjt/km (
 
 | Scenario | Blokkerte kjt | Maks ventende | Kølengde (km) |
 |---|---|---|---|
-| Base (Sc. 1A) PM | 144 | 667 | 3.4 km |
-| Base (Sc. 1A) AM | 781 | 1471 | 9.4 km |
-| V1 (Sc. 1A) PM | 184 | 835 | 4.2 km |
-| V1 (Sc. 1A) AM | 972 | 1446 | 10.1 km |
-| Base (dagens profil) PM | 77 | 390 | 1.9 km |
-| Base + konsert PM | 5291 | 5480 | 44.9 km |
-| Base (dagens profil) AM | 201 | 462 | 2.8 km |
-| V1 PM | 100 | 437 | 2.3 km |
-| V1 + konsert PM | 5422 | 5580 | 45.8 km |
-| V1 AM | 251 | 550 | 3.3 km |
-| V1 + miljøgate PM | 104 | 474 | 2.4 km |
-| V1 + miljøgate AM | 462 | 990 | 6.1 km |
-| V2 PM | 169 | 531 | 2.9 km |
-| V2 AM | 360 | 700 | 4.4 km |
-| V3 PM | 103 | 444 | 2.3 km |
-| V3 AM | 255 | 508 | 3.2 km |
+| Base (Sc. 1A) PM | 288 | 580 | 3.6 km |
+| Base (Sc. 1A) AM | 241 | 911 | 4.8 km |
+| V1 (Sc. 1A) PM | 233 | 588 | 3.4 km |
+| V1 (Sc. 1A) AM | 64 | 563 | 2.6 km |
+| Base (dagens profil) PM | 0 | 362 | 1.5 km |
+| Base + konsert PM | 5217 | 5467 | 44.5 km |
+| Base (dagens profil) AM | 0 | 212 | 0.9 km |
+| V1 PM | 0 | 332 | 1.4 km |
+| V1 + konsert PM | 5357 | 5557 | 45.5 km |
+| V1 AM | 0 | 126 | 0.5 km |
+| V1 + miljøgate PM | 154 | 288 | 1.8 km |
+| V1 + miljøgate AM | 0 | 359 | 1.5 km |
+| V2 PM | 102 | 389 | 2.0 km |
+| V2 AM | 251 | 454 | 2.9 km |
+| V3 PM | 0 | 319 | 1.3 km |
+| V3 AM | 0 | 77 | 0.3 km |
 
 ## Begrensninger
 
-- Repoet mangler fortsatt observasjonsbasert kalibrering og automatiserte tester.
+- Modellen mangler fortsatt observasjonsbasert kalibrering, og testdekningen dekker foreløpig bare de viktigste kodebanene.
 - Flytårnet/Bernt Balchens-krysset er fortsatt avhengig av OSM-nettets geometri og prioriteringsmodell; dette er en kjent modellbegrensning som må forbedres før rapportering utad.
 - Scenarioet med signaloptimalisering er midlertidig tatt ut av standardkjøringen til kryssmodellen er eksplisitt implementert.
 - Utrykningstidsberegningen forutsetter at andre kjøretøy viker (SUMO vClass=emergency). I praksis er dette avhengig av at det finnes plass å vike til — med 2+2 felt er det mindre rom for å slippe frem utrykningskjøretøy enn med 2+3.

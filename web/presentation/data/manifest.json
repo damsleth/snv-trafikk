@@ -129,13 +129,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 3.6,
-        "system_delay_h": 487.6,
-        "queue_km": 2.8,
-        "blocked_vehicles": 201,
-        "peak_waiting": 462,
-        "emergency_avg_min": 4.7,
-        "snaroya_avg_min": 4.4
+        "avg_duration_min": 13.2,
+        "system_delay_h": 580.3,
+        "queue_km": 0.9,
+        "blocked_vehicles": 0,
+        "peak_waiting": 212,
+        "emergency_avg_min": 10.4,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -151,13 +151,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 3.7,
-        "system_delay_h": 402.2,
-        "queue_km": 1.9,
-        "blocked_vehicles": 77,
-        "peak_waiting": 390,
-        "emergency_avg_min": 3.7,
-        "snaroya_avg_min": 3.5
+        "avg_duration_min": 9.1,
+        "system_delay_h": 557.7,
+        "queue_km": 1.5,
+        "blocked_vehicles": 0,
+        "peak_waiting": 362,
+        "emergency_avg_min": 11.7,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -173,13 +173,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 5.3,
-        "system_delay_h": 594.6,
-        "queue_km": 3.3,
-        "blocked_vehicles": 251,
-        "peak_waiting": 550,
-        "emergency_avg_min": 4.2,
-        "snaroya_avg_min": 6.6
+        "avg_duration_min": 15.3,
+        "system_delay_h": 612.2,
+        "queue_km": 0.5,
+        "blocked_vehicles": 0,
+        "peak_waiting": 126,
+        "emergency_avg_min": 11.4,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -195,13 +195,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 5.3,
-        "system_delay_h": 491.3,
-        "queue_km": 2.3,
-        "blocked_vehicles": 100,
-        "peak_waiting": 437,
-        "emergency_avg_min": 4.8,
-        "snaroya_avg_min": 5.2
+        "avg_duration_min": 11.6,
+        "system_delay_h": 664.9,
+        "queue_km": 1.4,
+        "blocked_vehicles": 0,
+        "peak_waiting": 332,
+        "emergency_avg_min": 11.8,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -217,13 +217,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 5.9,
-        "system_delay_h": 709.4,
-        "queue_km": 4.4,
-        "blocked_vehicles": 360,
-        "peak_waiting": 700,
-        "emergency_avg_min": 4.0,
-        "snaroya_avg_min": 6.7
+        "avg_duration_min": 10.7,
+        "system_delay_h": 559.1,
+        "queue_km": 2.9,
+        "blocked_vehicles": 251,
+        "peak_waiting": 454,
+        "emergency_avg_min": 8.4,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -239,13 +239,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 5.8,
-        "system_delay_h": 549.7,
-        "queue_km": 2.9,
-        "blocked_vehicles": 169,
-        "peak_waiting": 531,
-        "emergency_avg_min": 4.8,
-        "snaroya_avg_min": 5.3
+        "avg_duration_min": 10.2,
+        "system_delay_h": 501.4,
+        "queue_km": 2.0,
+        "blocked_vehicles": 102,
+        "peak_waiting": 389,
+        "emergency_avg_min": 11.4,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -261,13 +261,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 5.0,
-        "system_delay_h": 571.9,
-        "queue_km": 3.2,
-        "blocked_vehicles": 255,
-        "peak_waiting": 508,
-        "emergency_avg_min": 5.3,
-        "snaroya_avg_min": 5.3
+        "avg_duration_min": 15.3,
+        "system_delay_h": 617.6,
+        "queue_km": 0.3,
+        "blocked_vehicles": 0,
+        "peak_waiting": 77,
+        "emergency_avg_min": 9.1,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -283,13 +283,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 5.3,
-        "system_delay_h": 497.1,
-        "queue_km": 2.3,
-        "blocked_vehicles": 103,
-        "peak_waiting": 444,
-        "emergency_avg_min": 4.9,
-        "snaroya_avg_min": 5.2
+        "avg_duration_min": 11.3,
+        "system_delay_h": 650.9,
+        "queue_km": 1.3,
+        "blocked_vehicles": 0,
+        "peak_waiting": 319,
+        "emergency_avg_min": 29.9,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -305,13 +305,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 7.4,
-        "system_delay_h": 1039.6,
-        "queue_km": 6.1,
-        "blocked_vehicles": 462,
-        "peak_waiting": 990,
-        "emergency_avg_min": 7.2,
-        "snaroya_avg_min": 14.3
+        "avg_duration_min": 16.7,
+        "system_delay_h": 633.2,
+        "queue_km": 1.5,
+        "blocked_vehicles": 0,
+        "peak_waiting": 359,
+        "emergency_avg_min": 11.5,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -327,13 +327,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 5.7,
-        "system_delay_h": 527.5,
-        "queue_km": 2.4,
-        "blocked_vehicles": 104,
-        "peak_waiting": 474,
-        "emergency_avg_min": 4.7,
-        "snaroya_avg_min": 4.8
+        "avg_duration_min": 14.2,
+        "system_delay_h": 643.1,
+        "queue_km": 1.8,
+        "blocked_vehicles": 154,
+        "peak_waiting": 288,
+        "emergency_avg_min": 33.5,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -349,13 +349,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 5.5,
-        "system_delay_h": 3800.7,
-        "queue_km": 44.9,
-        "blocked_vehicles": 5291,
-        "peak_waiting": 5480,
-        "emergency_avg_min": 6.2,
-        "snaroya_avg_min": 7.4
+        "avg_duration_min": 8.8,
+        "system_delay_h": 3852.7,
+        "queue_km": 44.5,
+        "blocked_vehicles": 5217,
+        "peak_waiting": 5467,
+        "emergency_avg_min": 31.4,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": true,
       "source": "sumo_seed1"
@@ -371,13 +371,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 7.1,
-        "system_delay_h": 3900.1,
-        "queue_km": 45.8,
-        "blocked_vehicles": 5422,
-        "peak_waiting": 5580,
-        "emergency_avg_min": 5.0,
-        "snaroya_avg_min": 6.3
+        "avg_duration_min": 11.8,
+        "system_delay_h": 3996.3,
+        "queue_km": 45.5,
+        "blocked_vehicles": 5357,
+        "peak_waiting": 5557,
+        "emergency_avg_min": 19.4,
+        "snaroya_avg_min": 0.0
       },
       "has_event_overlay": true,
       "source": "sumo_seed1"
@@ -386,23 +386,28 @@
   "families": [
     {
       "id": "scenario_4A_base",
-      "label": "Base (dagens profil)"
+      "label": "Base (dagens profil)",
+      "description": "dagens 2+3-profil"
     },
     {
       "id": "scenario_4A_v1",
-      "label": "V1"
-    },
-    {
-      "id": "scenario_4A_v2",
-      "label": "V2"
-    },
-    {
-      "id": "scenario_4A_v3",
-      "label": "V3"
+      "label": "V1",
+      "description": "innsnevring Snar\u00f8yveien (2+2) + utvidet rundkj\u00f8ring"
     },
     {
       "id": "scenario_4A_v1_rolfsbukt",
-      "label": "V1 + milj\u00f8gate"
+      "label": "V1 + milj\u00f8gate",
+      "description": "V1 med bilfritt felt langs Rolfsbuktveien"
+    },
+    {
+      "id": "scenario_4A_v2",
+      "label": "V2",
+      "description": "V1 + redusert fart"
+    },
+    {
+      "id": "scenario_4A_v3",
+      "label": "V3",
+      "description": "V1 + signalregulert innkj\u00f8ring"
     }
   ],
   "synthetic": {
@@ -415,23 +420,23 @@
     },
     "event_multipliers": {
       "base": {
-        "avg_duration": 1.49,
-        "system_delay": 9.45,
-        "queue": 23.63,
-        "emergency": 1.68
+        "avg_duration": 0.97,
+        "system_delay": 6.91,
+        "queue": 29.67,
+        "emergency": 2.68
       },
       "v1": {
-        "avg_duration": 1.34,
-        "system_delay": 7.94,
-        "queue": 19.91,
-        "emergency": 1.04
+        "avg_duration": 1.02,
+        "system_delay": 6.01,
+        "queue": 32.5,
+        "emergency": 1.64
       }
     },
     "fallback_event_multipliers": {
-      "avg_duration": 1.42,
-      "system_delay": 8.7,
-      "queue": 21.77,
-      "emergency": 1.36
+      "avg_duration": 0.99,
+      "system_delay": 6.46,
+      "queue": 31.09,
+      "emergency": 2.16
     }
   }
 }
