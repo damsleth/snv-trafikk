@@ -18,6 +18,7 @@ from config import (
     PRESENTATION_NETWORKS_DIR as NETWORKS_DIR,
     PRESENTATION_PLAYBACK_DIR as PLAYBACK_DIR,
     PROJECT_ROOT,
+    SIMULATION_END_S,
     SUMMARY_STATS_FILE as SUMMARY_FILE,
     SNAROYA_DESTINATION_EDGE_IDS,
     SNAROYA_ORIGIN_EDGE_IDS,
@@ -242,7 +243,7 @@ def export_rolling_kpis(scenario_name: str, interval_s: int = PLAYBACK_INTERVAL_
     max_time = max(
         max((a for _, a, _ in trips_snaroya_from), default=0),
         max((a for _, a, _ in trips_snaroya_to), default=0),
-        5400,
+        SIMULATION_END_S,
     )
 
     def avg_duration_in_window(trips, centre_s):

@@ -1,6 +1,6 @@
 # Trafikkanalyse Snarøyveien
 
-*Automatisk generert 17.03.2026 kl. 11:14*
+*Automatisk generert 20.03.2026 kl. 09:08*
 
 ## QA-status
 
@@ -12,15 +12,15 @@ Det betyr at tallene under ikke er direkte sammenlignbare med tidligere repo-utg
 
 ### Morgenrush 07:45-08:45
 
-- Base: 13.2 min gjennomsnittlig reisetid, 580.3 kjt-t systemforsinkelse, 212 maks ventende kjøretøy.
-- V1: 15.3 min gjennomsnittlig reisetid, 612.2 kjt-t systemforsinkelse, 126 maks ventende kjøretøy.
-- Endring V1 vs. base: 15.3 min (+2.1 min vs. base), 612.2 kjt-t (+31.9 kjt-t vs. base), 126 kjt (-86 kjt vs. base).
+- Base: 9.4 min gjennomsnittlig reisetid, 273.6 kjt-t systemforsinkelse, 176 maks ventende kjøretøy.
+- V1: 9.8 min gjennomsnittlig reisetid, 236.7 kjt-t systemforsinkelse, 89 maks ventende kjøretøy.
+- Endring V1 vs. base: 9.8 min (+0.4 min vs. base), 236.7 kjt-t (-36.8 kjt-t vs. base), 89 kjt (-87 kjt vs. base).
 
 ### Ettermiddagsrush 15:30-16:30
 
-- Base: 9.1 min gjennomsnittlig reisetid, 557.7 kjt-t systemforsinkelse, 362 maks ventende kjøretøy.
-- V1: 11.6 min gjennomsnittlig reisetid, 664.9 kjt-t systemforsinkelse, 332 maks ventende kjøretøy.
-- Endring V1 vs. base: 11.6 min (+2.5 min vs. base), 664.9 kjt-t (+107.2 kjt-t vs. base), 332 kjt (-30 kjt vs. base).
+- Base: 7.6 min gjennomsnittlig reisetid, 328.9 kjt-t systemforsinkelse, 350 maks ventende kjøretøy.
+- V1: 9.2 min gjennomsnittlig reisetid, 357.6 kjt-t systemforsinkelse, 324 maks ventende kjøretøy.
+- Endring V1 vs. base: 9.2 min (+1.6 min vs. base), 357.6 kjt-t (+28.8 kjt-t vs. base), 324 kjt (-26 kjt vs. base).
 
 ## Metode
 
@@ -43,22 +43,26 @@ Det betyr at tallene under ikke er direkte sammenlignbare med tidligere repo-utg
 
 | Scenario | Reisetid | Systemforsinkelse | Blokkerte avganger | Maks ventende |
 |---|---|---|---|---|
-| Base (Sc. 1A) PM | 12.6 min | 1003.9 kjt-t | 288 | 580 |
-| Base (Sc. 1A) AM | 15.7 min | 1137.8 kjt-t | 241 | 911 |
-| V1 (Sc. 1A) PM | 13.9 min | 1024.2 kjt-t | 233 | 588 |
-| V1 (Sc. 1A) AM | 14.5 min | 850.9 kjt-t | 64 | 563 |
-| Base (dagens profil) PM | 9.1 min | 557.7 kjt-t | 0 | 362 |
-| Base + konsert PM | 8.8 min | 3852.7 kjt-t | 5217 | 5467 |
-| Base (dagens profil) AM | 13.2 min | 580.3 kjt-t | 0 | 212 |
-| V1 PM | 11.6 min | 664.9 kjt-t | 0 | 332 |
-| V1 + konsert PM | 11.8 min | 3996.3 kjt-t | 5357 | 5557 |
-| V1 AM | 15.3 min | 612.2 kjt-t | 0 | 126 |
-| V1 + miljøgate PM | 14.2 min | 643.1 kjt-t | 154 | 288 |
-| V1 + miljøgate AM | 16.7 min | 633.2 kjt-t | 0 | 359 |
-| V2 PM | 10.2 min | 501.4 kjt-t | 102 | 389 |
-| V2 AM | 10.7 min | 559.1 kjt-t | 251 | 454 |
-| V3 PM | 11.3 min | 650.9 kjt-t | 0 | 319 |
-| V3 AM | 15.3 min | 617.6 kjt-t | 0 | 77 |
+| Base (Sc. 1A) PM | 8.8 min | 516.3 kjt-t | 588 | 599 |
+| Base (Sc. 1A) AM | 11.2 min | 600.8 kjt-t | 880 | 883 |
+| V1 (Sc. 1A) PM | 10.1 min | 520.3 kjt-t | 609 | 618 |
+| V1 (Sc. 1A) AM | 11.4 min | 482.8 kjt-t | 586 | 595 |
+| Base (dagens profil) PM | 7.6 min | 328.9 kjt-t | 344 | 350 |
+| Base + konsert PM | 7.7 min | 1987.3 kjt-t | 6158 | 6163 |
+| Base (dagens profil) AM | 9.4 min | 273.6 kjt-t | 168 | 176 |
+| Base (dagens profil, 80 % trafikk) PM | 6.4 min | 174.1 kjt-t | 145 | 150 |
+| Base (dagens profil, 80 % trafikk) AM | 7.4 min | 142.5 kjt-t | 4 | 33 |
+| V1 PM | 9.2 min | 357.6 kjt-t | 317 | 324 |
+| V1 + konsert PM | 9.7 min | 2034.7 kjt-t | 6227 | 6229 |
+| V1 AM | 9.8 min | 236.7 kjt-t | 75 | 89 |
+| V1 + miljøgate PM | 10.6 min | 337.0 kjt-t | 303 | 312 |
+| V1 + miljøgate AM | 12.2 min | 290.4 kjt-t | 388 | 390 |
+| V1 (80 % trafikk) PM | 7.9 min | 199.8 kjt-t | 133 | 136 |
+| V1 (80 % trafikk) AM | 8.5 min | 156.8 kjt-t | 1 | 33 |
+| V2 PM | 8.5 min | 295.0 kjt-t | 394 | 398 |
+| V2 AM | 8.8 min | 293.2 kjt-t | 456 | 459 |
+| V3 PM | 9.2 min | 355.3 kjt-t | 313 | 318 |
+| V3 AM | 9.9 min | 247.8 kjt-t | 80 | 84 |
 
 ## Utrykningstid (beredskap)
 
@@ -66,22 +70,26 @@ Tre ambulanser er lagt inn i hver simuleringsperiode (snv_syd → snv_nordost, d
 
 | Scenario | Utrykningstid (gj.snitt) | Maks utrykningstid | Tidstap utrykn. |
 |---|---|---|---|
-| Base (Sc. 1A) PM | 37.0 min | 55.7 min | 1912 s |
-| Base (Sc. 1A) AM | 16.2 min | 19.8 min | 670 s |
-| V1 (Sc. 1A) PM | 16.8 min | 18.6 min | 685 s |
-| V1 (Sc. 1A) AM | 17.4 min | 31.8 min | 707 s |
-| Base (dagens profil) PM | 11.7 min | 13.7 min | 390 s |
-| Base + konsert PM | 31.4 min | 53.1 min | 1571 s |
-| Base (dagens profil) AM | 10.4 min | 12.2 min | 330 s |
-| V1 PM | 11.8 min | 15.2 min | 384 s |
-| V1 + konsert PM | 19.4 min | 27.5 min | 840 s |
-| V1 AM | 11.4 min | 17.1 min | 348 s |
-| V1 + miljøgate PM | 33.5 min | 33.5 min | 1579 s |
-| V1 + miljøgate AM | 11.5 min | 12.2 min | 258 s |
-| V2 PM | 11.4 min | 13.7 min | 357 s |
-| V2 AM | 8.4 min | 9.5 min | 180 s |
-| V3 PM | 29.9 min | 46.9 min | 1456 s |
-| V3 AM | 9.1 min | 9.6 min | 219 s |
+| Base (Sc. 1A) PM | 21.2 min | 21.9 min | 976 s |
+| Base (Sc. 1A) AM | 10.9 min | 12.3 min | 352 s |
+| V1 (Sc. 1A) PM | 19.6 min | 20.2 min | 845 s |
+| V1 (Sc. 1A) AM | 13.1 min | 19.8 min | 456 s |
+| Base (dagens profil) PM | 17.2 min | 17.8 min | 729 s |
+| Base + konsert PM | 23.4 min | 29.6 min | 1099 s |
+| Base (dagens profil) AM | 9.7 min | 11.5 min | 286 s |
+| Base (dagens profil, 80 % trafikk) PM | 10.8 min | 13.0 min | 349 s |
+| Base (dagens profil, 80 % trafikk) AM | 8.2 min | 8.8 min | 199 s |
+| V1 PM | 12.7 min | 15.9 min | 435 s |
+| V1 + konsert PM | 16.0 min | 18.5 min | 635 s |
+| V1 AM | 8.8 min | 9.8 min | 202 s |
+| V1 + miljøgate PM | 34.2 min | 34.2 min | 1621 s |
+| V1 + miljøgate AM | 11.7 min | 12.3 min | 273 s |
+| V1 (80 % trafikk) PM | 9.5 min | 11.2 min | 245 s |
+| V1 (80 % trafikk) AM | 7.7 min | 8.3 min | 139 s |
+| V2 PM | 9.5 min | 10.6 min | 242 s |
+| V2 AM | 9.1 min | 10.1 min | 222 s |
+| V3 PM | 14.7 min | 17.6 min | 551 s |
+| V3 AM | 8.9 min | 9.6 min | 207 s |
 
 ## Forsinkelse for Snarøya-beboere
 
@@ -89,6 +97,26 @@ Kun turer med avgang fra Snarøya (snv_syd-sonen). Viser forsinkelsen for beboer
 
 | Scenario | Ant. turer | Gj.snitt reisetid | Gj.snitt tidstap |
 |---|---|---|---|
+| Base (Sc. 1A) PM | 332 | 17.7 min | 732 s |
+| Base (Sc. 1A) AM | 609 | 10.3 min | 294 s |
+| V1 (Sc. 1A) PM | 337 | 18.2 min | 735 s |
+| V1 (Sc. 1A) AM | 649 | 11.2 min | 321 s |
+| Base (dagens profil) PM | 311 | 16.3 min | 651 s |
+| Base + konsert PM | 288 | 17.4 min | 715 s |
+| Base (dagens profil) AM | 533 | 10.0 min | 274 s |
+| Base (dagens profil, 80 % trafikk) PM | 359 | 11.5 min | 360 s |
+| Base (dagens profil, 80 % trafikk) AM | 445 | 8.2 min | 172 s |
+| V1 PM | 368 | 13.5 min | 457 s |
+| V1 + konsert PM | 342 | 15.5 min | 578 s |
+| V1 AM | 546 | 9.7 min | 232 s |
+| V1 + miljøgate PM | 134 | 28.9 min | 1266 s |
+| V1 + miljøgate AM | 508 | 12.3 min | 292 s |
+| V1 (80 % trafikk) PM | 342 | 10.6 min | 286 s |
+| V1 (80 % trafikk) AM | 443 | 8.4 min | 160 s |
+| V2 PM | 450 | 9.8 min | 240 s |
+| V2 AM | 552 | 9.3 min | 211 s |
+| V3 PM | 328 | 14.1 min | 494 s |
+| V3 AM | 541 | 9.8 min | 240 s |
 
 ## Estimert kølengde
 
@@ -96,22 +124,26 @@ Beregnet fra antall blokkerte + ventende kjøretøy, konvertert med 120 kjt/km (
 
 | Scenario | Blokkerte kjt | Maks ventende | Kølengde (km) |
 |---|---|---|---|
-| Base (Sc. 1A) PM | 288 | 580 | 3.6 km |
-| Base (Sc. 1A) AM | 241 | 911 | 4.8 km |
-| V1 (Sc. 1A) PM | 233 | 588 | 3.4 km |
-| V1 (Sc. 1A) AM | 64 | 563 | 2.6 km |
-| Base (dagens profil) PM | 0 | 362 | 1.5 km |
-| Base + konsert PM | 5217 | 5467 | 44.5 km |
-| Base (dagens profil) AM | 0 | 212 | 0.9 km |
-| V1 PM | 0 | 332 | 1.4 km |
-| V1 + konsert PM | 5357 | 5557 | 45.5 km |
-| V1 AM | 0 | 126 | 0.5 km |
-| V1 + miljøgate PM | 154 | 288 | 1.8 km |
-| V1 + miljøgate AM | 0 | 359 | 1.5 km |
-| V2 PM | 102 | 389 | 2.0 km |
-| V2 AM | 251 | 454 | 2.9 km |
-| V3 PM | 0 | 319 | 1.3 km |
-| V3 AM | 0 | 77 | 0.3 km |
+| Base (Sc. 1A) PM | 588 | 599 | 4.9 km |
+| Base (Sc. 1A) AM | 880 | 883 | 7.3 km |
+| V1 (Sc. 1A) PM | 609 | 618 | 5.1 km |
+| V1 (Sc. 1A) AM | 586 | 595 | 4.9 km |
+| Base (dagens profil) PM | 344 | 350 | 2.9 km |
+| Base + konsert PM | 6158 | 6163 | 51.3 km |
+| Base (dagens profil) AM | 168 | 176 | 1.4 km |
+| Base (dagens profil, 80 % trafikk) PM | 145 | 150 | 1.2 km |
+| Base (dagens profil, 80 % trafikk) AM | 4 | 33 | 0.1 km |
+| V1 PM | 317 | 324 | 2.7 km |
+| V1 + konsert PM | 6227 | 6229 | 51.9 km |
+| V1 AM | 75 | 89 | 0.7 km |
+| V1 + miljøgate PM | 303 | 312 | 2.6 km |
+| V1 + miljøgate AM | 388 | 390 | 3.3 km |
+| V1 (80 % trafikk) PM | 133 | 136 | 1.1 km |
+| V1 (80 % trafikk) AM | 1 | 33 | 0.1 km |
+| V2 PM | 394 | 398 | 3.3 km |
+| V2 AM | 456 | 459 | 3.8 km |
+| V3 PM | 313 | 318 | 2.6 km |
+| V3 AM | 80 | 84 | 0.7 km |
 
 ## Begrensninger
 

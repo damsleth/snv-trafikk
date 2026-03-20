@@ -3,6 +3,9 @@ løpende liste over endringer og forbedringer i snv-trafikk.
 omvendt kronologisk, med de nyeste endringene øverst.  
 endringer legges til med dato, timestamp og en kort beskrivelse av hva som er gjort, direkte under denne linjen.
 ---  
+2026-03-20 09:09:58 CET - la til OFFICIAL_REPORT_INTERPRETATION.md som låser hvordan PGF-rapporten skal leses før nye simuleringer, inkludert skillet mellom offisiell 60-minutters sammenlignings-KPI og eventuell lengre diagnostisk avviklingshorisont.
+2026-03-20 09:09:58 CET - kjørte full 5-seed-rerun av alle scenarioer med oppdatert 60-minutters horisont og regenererte `output/`-artefakter, rapport, visualiseringer og presentasjonsdata/manifest.
+2026-03-20 08:08:52 CET - byttet til de eksakte 1A/4A-appendiksmatrisene fra PGF-rapporten, la inn eksakt-bevarende disaggregasjon av nordøstsonen og strammet inn standard simulerings-/presentasjonshorisonten til rapportens 60-minutters rushvindu.
 2026-03-17 13:50:03 CET - la til separat advanced.html med edge-inspektør, lokal redigerings-/artefaktarbeidsflate, rikere nettverksmetadata i presentasjonseksporten og en patch-generator for `.edg.xml`/`.con.xml` fra nedlastede patchpakker.
 2026-03-17 11:20:24 CET - la til skalerbar OD-generering med `--demand-scale`, deklarative 80 %-scenarier i scenario-katalogen, nye skalerte rute/CSV-artefakter og testdekning for skalaoppløsning/avrunding.
 2026-03-17 11:19:09 CET - oppdaterte rapportgeneratorens begrensningstekst og regenererte rapport-/presentasjonsartefakter slik at avledede filer samsvarer med dagens kode og data.

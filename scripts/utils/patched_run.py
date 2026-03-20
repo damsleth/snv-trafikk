@@ -8,7 +8,7 @@ import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from scripts.config import PROJECT_ROOT, queue_length_km
+from scripts.config import PROJECT_ROOT, SIMULATION_BEGIN_S, SIMULATION_END_S, queue_length_km
 from scripts.utils.patch_generator import build_metadata, write_patch_bundle
 from scripts.utils.presentation_playback import build_kpis_from_stats, export_playback_from_files
 from scripts.utils.scenario_catalog import SCENARIOS
@@ -133,8 +133,8 @@ def create_sumo_config(
     lines += [
         "  </input>",
         "  <time>",
-        '    <begin value="0"/>',
-        '    <end value="5400"/>',
+        f'    <begin value="{SIMULATION_BEGIN_S}"/>',
+        f'    <end value="{SIMULATION_END_S}"/>',
         '    <step-length value="1.0"/>',
         "  </time>",
         "  <processing>",

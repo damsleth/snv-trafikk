@@ -8,7 +8,6 @@ flattening intersection turning counts into unrelated trips.
 
 import argparse
 import random
-import sys
 import xml.etree.ElementTree as ET
 from math import floor
 from pathlib import Path
@@ -47,68 +46,131 @@ ZONE_LABELS = {
     "rolfsbukt_syd": "Rolfsbuktveien syd",
 }
 
+OFFICIAL_ZONE_ORDER = [
+    "snv_syd",
+    "bbv_west",
+    "snv_nordost",
+    "wideroe_nordvest",
+    "odd_nansens_vest",
+    "snv_east",
+    "martin_linges_sydost",
+    "rolfsbukt_syd",
+]
+
 # Appendix 1 from PGF Trafikkanalyse Snarøyveien, doc. 7133122.
-# The original snv_nordost zone has been disaggregated into four zones to
-# reflect the distinct E18/Ring 3 approaches already present in the network:
-#   e18_vest (40%), e18_ost (35%), ring3_nord (15%), snv_nordost (10% local).
-# Row and column totals are preserved (integer rounding, largest-remainder).
-OD_MATRICES = {
+# These are the published 8-zone Aimsun matrices transcribed directly from the
+# appendix pages. The north-east gateway zone ("3.1 Snarøyveien NORDØST") is
+# disaggregated below into the four network-specific approach zones used by
+# this SUMO model.
+OFFICIAL_OD_MATRICES = {
     "4A": {
         "morning": {
-            "snv_syd": [0, 1, 158, 138, 59, 39, 99, 21, 13, 110, 14],
-            "bbv_west": [6, 0, 2, 2, 1, 1, 0, 3, 80, 13, 2],
-            "e18_vest": [79, 1, 0, 0, 0, 0, 146, 14, 45, 178, 23],
-            "e18_ost": [70, 1, 0, 0, 0, 0, 128, 12, 39, 156, 20],
-            "ring3_nord": [30, 0, 0, 0, 0, 0, 55, 5, 17, 67, 9],
-            "snv_nordost": [20, 0, 0, 0, 0, 0, 36, 3, 11, 45, 6],
-            "wideroe_nordvest": [135, 1, 124, 108, 46, 31, 0, 23, 76, 303, 40],
-            "odd_nansens_vest": [1, 0, 4, 3, 1, 1, 0, 0, 0, 1, 0],
-            "snv_east": [2, 1, 6, 6, 2, 2, 4, 1, 0, 5, 1],
-            "martin_linges_sydost": [9, 0, 18, 15, 7, 4, 11, 2, 1, 0, 8],
-            "rolfsbukt_syd": [28, 0, 58, 51, 22, 14, 36, 8, 5, 16, 0],
+            "snv_syd": [0, 1, 394, 99, 21, 13, 110, 14],
+            "bbv_west": [6, 0, 6, 0, 3, 80, 13, 2],
+            "snv_nordost": [199, 2, 0, 365, 34, 112, 446, 58],
+            "wideroe_nordvest": [135, 1, 309, 0, 23, 76, 303, 40],
+            "odd_nansens_vest": [1, 0, 9, 0, 0, 0, 1, 0],
+            "snv_east": [2, 1, 16, 4, 1, 0, 5, 1],
+            "martin_linges_sydost": [9, 0, 44, 11, 2, 1, 0, 8],
+            "rolfsbukt_syd": [28, 0, 145, 36, 8, 5, 16, 0],
         },
         "afternoon": {
-            "snv_syd": [0, 1, 139, 121, 52, 35, 87, 18, 5, 23, 57],
-            "bbv_west": [11, 0, 1, 0, 0, 0, 0, 1, 20, 2, 6],
-            "e18_vest": [124, 2, 0, 0, 0, 0, 161, 10, 9, 28, 69],
-            "e18_ost": [108, 2, 0, 0, 0, 0, 141, 8, 8, 24, 61],
-            "ring3_nord": [46, 1, 0, 0, 0, 0, 60, 4, 4, 10, 26],
-            "snv_nordost": [31, 0, 0, 0, 0, 0, 40, 2, 2, 7, 17],
-            "wideroe_nordvest": [313, 5, 162, 141, 61, 40, 0, 24, 24, 70, 175],
-            "odd_nansens_vest": [1, 0, 4, 3, 1, 1, 0, 0, 0, 0, 1],
-            "snv_east": [17, 0, 103, 91, 39, 26, 65, 13, 0, 4, 10],
-            "martin_linges_sydost": [55, 1, 121, 106, 46, 30, 76, 16, 4, 0, 47],
-            "rolfsbukt_syd": [11, 0, 25, 22, 10, 6, 16, 3, 1, 8, 0],
+            "snv_syd": [0, 1, 347, 87, 18, 5, 23, 57],
+            "bbv_west": [11, 0, 1, 0, 1, 20, 2, 6],
+            "snv_nordost": [309, 5, 0, 402, 24, 23, 69, 173],
+            "wideroe_nordvest": [313, 5, 404, 0, 24, 24, 70, 175],
+            "odd_nansens_vest": [1, 0, 9, 0, 0, 0, 0, 1],
+            "snv_east": [17, 0, 259, 65, 13, 0, 4, 10],
+            "martin_linges_sydost": [55, 1, 303, 76, 16, 4, 0, 47],
+            "rolfsbukt_syd": [11, 0, 63, 16, 3, 1, 8, 0],
         },
     },
     "1A": {
         "morning": {
-            "snv_syd": [0, 1, 197, 172, 74, 49, 123, 26, 17, 137, 18],
-            "bbv_west": [8, 0, 4, 3, 1, 1, 0, 5, 120, 19, 2],
-            "e18_vest": [100, 1, 0, 0, 0, 0, 183, 17, 57, 224, 29],
-            "e18_ost": [88, 1, 0, 0, 0, 0, 160, 15, 49, 196, 26],
-            "ring3_nord": [37, 1, 0, 0, 0, 0, 69, 7, 21, 84, 11],
-            "snv_nordost": [25, 0, 0, 0, 0, 0, 46, 4, 14, 56, 7],
-            "wideroe_nordvest": [172, 2, 164, 144, 62, 41, 0, 29, 97, 386, 50],
-            "odd_nansens_vest": [1, 0, 4, 4, 2, 1, 0, 0, 0, 2, 0],
-            "snv_east": [2, 1, 6, 6, 2, 2, 4, 1, 0, 5, 1],
-            "martin_linges_sydost": [9, 0, 18, 15, 7, 4, 11, 2, 1, 0, 8],
-            "rolfsbukt_syd": [43, 0, 87, 77, 33, 22, 55, 11, 7, 24, 0],
+            "snv_syd": [0, 1, 492, 123, 26, 17, 137, 18],
+            "bbv_west": [8, 0, 9, 0, 5, 120, 19, 2],
+            "snv_nordost": [250, 3, 0, 458, 43, 141, 560, 73],
+            "wideroe_nordvest": [172, 2, 411, 0, 29, 97, 386, 50],
+            "odd_nansens_vest": [1, 0, 11, 0, 0, 0, 2, 0],
+            "snv_east": [2, 1, 16, 4, 1, 0, 5, 1],
+            "martin_linges_sydost": [9, 0, 44, 11, 2, 1, 0, 8],
+            "rolfsbukt_syd": [43, 0, 219, 55, 11, 7, 24, 0],
         },
         "afternoon": {
-            "snv_syd": [0, 1, 173, 152, 65, 43, 108, 23, 6, 28, 71],
-            "bbv_west": [17, 0, 1, 1, 0, 0, 0, 1, 30, 4, 9],
-            "e18_vest": [137, 2, 0, 0, 0, 0, 178, 11, 10, 30, 77],
-            "e18_ost": [120, 2, 0, 0, 0, 0, 156, 9, 9, 27, 67],
-            "ring3_nord": [52, 1, 0, 0, 0, 0, 67, 4, 4, 11, 29],
-            "snv_nordost": [34, 0, 0, 0, 0, 0, 45, 3, 3, 8, 19],
-            "wideroe_nordvest": [398, 6, 209, 182, 78, 52, 0, 31, 30, 89, 223],
-            "odd_nansens_vest": [2, 0, 4, 4, 2, 1, 0, 0, 0, 0, 1],
-            "snv_east": [17, 0, 103, 91, 39, 26, 65, 13, 0, 4, 10],
-            "martin_linges_sydost": [55, 1, 121, 106, 46, 30, 76, 16, 4, 0, 47],
-            "rolfsbukt_syd": [17, 0, 38, 33, 14, 10, 24, 5, 1, 11, 0],
+            "snv_syd": [0, 1, 433, 108, 23, 6, 28, 71],
+            "bbv_west": [17, 0, 2, 0, 1, 30, 4, 9],
+            "snv_nordost": [343, 5, 0, 446, 27, 26, 76, 192],
+            "wideroe_nordvest": [398, 6, 521, 0, 31, 30, 89, 223],
+            "odd_nansens_vest": [2, 0, 11, 0, 0, 0, 0, 1],
+            "snv_east": [17, 0, 259, 65, 13, 0, 4, 10],
+            "martin_linges_sydost": [55, 1, 303, 76, 16, 4, 0, 47],
+            "rolfsbukt_syd": [17, 0, 95, 24, 5, 1, 11, 0],
         },
     },
+}
+
+NORDOST_SPLIT_WEIGHTS = {
+    "e18_vest": 0.40,
+    "e18_ost": 0.35,
+    "ring3_nord": 0.15,
+    "snv_nordost": 0.10,
+}
+
+
+def split_count(total: int, weights: dict[str, float]) -> dict[str, int]:
+    """Split an integer total by weights while preserving the exact total."""
+    allocated = {}
+    remainders = []
+    floor_total = 0
+
+    for zone_name, weight in weights.items():
+        raw = total * weight
+        base = floor(raw)
+        allocated[zone_name] = base
+        floor_total += base
+        remainders.append((raw - base, zone_name))
+
+    for _, zone_name in sorted(remainders, key=lambda item: item[0], reverse=True)[: total - floor_total]:
+        allocated[zone_name] += 1
+
+    return allocated
+
+
+def disaggregate_official_matrix(matrix: dict[str, list[int]]) -> dict[str, list[int]]:
+    """Expand the appendix 8-zone matrix to the 11-zone network representation."""
+    expanded = {zone_name: [0] * len(ZONE_ORDER) for zone_name in ZONE_ORDER}
+
+    for from_zone, row in matrix.items():
+        for to_zone, vehicle_count in zip(OFFICIAL_ZONE_ORDER, row):
+            if vehicle_count <= 0:
+                continue
+
+            if from_zone == "snv_nordost" and to_zone == "snv_nordost":
+                raise ValueError("Expected appendix nordost->nordost cell to stay empty")
+
+            if from_zone == "snv_nordost":
+                split_rows = split_count(vehicle_count, NORDOST_SPLIT_WEIGHTS)
+                for split_zone, split_value in split_rows.items():
+                    expanded[split_zone][ZONE_ORDER.index(to_zone)] = split_value
+                continue
+
+            if to_zone == "snv_nordost":
+                split_columns = split_count(vehicle_count, NORDOST_SPLIT_WEIGHTS)
+                for split_zone, split_value in split_columns.items():
+                    expanded[from_zone][ZONE_ORDER.index(split_zone)] = split_value
+                continue
+
+            expanded[from_zone][ZONE_ORDER.index(to_zone)] = vehicle_count
+
+    return expanded
+
+
+OD_MATRICES = {
+    demand_name: {
+        period_name: disaggregate_official_matrix(matrix)
+        for period_name, matrix in periods.items()
+    }
+    for demand_name, periods in OFFICIAL_OD_MATRICES.items()
 }
 
 # Base-network boundary edges selected to represent the OD zones from appendix 1.
@@ -382,16 +444,16 @@ def generate_event_overlay(
 
     The event overlay models concert traffic at Unity Arena (Telenor Arena):
 
-    - **Inbound (sim time 1800-5400, i.e. 16:00-17:30):** Vehicles arrive
+    - **Inbound (sim time 1800-3600, i.e. 16:00-16:30):** Vehicles arrive
       from E18/nordre rundkjøring heading to the arena area (Snarøyveien øst
       zone). 1/3 park, 2/3 are drop-offs that leave immediately.
     - **Drop-off outbound:** Vehicles that dropped off return toward E18
       immediately.
 
-    The PM simulation window is 15:30-17:00 (5400s total).  Event arrival
-    starts at 16:00 (sim time 1800s), so 1 hour of event inbound traffic
-    overlaps.  This captures the critical compounding of commuter PM peak
-    with early event arrivals.
+    The PM simulation window follows the report's peak-hour period
+    15:30-16:30 (3600s total). Event arrival starts at 16:00 (sim time 1800s),
+    so the overlay captures the first 30 minutes where commuter PM peak and
+    event arrivals overlap.
     """
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -399,10 +461,9 @@ def generate_event_overlay(
     park_cars = int(total_cars * park_fraction)
     dropoff_cars = total_cars - park_cars
 
-    # Inbound: all cars arrive sim time 1800-5400 (16:00-17:30)
-    # The distribution front-loads slightly (most arrive 16:00-17:00)
+    # Inbound: all cars arrive sim time 1800-3600 (16:00-16:30)
     EVENT_START = 1800  # sim seconds = 16:00
-    EVENT_END = 5400    # sim seconds = 17:30
+    EVENT_END = 3600    # sim seconds = 16:30
 
     random.seed(seed + 1000)  # different seed from main demand
 

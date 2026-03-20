@@ -7,7 +7,16 @@ import subprocess
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from config import OUTPUT_DIR, PROJECT_ROOT, SCENARIOS_DIR, SNAROYA_ORIGIN_EDGE_IDS, lane_edge_id, queue_length_km
+from config import (
+    OUTPUT_DIR,
+    PROJECT_ROOT,
+    SCENARIOS_DIR,
+    SIMULATION_BEGIN_S,
+    SIMULATION_END_S,
+    SNAROYA_ORIGIN_EDGE_IDS,
+    lane_edge_id,
+    queue_length_km,
+)
 from utils.scenario_catalog import SCENARIOS, scenario_label
 
 
@@ -50,8 +59,8 @@ def create_sumo_config(scenario_name: str, seed: int) -> Path:
     lines += [
         "  </input>",
         "  <time>",
-        '    <begin value="0"/>',
-        '    <end value="5400"/>',
+        f'    <begin value="{SIMULATION_BEGIN_S}"/>',
+        f'    <end value="{SIMULATION_END_S}"/>',
         '    <step-length value="1.0"/>',
         "  </time>",
         "  <processing>",

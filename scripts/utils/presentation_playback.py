@@ -8,7 +8,13 @@ from pathlib import Path
 
 import sumolib
 
-from scripts.config import SNAROYA_DESTINATION_EDGE_IDS, SNAROYA_ORIGIN_EDGE_IDS, lane_edge_id, queue_length_km
+from scripts.config import (
+    SIMULATION_END_S,
+    SNAROYA_DESTINATION_EDGE_IDS,
+    SNAROYA_ORIGIN_EDGE_IDS,
+    lane_edge_id,
+    queue_length_km,
+)
 
 
 PLAYBACK_INTERVAL_S = 5
@@ -60,7 +66,7 @@ def export_rolling_kpis_from_files(
     max_time = max(
         max((arrival for _, arrival, _ in trips_snaroya_from), default=0),
         max((arrival for _, arrival, _ in trips_snaroya_to), default=0),
-        5400,
+        SIMULATION_END_S,
     )
 
     def avg_duration_in_window(trips: list[tuple[float, float, float]], center_s: int) -> float | None:
