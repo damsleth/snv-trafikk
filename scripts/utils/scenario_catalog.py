@@ -5,7 +5,10 @@ from math import isclose
 from pathlib import Path
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+try:
+    from scripts.config import PROJECT_ROOT
+except ModuleNotFoundError:  # pragma: no cover - supports direct script execution from scripts/
+    from config import PROJECT_ROOT
 NETWORK_DIR = PROJECT_ROOT / "network"
 DEMAND_DIR = PROJECT_ROOT / "demand"
 

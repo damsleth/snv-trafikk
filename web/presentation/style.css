@@ -410,12 +410,29 @@ output,
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.25));
 }
 
-/* Emergency glow is set inline by JS based on wall-clock time (Date.now)
-   so that it persists across vehicleLayer redraws. */
+@keyframes emergencyGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.6))
+            drop-shadow(0 0 16px rgba(37, 99, 235, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(37, 99, 235, 1))
+            drop-shadow(0 0 40px rgba(37, 99, 235, 0.5));
+  }
+}
+
+@keyframes emergencyBlinkLeft {
+  0%, 49% { fill: #2563eb; opacity: 1; }
+  50%, 100% { fill: #1e3a8a; opacity: 0.25; }
+}
+
+@keyframes emergencyBlinkRight {
+  0%, 49% { fill: #1e3a8a; opacity: 0.25; }
+  50%, 100% { fill: #2563eb; opacity: 1; }
+}
+
 .vehicle-svg-emergency {
-  /* fallback filter in case JS hasn't set it yet */
-  filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.8))
-          drop-shadow(0 0 16px rgba(37, 99, 235, 0.4));
+  animation: emergencyGlow 0.32s ease-in-out infinite alternate;
 }
 
 .vehicle-marker-emergency {
@@ -480,12 +497,15 @@ output,
   fill: rgba(255, 255, 255, 0.65);
 }
 
-/* Lightbar fills are set inline by vehicleSvg() based on Date.now()
-   so the blink phase survives DOM redraws at a constant 500ms rate. */
-.vehicle-lightbar-left,
-.vehicle-lightbar-right {
-  /* fallback — overridden by inline style */
+.vehicle-lightbar-left {
   fill: #2563eb;
+  animation: emergencyBlinkLeft 0.5s steps(1) infinite;
+}
+
+.vehicle-lightbar-right {
+  fill: #1e3a8a;
+  opacity: 0.25;
+  animation: emergencyBlinkRight 0.5s steps(1) infinite;
 }
 
 .entry-point-marker {

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-03-16T12:08:10.322650+01:00 by Eclipse SUMO netconvert 1.26.0
+<!-- generated on 2026-06-11T11:29:45.464508+01:00 by Eclipse SUMO netconvert 1.26.0
 <netconvertConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
-        <node-files value="/Users/damsleth/Code/SNV/network/base/fornebu.nod.xml"/>
-        <edge-files value="/Users/damsleth/Code/SNV/network/base/fornebu.edg.xml"/>
-        <connection-files value="/Users/damsleth/Code/SNV/network/base/fornebu.con.xml"/>
-        <tllogic-files value="/Users/damsleth/Code/SNV/network/base/fornebu.tll.xml"/>
+        <node-files value="~/code/snv-trafikk/network/base/fornebu.nod.xml"/>
+        <edge-files value="~/code/snv-trafikk/network/base/fornebu.edg.xml"/>
+        <connection-files value="~/code/snv-trafikk/network/base/fornebu.con.xml"/>
+        <tllogic-files value="~/code/snv-trafikk/network/base/fornebu.tll.xml"/>
     </input>
 
     <output>
-        <output-file value="/Users/damsleth/Code/SNV/network/base/fornebu.net.xml"/>
+        <output-file value="~/code/snv-trafikk/network/base/fornebu.net.xml"/>
         <output.street-names value="true"/>
     </output>
 

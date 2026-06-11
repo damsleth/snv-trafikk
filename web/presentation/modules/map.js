@@ -40,6 +40,9 @@ export function createMapController({ manifest, ui, darkMode, popupRenderer = de
   let networkData = null
   let edgeLayers = new Map()
   let activeEdges = new Set()
+  const edgeStyleCache = new Map()
+  let lastVehicleZoom = null
+  const vehicleMarkerMap = new Map()
   const anchorLayer = L.layerGroup().addTo(map)
   const entryPointLayer = L.layerGroup().addTo(map)
   const emergencyLayer = L.layerGroup().addTo(map)
@@ -75,6 +78,9 @@ export function createMapController({ manifest, ui, darkMode, popupRenderer = de
       map.removeLayer(networkLayer)
       edgeLayers = new Map()
       activeEdges = new Set()
+      edgeStyleCache.clear()
+      vehicleLayer.clearLayers()
+      vehicleMarkerMap.clear()
     }
 
     const geojson = await loadNetwork(networkMeta.file)
@@ -181,6 +187,13 @@ export function createMapController({ manifest, ui, darkMode, popupRenderer = de
         continue
       }
       nextActive.add(edgeId)
+
+      const cached = edgeStyleCache.get(edgeId)
+      if (cached && Math.abs(cached[0] - values[0]) < 1 && Math.abs(cached[1] - values[1]) < 0.5) {
+        continue
+      }
+      edgeStyleCache.set(edgeId, [values[0], values[1]])
+
       const props = layer.feature.properties
       const lanes = props.lanes || 1
       layer.setStyle(
@@ -201,6 +214,7 @@ export function createMapController({ manifest, ui, darkMode, popupRenderer = de
       }
     }
     activeEdges = new Set()
+    edgeStyleCache.clear()
   }
 
   function drawEmergency(frame, state) {
@@ -225,44 +239,68 @@ export function createMapController({ manifest, ui, darkMode, popupRenderer = de
   }
 
   function drawVehicles(frame, state) {
-    vehicleLayer.clearLayers()
     if (state.visualMode !== "vehicles") {
+      if (vehicleMarkerMap.size > 0) {
+        vehicleLayer.clearLayers()
+        vehicleMarkerMap.clear()
+      }
       return
     }
     if (state.frameIndex === 0 && !state.isPlaying) {
+      vehicleLayer.clearLayers()
+      vehicleMarkerMap.clear()
       return
     }
 
-    const allVehicles = frame.vehicles ?? []
-    const normalVehicles = []
-    const emergencyVehicles = []
-    for (const vehicle of allVehicles) {
-      if (vehicle[4] === 1) {
-        emergencyVehicles.push(vehicle)
-      } else {
-        normalVehicles.push(vehicle)
-      }
+    const zoom = map.getZoom()
+    if (zoom !== lastVehicleZoom) {
+      vehicleLayer.clearLayers()
+      vehicleMarkerMap.clear()
+      lastVehicleZoom = zoom
     }
 
-    for (const vehicle of [...normalVehicles, ...emergencyVehicles]) {
-      const [, lat, lon, speedKmh, kind, angle = 0] = vehicle
+    const allVehicles = frame.vehicles ?? []
+    const seenIds = new Set()
+
+    for (const vehicle of allVehicles) {
+      const [vehicleId, lat, lon, speedKmh, kind, angle = 0] = vehicle
       if (!state.showEmergency && kind === 1) {
         continue
       }
-      const style = vehicleStyle(speedKmh, kind, map.getZoom())
-      const marker = L.marker([lat, lon], {
-        icon: L.divIcon({
-          className: kind === 1 ? "vehicle-marker vehicle-marker-emergency" : "vehicle-marker",
-          html: vehicleSvg(style, angle),
-          iconSize: style.iconSize,
-          iconAnchor: style.iconAnchor,
-        }),
-        zIndexOffset: kind === 1 ? 10000 : 0,
-      }).addTo(vehicleLayer)
-      if (kind === 1) {
-        marker.bindTooltip(`Utrykningskjøretøy: ${Math.round(speedKmh)} km/t`, { direction: "top", offset: [0, -12] })
-      } else if (speedKmh > 0) {
-        marker.bindTooltip(`${Math.round(speedKmh)} km/t`, { direction: "top", offset: [0, -8] })
+      seenIds.add(vehicleId)
+      const style = vehicleStyle(speedKmh, kind, zoom)
+      const svgHtml = vehicleSvg(style, angle)
+
+      const existing = vehicleMarkerMap.get(vehicleId)
+      if (existing) {
+        existing.setLatLng([lat, lon])
+        const el = existing.getElement()
+        if (el) {
+          el.innerHTML = svgHtml
+        }
+      } else {
+        const marker = L.marker([lat, lon], {
+          icon: L.divIcon({
+            className: kind === 1 ? "vehicle-marker vehicle-marker-emergency" : "vehicle-marker",
+            html: svgHtml,
+            iconSize: style.iconSize,
+            iconAnchor: style.iconAnchor,
+          }),
+          zIndexOffset: kind === 1 ? 10000 : 0,
+        }).addTo(vehicleLayer)
+        if (kind === 1) {
+          marker.bindTooltip(`Utrykningskjøretøy: ${Math.round(speedKmh)} km/t`, { direction: "top", offset: [0, -12] })
+        } else if (speedKmh > 0) {
+          marker.bindTooltip(`${Math.round(speedKmh)} km/t`, { direction: "top", offset: [0, -8] })
+        }
+        vehicleMarkerMap.set(vehicleId, marker)
+      }
+    }
+
+    for (const [vehicleId, marker] of vehicleMarkerMap) {
+      if (!seenIds.has(vehicleId)) {
+        vehicleLayer.removeLayer(marker)
+        vehicleMarkerMap.delete(vehicleId)
       }
     }
   }
@@ -500,24 +538,13 @@ function vehicleStyle(speedKmh, kind, zoom) {
 function vehicleSvg(style, angle) {
   const rotation = Number.isFinite(angle) ? angle : 0
   if (style.shape === "emergency") {
-    const phase = Math.floor(Date.now() / 250) % 2 === 0
-    const leftFill = phase ? "#2563eb" : "#1e3a8a"
-    const leftOpacity = phase ? 1 : 0.25
-    const rightFill = phase ? "#1e3a8a" : "#2563eb"
-    const rightOpacity = phase ? 0.25 : 1
-    const glowT = (Math.sin(Date.now() / 160) + 1) / 2
-    const glowR = Math.round(8 + glowT * 12)
-    const glowA = (0.5 + glowT * 0.4).toFixed(2)
-    const glowFilter =
-      `drop-shadow(0 0 ${glowR}px rgba(37,99,235,${glowA})) ` +
-      `drop-shadow(0 0 ${glowR * 2}px rgba(37,99,235,${(glowA * 0.5).toFixed(2)}))`
     return (
       `<svg class="vehicle-svg vehicle-svg-emergency" viewBox="0 0 20 36" width="${style.iconSize[0]}" height="${style.iconSize[1]}" ` +
-      `style="transform:rotate(${rotation}deg);transform-origin:center center;filter:${glowFilter}">` +
+      `style="transform:rotate(${rotation}deg);transform-origin:center center">` +
       `<path class="vehicle-body" d="M6 2h8l3 7v18l-3 7H6l-3-7V9z" style="--vehicle-color:${style.color};--vehicle-opacity:${style.opacity}"/>` +
       `<rect class="vehicle-cabin" x="6.5" y="8" width="7" height="11" rx="2"/>` +
-      `<rect class="vehicle-lightbar-left" x="5" y="3.5" width="5" height="3" rx="1.2" style="fill:${leftFill};opacity:${leftOpacity}"/>` +
-      `<rect class="vehicle-lightbar-right" x="10" y="3.5" width="5" height="3" rx="1.2" style="fill:${rightFill};opacity:${rightOpacity}"/>` +
+      `<rect class="vehicle-lightbar-left" x="5" y="3.5" width="5" height="3" rx="1.2"/>` +
+      `<rect class="vehicle-lightbar-right" x="10" y="3.5" width="5" height="3" rx="1.2"/>` +
       `<path class="vehicle-nose" d="M8 2h4v2H8z"/>` +
       `</svg>`
     )

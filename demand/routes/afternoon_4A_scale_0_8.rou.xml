@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <routes>
-  <vType id="car" vClass="passenger" length="4.5" maxSpeed="50.0" accel="2.6" decel="4.5" sigma="0.5" jmTimegapMinor="1.5" />
+  <vType id="car" vClass="passenger" length="4.5" maxSpeed="50.0" accel="2.6" decel="4.5" sigma="0.5" jmTimegapMinor="1.5" jmDriveAfterYellowTime="1.0" lcStrategic="1.0" lcCooperative="1.0" speedFactor="normc(1.0,0.1,0.8,1.2)" />
   <vType id="emergency" vClass="emergency" length="6.5" maxSpeed="38.89" accel="3.0" decel="5.0" sigma="0.0" speedFactor="1.0" jmDriveAfterRedTime="3" jmIgnoreKeepClearTime="3" color="1,0,0" />
   <trip id="veh_1" type="car" depart="0.0" from="-27195187#3" to="113815194" departLane="best" fromTaz="snv_syd" toTaz="e18_vest" />
   <trip id="veh_112" type="car" depart="0.0" from="-27195187#3" to="362382740" departLane="best" fromTaz="snv_syd" toTaz="e18_ost" />

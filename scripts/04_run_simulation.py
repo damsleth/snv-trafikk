@@ -17,6 +17,8 @@ from config import (
     SNAROYA_ORIGIN_EDGE_IDS,
     lane_edge_id,
     queue_length_km,
+    sumo_config_path,
+    sumo_config_path_list,
 )
 from utils.scenario_catalog import SCENARIOS, scenario_label
 
@@ -52,11 +54,11 @@ def create_sumo_config(scenario_name: str, seed: int) -> Path:
         '<?xml version="1.0" encoding="UTF-8"?>',
         "<configuration>",
         "  <input>",
-        f'    <net-file value="{scenario["network"]}"/>',
-        f'    <route-files value="{scenario["routes"]}"/>',
+        f'    <net-file value="{sumo_config_path(scenario["network"])}"/>',
+        f'    <route-files value="{sumo_config_path_list(str(scenario["routes"]))}"/>',
     ]
     if additional:
-        lines.append(f'    <additional-files value="{",".join(additional)}"/>')
+        lines.append(f'    <additional-files value="{sumo_config_path_list(additional)}"/>')
     lines += [
         "  </input>",
         "  <time>",
@@ -73,10 +75,10 @@ def create_sumo_config(scenario_name: str, seed: int) -> Path:
         f'    <seed value="{seed}"/>',
         "  </random_number>",
         "  <output>",
-        f'    <tripinfo-output value="{output_dir / "tripinfo.xml"}"/>',
-        f'    <summary-output value="{output_dir / "summary.xml"}"/>',
-        f'    <fcd-output value="{output_dir / "fcd.xml"}"/>',
-        f'    <statistic-output value="{output_dir / "stats.xml"}"/>',
+        f'    <tripinfo-output value="{sumo_config_path(output_dir / "tripinfo.xml")}"/>',
+        f'    <summary-output value="{sumo_config_path(output_dir / "summary.xml")}"/>',
+        f'    <fcd-output value="{sumo_config_path(output_dir / "fcd.xml")}"/>',
+        f'    <statistic-output value="{sumo_config_path(output_dir / "stats.xml")}"/>',
         "  </output>",
         "  <fcd_device>",
         '    <device.fcd.period value="5"/>',

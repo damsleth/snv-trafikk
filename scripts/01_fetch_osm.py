@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Fetch OpenStreetMap data for the Fornebu/Snarøya area."""
 
-import os
 import requests
-from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+from config import PROJECT_ROOT
+
 OSM_DIR = PROJECT_ROOT / "network" / "osm"
 
 # Bounding box: Snarøya → E18 area

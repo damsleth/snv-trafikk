@@ -4,9 +4,9 @@
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
-from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+from config import PROJECT_ROOT
+
 NETWORK_DIR = PROJECT_ROOT / "network"
 OSM_FILE = NETWORK_DIR / "osm" / "fornebu.osm.xml"
 BASE_NET = NETWORK_DIR / "base" / "fornebu.net.xml"

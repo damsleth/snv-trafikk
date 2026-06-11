@@ -4,12 +4,12 @@
 import argparse
 import json
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
 import sys
 from urllib.parse import urlparse
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+from config import PROJECT_ROOT
+
 PRESENTATION_DIR = PROJECT_ROOT / "web" / "presentation"
 
 if str(PROJECT_ROOT) not in sys.path:

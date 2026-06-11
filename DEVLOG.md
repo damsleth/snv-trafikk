@@ -3,6 +3,8 @@ løpende liste over endringer og forbedringer i snv-trafikk.
 omvendt kronologisk, med de nyeste endringene øverst.  
 endringer legges til med dato, timestamp og en kort beskrivelse av hva som er gjort, direkte under denne linjen.
 ---  
+2026-06-11 16:52:04 CEST - ryddet publiseringsvennlig git-policy: `scenarios/**/sumo_seed*.cfg` og `web/presentation/data/playback/*.json` er fjernet fra indeksen med `git rm --cached`, `.gitignore` er konsolidert, og rå seed-/XML-output holdes ignorert mens rapport, figurer og `all_results.json` fortsatt kan versjoneres.
+2026-06-11 16:44:06 CEST - la til `SNV_ROOT_FOLDER`-initialisering i felles config og skriver nå SUMO-konfigurasjoner med `~/code/snv-trafikk/...`-stier i stedet for full `/Users/...`-sti; eksisterende scenario-`.cfg`-filer er mekanisk oppdatert og smoke-testet mot SUMO.
 2026-06-11 11:15:29 CET - rapportgeneratoren viser nå gjennomsnitt ± standardavvik over seeds og antall vellykkede seeds per scenario (ny `seed_counts`-hjelper), slik at mislykkede seeds ikke lenger forsvinner stille fra snittene og forskjeller kan vurderes mot spredningen.
 2026-06-11 11:15:29 CET - flyttet rundkjøringskalibreringen (gap-aksept + fartsfordeling) til `car`-vType-en som trafikken faktisk bruker; den lå tidligere på en ubrukt `default`-vType og hadde derfor ingen effekt. `roundabout_params.add.xml` redefinerer nå SUMOs reelle `DEFAULT_VEHTYPE` i stedet for en død type. Krever full rerun (03→04→05→06) for at resultatene skal oppdateres.
 2026-06-11 11:15:29 CET - kodegjennomgang: la til manglende `import sys` i 03/04 (krasjet på feilstier), netconvert-feil kaster nå i 02 i stedet for å svelges stille, rettet døde README-lenker (QA_REPORT/QA_REMEDIATION_PLAN/docs) og fylte ut pyproject-beskrivelsen.

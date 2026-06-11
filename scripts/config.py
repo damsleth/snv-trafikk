@@ -5,10 +5,22 @@ the same scenario data produces the same derived metrics and file locations
 everywhere.
 """
 
+import os
 from pathlib import Path
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+SNV_ROOT_ENV = "SNV_ROOT_FOLDER"
+
+
+def _project_root() -> Path:
+    configured_root = os.environ.get(SNV_ROOT_ENV)
+    if configured_root:
+        return Path(configured_root).expanduser().resolve()
+    return Path(__file__).resolve().parent.parent
+
+
+PROJECT_ROOT = _project_root()
+os.environ[SNV_ROOT_ENV] = str(PROJECT_ROOT)
 OUTPUT_DIR = PROJECT_ROOT / "output"
 SCENARIOS_DIR = PROJECT_ROOT / "scenarios"
 VISUALIZATIONS_DIR = OUTPUT_DIR / "visualizations"
@@ -28,6 +40,29 @@ SNAROYA_DESTINATION_EDGE_IDS = frozenset({"27195187#2"})
 # Queue density assumption for stopped traffic per lane.
 STOPPED_DENSITY_VEH_PER_KM_PER_LANE = 120
 SNAROYA_APPROACH_LANES = 2
+
+
+def sumo_config_path(path: str | Path) -> str:
+    """Format a path for SUMO config XML, using ~ for paths under the home folder."""
+    path_obj = Path(path).expanduser()
+    if not path_obj.is_absolute():
+        return path_obj.as_posix()
+
+    resolved_path = path_obj.resolve(strict=False)
+    home = Path.home().resolve()
+    try:
+        return f"~/{resolved_path.relative_to(home).as_posix()}"
+    except ValueError:
+        return str(resolved_path)
+
+
+def sumo_config_path_list(paths: str | list[str | Path]) -> str:
+    """Format one or more SUMO config paths, preserving SUMO's comma list syntax."""
+    if isinstance(paths, str):
+        path_items: list[str | Path] = [item for item in paths.split(",") if item]
+    else:
+        path_items = paths
+    return ",".join(sumo_config_path(path) for path in path_items)
 
 
 def lane_edge_id(lane_id: str) -> str:

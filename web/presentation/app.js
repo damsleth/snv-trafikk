@@ -47,8 +47,12 @@ const cache = {
   playbacks: new Map(),
 }
 
+const MIN_RENDER_INTERVAL_MS = 33
+
 let playTimer = null
 let lastAnimationTs = null
+let lastRenderTs = 0
+let lastChartFrameIndex = -1
 let currentMode = null
 
 function showAppError(message) {
@@ -163,6 +167,7 @@ async function selectFamily(familyId) {
 }
 
 async function renderAll() {
+  lastChartFrameIndex = -1
   const networkMeta = manifest.networks[state.family] ?? manifest.networks.scenario_4A_base
   await mapController.ensureNetworkLoaded({
     family: state.family,
@@ -189,10 +194,13 @@ async function updateDynamicLayers(existingMode = null) {
   currentMode = mode
   const frame = buildFrame({ manifest, state, mode, index: state.frameIndex, progress: state.frameProgress })
   mapController.renderDynamicLayers(frame, state)
-  drawCharts({ manifest, mode, state, timeS: frame.time_s, ui })
   ui.timeLabel.textContent = formatClock(frame.time_s, state.period)
   ui.timeSlider.value = String(state.frameIndex)
-  updateKpis({ manifest, mode, state, timeS: frame.time_s, ui })
+  if (state.frameIndex !== lastChartFrameIndex) {
+    lastChartFrameIndex = state.frameIndex
+    drawCharts({ manifest, mode, state, timeS: frame.time_s, ui })
+    updateKpis({ manifest, mode, state, timeS: frame.time_s, ui })
+  }
 }
 
 function updateScenarioNote(mode) {
@@ -260,6 +268,10 @@ async function stepPlayback(timestamp) {
 
   state.frameIndex = Math.floor(playheadMs / frameDurationMs)
   state.frameProgress = (playheadMs % frameDurationMs) / frameDurationMs
-  await updateDynamicLayers(mode)
+
+  if (timestamp - lastRenderTs >= MIN_RENDER_INTERVAL_MS) {
+    lastRenderTs = timestamp
+    await updateDynamicLayers(mode)
+  }
   playTimer = window.requestAnimationFrame(stepPlayback)
 }

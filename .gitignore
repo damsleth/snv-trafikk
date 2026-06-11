@@ -1,18 +1,36 @@
 .DS_Store
-output/*
-!output/visualizations
-!output/report
-!output/all_results.json
 *.pyc
 __pycache__/
 .venv/
 *.egg-info/
 .ipynb_checkpoints/
+.pytest_cache/
+
+# Local working state
+.serena/
+.tmp/
+tmp/
+.plans/
+
+# Private/source-material folders and local notes
 QA*.md
 *_PLAN.md
-docs
-_misc
+docs/
+_misc/
 trafikkdata/
-tmp/
-.tmp
-.pytest_cache/
+
+# Generated SUMO run configs
+scenarios/**/sumo_seed*.cfg
+
+# Raw simulation outputs; keep curated public summaries and figures.
+output/*
+output/**/seed_*/
+output/**/*.xml
+!output/all_results.json
+!output/report/
+!output/report/**
+!output/visualizations/
+!output/visualizations/**
+
+# Heavy generated presentation playback data
+web/presentation/data/playback/*.json

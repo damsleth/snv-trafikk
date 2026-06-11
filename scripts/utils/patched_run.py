@@ -8,7 +8,14 @@ import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from scripts.config import PROJECT_ROOT, SIMULATION_BEGIN_S, SIMULATION_END_S, queue_length_km
+from scripts.config import (
+    PROJECT_ROOT,
+    SIMULATION_BEGIN_S,
+    SIMULATION_END_S,
+    queue_length_km,
+    sumo_config_path,
+    sumo_config_path_list,
+)
 from scripts.utils.patch_generator import build_metadata, write_patch_bundle
 from scripts.utils.presentation_playback import build_kpis_from_stats, export_playback_from_files
 from scripts.utils.scenario_catalog import SCENARIOS
@@ -125,11 +132,11 @@ def create_sumo_config(
         '<?xml version="1.0" encoding="UTF-8"?>',
         "<configuration>",
         "  <input>",
-        f'    <net-file value="{network_path}"/>',
-        f'    <route-files value="{route_files}"/>',
+        f'    <net-file value="{sumo_config_path(network_path)}"/>',
+        f'    <route-files value="{sumo_config_path_list(route_files)}"/>',
     ]
     if additional_files:
-        lines.append(f'    <additional-files value="{",".join(additional_files)}"/>')
+        lines.append(f'    <additional-files value="{sumo_config_path_list(additional_files)}"/>')
     lines += [
         "  </input>",
         "  <time>",
@@ -146,10 +153,10 @@ def create_sumo_config(
         f'    <seed value="{seed}"/>',
         "  </random_number>",
         "  <output>",
-        f'    <tripinfo-output value="{output_dir / "tripinfo.xml"}"/>',
-        f'    <summary-output value="{output_dir / "summary.xml"}"/>',
-        f'    <fcd-output value="{output_dir / "fcd.xml"}"/>',
-        f'    <statistic-output value="{output_dir / "stats.xml"}"/>',
+        f'    <tripinfo-output value="{sumo_config_path(output_dir / "tripinfo.xml")}"/>',
+        f'    <summary-output value="{sumo_config_path(output_dir / "summary.xml")}"/>',
+        f'    <fcd-output value="{sumo_config_path(output_dir / "fcd.xml")}"/>',
+        f'    <statistic-output value="{sumo_config_path(output_dir / "stats.xml")}"/>',
         "  </output>",
         "  <fcd_device>",
         '    <device.fcd.period value="5"/>',

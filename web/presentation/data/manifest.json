@@ -129,13 +129,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 9.4,
-        "system_delay_h": 273.6,
-        "queue_km": 1.4,
-        "blocked_vehicles": 168,
-        "peak_waiting": 176,
-        "emergency_avg_min": 9.7,
-        "snaroya_avg_min": 10.0
+        "avg_duration_min": 9.2,
+        "system_delay_h": 263.3,
+        "queue_km": 1.2,
+        "blocked_vehicles": 144,
+        "peak_waiting": 151,
+        "emergency_avg_min": 9.5,
+        "snaroya_avg_min": 9.7
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -151,12 +151,12 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 7.6,
-        "system_delay_h": 328.9,
+        "avg_duration_min": 7.5,
+        "system_delay_h": 329.6,
         "queue_km": 2.9,
-        "blocked_vehicles": 344,
-        "peak_waiting": 350,
-        "emergency_avg_min": 17.2,
+        "blocked_vehicles": 346,
+        "peak_waiting": 349,
+        "emergency_avg_min": 18.8,
         "snaroya_avg_min": 16.3
       },
       "has_event_overlay": false,
@@ -173,13 +173,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 9.8,
-        "system_delay_h": 236.7,
-        "queue_km": 0.7,
-        "blocked_vehicles": 75,
-        "peak_waiting": 89,
-        "emergency_avg_min": 8.8,
-        "snaroya_avg_min": 9.7
+        "avg_duration_min": 9.9,
+        "system_delay_h": 249.6,
+        "queue_km": 0.9,
+        "blocked_vehicles": 107,
+        "peak_waiting": 117,
+        "emergency_avg_min": 8.7,
+        "snaroya_avg_min": 9.5
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -196,12 +196,12 @@
       },
       "kpis": {
         "avg_duration_min": 9.2,
-        "system_delay_h": 357.6,
-        "queue_km": 2.7,
-        "blocked_vehicles": 317,
-        "peak_waiting": 324,
-        "emergency_avg_min": 12.7,
-        "snaroya_avg_min": 13.5
+        "system_delay_h": 362.0,
+        "queue_km": 2.8,
+        "blocked_vehicles": 331,
+        "peak_waiting": 334,
+        "emergency_avg_min": 13.5,
+        "snaroya_avg_min": 14.3
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -217,13 +217,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 8.8,
-        "system_delay_h": 293.2,
+        "avg_duration_min": 8.9,
+        "system_delay_h": 299.6,
         "queue_km": 3.8,
-        "blocked_vehicles": 456,
-        "peak_waiting": 459,
-        "emergency_avg_min": 9.1,
-        "snaroya_avg_min": 9.3
+        "blocked_vehicles": 454,
+        "peak_waiting": 458,
+        "emergency_avg_min": 8.9,
+        "snaroya_avg_min": 9.2
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -240,12 +240,12 @@
       },
       "kpis": {
         "avg_duration_min": 8.5,
-        "system_delay_h": 295.0,
+        "system_delay_h": 296.4,
         "queue_km": 3.3,
-        "blocked_vehicles": 394,
-        "peak_waiting": 398,
-        "emergency_avg_min": 9.5,
-        "snaroya_avg_min": 9.8
+        "blocked_vehicles": 390,
+        "peak_waiting": 400,
+        "emergency_avg_min": 10.1,
+        "snaroya_avg_min": 9.6
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -261,13 +261,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 9.9,
-        "system_delay_h": 247.8,
-        "queue_km": 0.7,
-        "blocked_vehicles": 80,
-        "peak_waiting": 84,
-        "emergency_avg_min": 8.9,
-        "snaroya_avg_min": 9.8
+        "avg_duration_min": 10.0,
+        "system_delay_h": 253.9,
+        "queue_km": 0.9,
+        "blocked_vehicles": 99,
+        "peak_waiting": 105,
+        "emergency_avg_min": 9.9,
+        "snaroya_avg_min": 10.2
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -283,13 +283,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 9.2,
-        "system_delay_h": 355.3,
-        "queue_km": 2.6,
-        "blocked_vehicles": 313,
-        "peak_waiting": 318,
-        "emergency_avg_min": 14.7,
-        "snaroya_avg_min": 14.1
+        "avg_duration_min": 9.3,
+        "system_delay_h": 359.0,
+        "queue_km": 2.7,
+        "blocked_vehicles": 324,
+        "peak_waiting": 328,
+        "emergency_avg_min": 15.6,
+        "snaroya_avg_min": 14.4
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -305,13 +305,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 12.2,
-        "system_delay_h": 290.4,
-        "queue_km": 3.3,
-        "blocked_vehicles": 388,
-        "peak_waiting": 390,
-        "emergency_avg_min": 11.7,
-        "snaroya_avg_min": 12.3
+        "avg_duration_min": 11.9,
+        "system_delay_h": 290.0,
+        "queue_km": 3.2,
+        "blocked_vehicles": 381,
+        "peak_waiting": 382,
+        "emergency_avg_min": 11.6,
+        "snaroya_avg_min": 12.1
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -327,13 +327,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 10.6,
-        "system_delay_h": 337.0,
+        "avg_duration_min": 10.2,
+        "system_delay_h": 321.7,
         "queue_km": 2.6,
-        "blocked_vehicles": 303,
-        "peak_waiting": 312,
-        "emergency_avg_min": 34.2,
-        "snaroya_avg_min": 28.9
+        "blocked_vehicles": 315,
+        "peak_waiting": 320,
+        "emergency_avg_min": 39.8,
+        "snaroya_avg_min": 31.1
       },
       "has_event_overlay": false,
       "source": "sumo_seed1"
@@ -349,13 +349,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 7.7,
-        "system_delay_h": 1987.3,
+        "avg_duration_min": 7.6,
+        "system_delay_h": 1983.6,
         "queue_km": 51.3,
-        "blocked_vehicles": 6158,
-        "peak_waiting": 6163,
-        "emergency_avg_min": 23.4,
-        "snaroya_avg_min": 17.4
+        "blocked_vehicles": 6151,
+        "peak_waiting": 6156,
+        "emergency_avg_min": 17.3,
+        "snaroya_avg_min": 15.3
       },
       "has_event_overlay": true,
       "source": "sumo_seed1"
@@ -371,13 +371,13 @@
         "interval_s": 5
       },
       "kpis": {
-        "avg_duration_min": 9.7,
-        "system_delay_h": 2034.7,
+        "avg_duration_min": 9.5,
+        "system_delay_h": 2029.9,
         "queue_km": 51.9,
-        "blocked_vehicles": 6227,
+        "blocked_vehicles": 6226,
         "peak_waiting": 6229,
-        "emergency_avg_min": 16.0,
-        "snaroya_avg_min": 15.5
+        "emergency_avg_min": 19.9,
+        "snaroya_avg_min": 15.8
       },
       "has_event_overlay": true,
       "source": "sumo_seed1"
@@ -421,22 +421,22 @@
     "event_multipliers": {
       "base": {
         "avg_duration": 1.01,
-        "system_delay": 6.04,
+        "system_delay": 6.02,
         "queue": 17.69,
-        "emergency": 1.36
+        "emergency": 0.92
       },
       "v1": {
-        "avg_duration": 1.05,
-        "system_delay": 5.69,
-        "queue": 19.22,
-        "emergency": 1.26
+        "avg_duration": 1.03,
+        "system_delay": 5.61,
+        "queue": 18.54,
+        "emergency": 1.47
       }
     },
     "fallback_event_multipliers": {
-      "avg_duration": 1.03,
-      "system_delay": 5.87,
-      "queue": 18.45,
-      "emergency": 1.31
+      "avg_duration": 1.02,
+      "system_delay": 5.81,
+      "queue": 18.12,
+      "emergency": 1.2
     }
   }
 }

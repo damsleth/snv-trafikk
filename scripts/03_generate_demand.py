@@ -13,10 +13,10 @@ import xml.etree.ElementTree as ET
 from math import floor
 from pathlib import Path
 
+from config import PROJECT_ROOT
 from utils.scenario_catalog import declared_demand_variants, demand_route_path, format_demand_scale
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEMAND_DIR = PROJECT_ROOT / "demand"
 
 ZONE_ORDER = [

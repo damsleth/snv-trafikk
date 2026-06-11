@@ -1,7 +1,10 @@
 import importlib.util
+import os
 from pathlib import Path
 
 import pytest
+
+from scripts.config import PROJECT_ROOT, SNV_ROOT_ENV, sumo_config_path
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -18,6 +21,36 @@ def load_run_simulation_module():
 
 
 run_simulation = load_run_simulation_module()
+
+
+def test_sumo_config_path_uses_home_relative_form() -> None:
+  formatted = sumo_config_path(PROJECT_ROOT / "output" / "scenario" / "seed_1" / "tripinfo.xml")
+
+  assert os.environ[SNV_ROOT_ENV] == str(PROJECT_ROOT)
+  assert formatted == "~/code/snv-trafikk/output/scenario/seed_1/tripinfo.xml"
+
+
+def test_create_sumo_config_writes_home_relative_paths(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+  scenario_name = "scenario_test_morning"
+  monkeypatch.setattr(run_simulation, "OUTPUT_DIR", PROJECT_ROOT / "output")
+  monkeypatch.setattr(run_simulation, "SCENARIOS_DIR", tmp_path / "scenarios")
+  monkeypatch.setitem(
+    run_simulation.SCENARIOS,
+    scenario_name,
+    {
+      "network": PROJECT_ROOT / "network" / "base" / "fornebu.net.xml",
+      "routes": str(PROJECT_ROOT / "demand" / "routes" / "morning_1A.rou.xml"),
+      "additional": [str(PROJECT_ROOT / "network" / "signals" / "roundabout_params.add.xml")],
+    },
+  )
+
+  config_file = run_simulation.create_sumo_config(scenario_name, seed=3)
+
+  config_text = config_file.read_text(encoding="utf-8")
+  assert 'value="~/code/snv-trafikk/network/base/fornebu.net.xml"' in config_text
+  assert 'value="~/code/snv-trafikk/demand/routes/morning_1A.rou.xml"' in config_text
+  assert 'value="~/code/snv-trafikk/output/scenario_test_morning/seed_3/tripinfo.xml"' in config_text
+  assert str(PROJECT_ROOT) not in config_text
 
 
 def test_parse_stats_extracts_shared_kpis(tmp_path: Path) -> None:

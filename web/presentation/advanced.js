@@ -88,9 +88,13 @@ const cache = {
   playbacks: new Map(),
 }
 
+const MIN_RENDER_INTERVAL_MS = 33
+
 const workbench = loadWorkbenchState()
 let playTimer = null
 let lastAnimationTs = null
+let lastRenderTs = 0
+let lastChartFrameIndex = -1
 let currentMode = null
 let currentFrame = { time_s: 0, edges: {}, emergency: [], vehicles: [] }
 
@@ -479,6 +483,7 @@ function buildInspectorRows(rows) {
 }
 
 async function renderAll() {
+  lastChartFrameIndex = -1
   const networkMeta = manifest.networks[state.family] ?? manifest.networks.scenario_4A_base
   await mapController.ensureNetworkLoaded({
     family: state.family,
@@ -551,11 +556,14 @@ async function updateDynamicLayers(existingMode = null) {
     artifacts: artifactsForFamily(),
     selectedEdgeId: state.selectedEdgeId,
   })
-  drawCharts({ manifest, mode, state, timeS: currentFrame.time_s, ui })
-  updateKpis({ manifest, mode, state, timeS: currentFrame.time_s, ui })
   ui.timeLabel.textContent = formatClock(currentFrame.time_s, state.period)
   ui.timeSlider.value = String(state.frameIndex)
   updateSelectedEdgeMetrics()
+  if (state.frameIndex !== lastChartFrameIndex) {
+    lastChartFrameIndex = state.frameIndex
+    drawCharts({ manifest, mode, state, timeS: currentFrame.time_s, ui })
+    updateKpis({ manifest, mode, state, timeS: currentFrame.time_s, ui })
+  }
 }
 
 function updateSelectedEdgeMetrics() {
@@ -647,6 +655,10 @@ async function stepPlayback(timestamp) {
   const completedFrames = Math.floor(totalProgress)
   state.frameProgress = totalProgress - completedFrames
   state.frameIndex = (state.frameIndex + completedFrames) % frameCount
-  await updateDynamicLayers(mode)
+
+  if (timestamp - lastRenderTs >= MIN_RENDER_INTERVAL_MS) {
+    lastRenderTs = timestamp
+    await updateDynamicLayers(mode)
+  }
   playTimer = window.requestAnimationFrame(stepPlayback)
 }
