@@ -133,9 +133,8 @@ Merk: morgen- og ettermiddagskartene bygger på reelle SUMO-kjøringer. Midt på
 Hvis du vil gå dypere enn figurene:
 
 - Oppsummert resultatrapport: [output/report/snaroyveien_traffic_report.md](output/report/snaroyveien_traffic_report.md)
-- QA-gjennomgang: [QA_REPORT.md](QA_REPORT.md)
-- Tiltaksplan etter QA: [QA_REMEDIATION_PLAN.md](QA_REMEDIATION_PLAN.md)
-- Plan- og faggrunnlag: [docs/](docs/)
+- Tolkning av offisiell utredning: [OFFICIAL_REPORT_INTERPRETATION.md](OFFICIAL_REPORT_INTERPRETATION.md)
+- Utviklingslogg: [DEVLOG.md](DEVLOG.md)
 
 ## Viktige forbehold
 

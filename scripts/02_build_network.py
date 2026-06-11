@@ -120,6 +120,8 @@ def step1_osm_to_base():
     print("Running netconvert (OSM → base network)...")
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
+        raise RuntimeError(f"netconvert failed (code {result.returncode}):\n{result.stderr[:1000]}")
+    if result.stderr.strip():
         print(f"netconvert warnings:\n{result.stderr[:1000]}")
     if not BASE_NET.exists():
         raise RuntimeError("netconvert failed to produce network")
@@ -341,10 +343,10 @@ def step4_create_variant(variant_name: str, lane_config: dict[str, dict[str, str
     ]
 
     result = subprocess.run(cmd, capture_output=True, text=True)
-    if result.returncode != 0 and not output_net.exists():
-        print(f"  WARNING: netconvert failed for {variant_name}")
-        print(f"  stderr: {result.stderr[:500]}")
-        return None
+    if result.returncode != 0 or not output_net.exists():
+        raise RuntimeError(
+            f"netconvert failed for {variant_name} (code {result.returncode}):\n{result.stderr[:500]}"
+        )
 
     apply_lane_permissions(output_net, lane_config)
 
@@ -353,13 +355,21 @@ def step4_create_variant(variant_name: str, lane_config: dict[str, dict[str, str
 
 
 def step5_roundabout_params():
-    """Create vehicle type calibration for roundabout gap acceptance."""
+    """Calibrate roundabout gap acceptance for any untyped vehicle.
+
+    The primary calibration is set on the "car" vType in
+    scripts/03_generate_demand.py, which is what generated traffic references.
+    This additional only redefines SUMO's built-in DEFAULT_VEHTYPE so that any
+    vehicle inserted without an explicit type (e.g. ad-hoc TraCI vehicles)
+    inherits the same gap-acceptance behaviour. The previous id="default" was a
+    plain unused type that no vehicle referenced, so it never took effect.
+    """
     add_file = NETWORK_DIR / "signals" / "roundabout_params.add.xml"
     add_file.parent.mkdir(parents=True, exist_ok=True)
 
     root = ET.Element("additional")
     vtype = ET.SubElement(root, "vType")
-    vtype.set("id", "default")
+    vtype.set("id", "DEFAULT_VEHTYPE")
     vtype.set("jmTimegapMinor", "1.5")
     vtype.set("jmDriveAfterYellowTime", "1.0")
     vtype.set("lcStrategic", "1.0")

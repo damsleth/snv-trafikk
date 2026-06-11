@@ -7,7 +7,7 @@ from datetime import datetime
 import numpy as np
 
 from config import OUTPUT_DIR, REPORT_DIR, VISUALIZATIONS_DIR
-from utils.results import aggregate_stats, group_scenarios_by_period, load_all_results
+from utils.results import aggregate_stats, group_scenarios_by_period, load_all_results, seed_counts
 from utils.scenario_catalog import PERIODS, SCENARIOS, scenario_color, scenario_family, scenario_label, scenario_period
 
 
@@ -15,6 +15,13 @@ def compare_text(base_value: float, candidate_value: float, unit: str, precision
     delta = candidate_value - base_value
     sign = "+" if delta > 0 else ""
     return f"{candidate_value:.{precision}f}{unit} ({sign}{delta:.{precision}f}{unit} vs. base)"
+
+
+def pm(stats: dict, key: str, unit: str = "", scale: float = 1.0, precision: int = 1) -> str:
+    """Format a metric as 'mean ± std' using the aggregated *_mean/*_std keys."""
+    mean = stats.get(f"{key}_mean", 0) * scale
+    std = stats.get(f"{key}_std", 0) * scale
+    return f"{mean:.{precision}f} ± {std:.{precision}f}{unit}"
 
 
 def group_scenarios(results: dict) -> dict[str, list[str]]:
@@ -64,9 +71,25 @@ def generate_report() -> None:
             v1_delay = v1_stats.get("system_delay_h_mean", 0)
             base_waiting = base_stats.get("peak_waiting_mean", 0)
             v1_waiting = v1_stats.get("peak_waiting_mean", 0)
-            lines.append(f"- Base: {base_duration:.1f} min gjennomsnittlig reisetid, {base_delay:.1f} kjt-t systemforsinkelse, {base_waiting:.0f} maks ventende kjøretøy.")
-            lines.append(f"- V1: {v1_duration:.1f} min gjennomsnittlig reisetid, {v1_delay:.1f} kjt-t systemforsinkelse, {v1_waiting:.0f} maks ventende kjøretøy.")
-            lines.append(f"- Endring V1 vs. base: {compare_text(base_duration, v1_duration, ' min')}, {compare_text(base_delay, v1_delay, ' kjt-t')}, {compare_text(base_waiting, v1_waiting, ' kjt', 0)}.")
+            base_ok, base_total = seed_counts(results.get(base_name, []))
+            v1_ok, v1_total = seed_counts(results.get(v1_name, []))
+            lines.append(
+                f"- Base ({base_ok}/{base_total} seeds): "
+                f"{pm(base_stats, 'avg_duration_s', ' min', scale=1 / 60.0)} reisetid, "
+                f"{pm(base_stats, 'system_delay_h', ' kjt-t')} systemforsinkelse, "
+                f"{pm(base_stats, 'peak_waiting', ' kjt', precision=0)} maks ventende."
+            )
+            lines.append(
+                f"- V1 ({v1_ok}/{v1_total} seeds): "
+                f"{pm(v1_stats, 'avg_duration_s', ' min', scale=1 / 60.0)} reisetid, "
+                f"{pm(v1_stats, 'system_delay_h', ' kjt-t')} systemforsinkelse, "
+                f"{pm(v1_stats, 'peak_waiting', ' kjt', precision=0)} maks ventende."
+            )
+            lines.append(
+                f"- Endring V1 vs. base (snitt): {compare_text(base_duration, v1_duration, ' min')}, "
+                f"{compare_text(base_delay, v1_delay, ' kjt-t')}, {compare_text(base_waiting, v1_waiting, ' kjt', 0)}. "
+                "Tall etter ± er standardavvik over seeds; vurder overlapp før forskjeller tolkes som reelle."
+            )
         else:
             lines.append("- Ikke nok simuleringsdata for sammenligning.")
         lines.append("")
@@ -91,18 +114,24 @@ def generate_report() -> None:
         "",
         "## Scenariotabell",
         "",
-        "| Scenario | Reisetid | Systemforsinkelse | Blokkerte avganger | Maks ventende |",
-        "|---|---|---|---|---|",
+        "Verdier er gjennomsnitt ± standardavvik over vellykkede seeds. "
+        "«Seeds» viser hvor mange av kjøringene som ga brukbare resultater "
+        "(mislykkede seeds er utelatt fra snittene).",
+        "",
+        "| Scenario | Seeds | Reisetid | Systemforsinkelse | Blokkerte avganger | Maks ventende |",
+        "|---|---|---|---|---|---|",
     ]
 
     for scenario_name in sorted(results):
         stats = stats_by_scenario.get(scenario_name, {})
         if not stats:
             continue
+        ok, total = seed_counts(results[scenario_name])
         lines.append(
             f"| {scenario_label(scenario_name)} | "
-            f"{stats.get('avg_duration_s_mean', 0) / 60.0:.1f} min | "
-            f"{stats.get('system_delay_h_mean', 0):.1f} kjt-t | "
+            f"{ok}/{total} | "
+            f"{pm(stats, 'avg_duration_s', ' min', scale=1 / 60.0)} | "
+            f"{pm(stats, 'system_delay_h', ' kjt-t')} | "
             f"{stats.get('not_inserted_mean', 0):.0f} | "
             f"{stats.get('peak_waiting_mean', 0):.0f} |"
         )

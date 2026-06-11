@@ -1,7 +1,7 @@
 [project]
 name = "snv"
 version = "0.1.0"
-description = "Add your description here"
+description = "Open SUMO microsimulation of traffic impacts from narrowing Snarøyveien (Fornebu) under the KDP3 bygate proposal"
 requires-python = ">=3.10"
 dependencies = [
     "eclipse-sumo>=1.26.0",

@@ -1,4 +1,4 @@
 <?xml version='1.0' encoding='utf-8'?>
 <additional>
-  <vType id="default" jmTimegapMinor="1.5" jmDriveAfterYellowTime="1.0" lcStrategic="1.0" lcCooperative="1.0" speedFactor="normc(1.0,0.1,0.8,1.2)" />
+  <vType id="DEFAULT_VEHTYPE" jmTimegapMinor="1.5" jmDriveAfterYellowTime="1.0" lcStrategic="1.0" lcCooperative="1.0" speedFactor="normc(1.0,0.1,0.8,1.2)" />
 </additional>

@@ -8,6 +8,7 @@ flattening intersection turning counts into unrelated trips.
 
 import argparse
 import random
+import sys
 import xml.etree.ElementTree as ET
 from math import floor
 from pathlib import Path
@@ -340,6 +341,10 @@ def generate_routes(
     root = ET.Element("routes")
 
     # --- passenger vehicle type ---
+    # Roundabout gap-acceptance and speed calibration lives here, on the type
+    # that every generated passenger vehicle actually references. (The separate
+    # roundabout_params.add.xml only redefines SUMO's untyped DEFAULT_VEHTYPE and
+    # is never applied to these vehicles, so the calibration must be set here.)
     vtype = ET.SubElement(root, "vType")
     vtype.set("id", "car")
     vtype.set("vClass", "passenger")
@@ -349,6 +354,10 @@ def generate_routes(
     vtype.set("decel", "4.5")
     vtype.set("sigma", "0.5")
     vtype.set("jmTimegapMinor", "1.5")
+    vtype.set("jmDriveAfterYellowTime", "1.0")
+    vtype.set("lcStrategic", "1.0")
+    vtype.set("lcCooperative", "1.0")
+    vtype.set("speedFactor", "normc(1.0,0.1,0.8,1.2)")
 
     # --- emergency vehicle type (ambulance / blue-light) ---
     evtype = ET.SubElement(root, "vType")

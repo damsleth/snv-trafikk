@@ -62,6 +62,19 @@ def metric_mean(runs: list[dict], key: str) -> float:
     return float(np.mean(values))
 
 
+def seed_counts(runs: list[dict]) -> tuple[int, int]:
+    """Return (successful, total) seed counts for a scenario.
+
+    A seed is "successful" when it produced completed-trip metrics. Seeds that
+    failed (e.g. SUMO gridlock/crash) carry no metric keys and are silently
+    excluded from the means, so reporting the count guards against seed-level
+    survivorship bias.
+    """
+    total = len(runs)
+    successful = sum(1 for run in runs if not run.get("failed") and "avg_duration_s" in run)
+    return successful, total
+
+
 def group_scenarios_by_period(results: dict, periods: dict, scenario_period) -> dict[str, list[str]]:
     grouped = {period_name: [] for period_name in periods}
     for scenario_name, runs in results.items():
