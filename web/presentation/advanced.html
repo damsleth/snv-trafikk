@@ -14,7 +14,7 @@
   </head>
   <body>
     <div class="layout advanced-layout">
-      <aside class="panel advanced-panel">
+      <aside class="panel advanced-panel" role="region" aria-label="Avansert kontrollpanel">
         <div class="panel-head">
           <div>
             <p class="eyebrow">Avansert arbeidsflate</p>
@@ -168,7 +168,7 @@
             <button id="clearWorkbenchButton" class="ghost-button" type="button">Fjern lokale endringer</button>
           </div>
           <p id="patchCommandHint" class="advanced-note">Kommando: `uv run python scripts/09_generate_patch_files.py --input path/to/patch.json --output tmp/patch_bundle`</p>
-          <p id="scenarioNote" class="note">Avansert visning lastet.</p>
+            <p id="scenarioNote" class="note" aria-live="polite">Avansert visning lastet.</p>
         </section>
       </aside>
 
@@ -178,11 +178,15 @@
         role="separator"
         aria-orientation="vertical"
         aria-label="Juster bredde på sidepanel"
+        aria-valuemin="450"
+        aria-valuemax="760"
+        aria-valuenow="450"
         title="Dra for å justere sidepanelbredde"
+        tabindex="0"
       ></div>
 
-      <main class="map-shell advanced-map-shell">
-        <div id="map"></div>
+      <main class="map-shell advanced-map-shell" role="region" aria-label="Avansert trafikkart">
+        <div id="map" role="application" aria-label="Interaktivt avansert trafikkart"></div>
         <section class="map-charts advanced-map-charts" aria-label="Synkrone ko-grafer">
           <article class="chart-card">
             <div class="chart-head">
@@ -192,7 +196,7 @@
               </div>
               <strong id="queueChartValue">0 kjt</strong>
             </div>
-            <canvas id="queueTimelineChart" height="120"></canvas>
+            <canvas id="queueTimelineChart" height="120" role="img" aria-label="Tidsserie for ko"></canvas>
           </article>
           <article class="chart-card">
             <div class="chart-head">
@@ -202,7 +206,7 @@
               </div>
               <strong id="growthChartValue">0 kjt</strong>
             </div>
-            <canvas id="queueGrowthChart" height="120"></canvas>
+            <canvas id="queueGrowthChart" height="120" role="img" aria-label="Tidsserie for ko-vekst"></canvas>
           </article>
         </section>
       </main>

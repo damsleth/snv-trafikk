@@ -14,6 +14,7 @@ from math import floor
 from pathlib import Path
 
 from config import PROJECT_ROOT
+from utils.provenance import git_commit, sha256_file, utc_now_iso, write_json
 from utils.scenario_catalog import declared_demand_variants, demand_route_path, format_demand_scale
 
 
@@ -115,6 +116,14 @@ NORDOST_SPLIT_WEIGHTS = {
     "e18_ost": 0.35,
     "ring3_nord": 0.15,
     "snv_nordost": 0.10,
+}
+
+DEMAND_SOURCE = {
+    "source_document": "PGF Trafikkanalyse Snarøyveien, doc. 7133122, appendix 1",
+    "matrix_kind": "published 8-zone Aimsun matrices, disaggregated to SUMO boundary zones",
+    "zone_order": ZONE_ORDER,
+    "official_zone_order": OFFICIAL_ZONE_ORDER,
+    "nordost_split_weights": NORDOST_SPLIT_WEIGHTS,
 }
 
 
@@ -317,6 +326,67 @@ def generate_od_csv(matrix: dict[str, list[int]], output_file: Path) -> None:
     print(f"OD matrix CSV -> {output_file}")
 
 
+def provenance_path(output_file: Path) -> Path:
+    """Return the JSON sidecar path for a generated demand artifact."""
+    return output_file.with_name(f"{output_file.name}.meta.json")
+
+
+def demand_provenance_payload(
+    demand_name: str,
+    period_name: str,
+    demand_scale: float,
+    matrix: dict[str, list[int]],
+    output_file: Path,
+    vehicle_count: int | None = None,
+) -> dict:
+    """Build provenance metadata for generated demand artifacts."""
+    return {
+        **DEMAND_SOURCE,
+        "generated_at": utc_now_iso(),
+        "git_commit": git_commit(PROJECT_ROOT),
+        "demand_name": demand_name,
+        "period": period_name,
+        "demand_scale": demand_scale,
+        "total_matrix_vehicles_per_hour": sum(sum(row) for row in matrix.values()),
+        "generated_vehicle_count": vehicle_count,
+        "artifact": str(output_file),
+        "artifact_sha256": sha256_file(output_file),
+    }
+
+
+def write_demand_provenance(
+    output_file: Path,
+    demand_name: str,
+    period_name: str,
+    demand_scale: float,
+    matrix: dict[str, list[int]],
+    vehicle_count: int | None = None,
+) -> None:
+    """Write a metadata sidecar for one generated OD or route file."""
+    write_json(
+        provenance_path(output_file),
+        demand_provenance_payload(demand_name, period_name, demand_scale, matrix, output_file, vehicle_count),
+    )
+
+
+def validate_route_totals(route_file: Path, expected_matrix: dict[str, list[int]], include_emergency: bool = True) -> dict:
+    """Retally generated SUMO trips and compare them with the expected matrix total."""
+    expected_total = sum(count for _, _, count in matrix_to_flows(expected_matrix))
+    if include_emergency:
+        expected_total += 3
+    if not route_file.exists():
+        return {"valid": False, "expected_total": expected_total, "actual_total": 0, "error": f"missing route file {route_file}"}
+
+    tree = ET.parse(str(route_file))
+    actual_total = len(tree.getroot().findall("trip"))
+    return {
+        "valid": actual_total == expected_total,
+        "expected_total": expected_total,
+        "actual_total": actual_total,
+        "delta": actual_total - expected_total,
+    }
+
+
 def generate_routes(
     net_file: Path,
     matrix: dict[str, list[int]],
@@ -339,6 +409,7 @@ def generate_routes(
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     root = ET.Element("routes")
+    root.append(ET.Comment("Generated from PGF Trafikkanalyse Snarøyveien doc. 7133122 appendix 1; see sidecar .meta.json for provenance."))
 
     # --- passenger vehicle type ---
     # Roundabout gap-acceptance and speed calibration lives here, on the type
@@ -571,13 +642,18 @@ def generate_all_demand(demand_scales: list[float] | None = None) -> None:
                 scaled_matrix = scale_matrix(matrix, demand_scale)
                 route_path = demand_route_path(period_name, scenario_name, demand_scale)
                 suffix = route_path.stem.replace(".rou", "")
-                generate_od_csv(scaled_matrix, od_dir / f"{suffix}.csv")
-                generate_routes(
+                csv_path = od_dir / f"{suffix}.csv"
+                generate_od_csv(scaled_matrix, csv_path)
+                write_demand_provenance(csv_path, scenario_name, period_name, demand_scale, scaled_matrix)
+                vehicle_count = generate_routes(
                     base_net,
                     scaled_matrix,
                     routes_dir / f"{suffix}.rou.xml",
                     seed=42,
                 )
+                write_demand_provenance(route_path, scenario_name, period_name, demand_scale, scaled_matrix, vehicle_count)
+                validation = validate_route_totals(route_path, scaled_matrix)
+                write_json(provenance_path(route_path).with_name(f"{route_path.name}.validation.json"), validation)
 
     # Generate Unity Arena event overlay
     print("\nGenerating Unity Arena event-night overlay...")

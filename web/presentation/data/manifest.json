@@ -1,5 +1,122 @@
 {
+  "manifest_version": "1.1",
   "generated_from": "scripts/07_export_presentation_data.py",
+  "generated_at": "2026-06-11T16:56:07+00:00",
+  "git_commit": "ea7dbb840da14314aa28f673c0e3c5143ed3faa7",
+  "scenario_catalog_sha256": "0a930f2f8690c2db5773b77e097ac684b0a4db7499ebbe310bfeb6ba6e4361da",
+  "seed_policy": "first-successful",
+  "exported_scenarios": [
+    "scenario_4A_base_afternoon",
+    "scenario_4A_base_event_afternoon",
+    "scenario_4A_base_morning",
+    "scenario_4A_v1_afternoon",
+    "scenario_4A_v1_event_afternoon",
+    "scenario_4A_v1_morning",
+    "scenario_4A_v1_rolfsbukt_afternoon",
+    "scenario_4A_v1_rolfsbukt_morning",
+    "scenario_4A_v2_afternoon",
+    "scenario_4A_v2_morning",
+    "scenario_4A_v3_afternoon",
+    "scenario_4A_v3_morning"
+  ],
+  "export_inputs": {
+    "scenario_4A_base_afternoon": {
+      "scenario": "scenario_4A_base_afternoon",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    },
+    "scenario_4A_base_event_afternoon": {
+      "scenario": "scenario_4A_base_event_afternoon",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    },
+    "scenario_4A_base_morning": {
+      "scenario": "scenario_4A_base_morning",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    },
+    "scenario_4A_v1_afternoon": {
+      "scenario": "scenario_4A_v1_afternoon",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    },
+    "scenario_4A_v1_event_afternoon": {
+      "scenario": "scenario_4A_v1_event_afternoon",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    },
+    "scenario_4A_v1_morning": {
+      "scenario": "scenario_4A_v1_morning",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    },
+    "scenario_4A_v1_rolfsbukt_afternoon": {
+      "scenario": "scenario_4A_v1_rolfsbukt_afternoon",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    },
+    "scenario_4A_v1_rolfsbukt_morning": {
+      "scenario": "scenario_4A_v1_rolfsbukt_morning",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    },
+    "scenario_4A_v2_afternoon": {
+      "scenario": "scenario_4A_v2_afternoon",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    },
+    "scenario_4A_v2_morning": {
+      "scenario": "scenario_4A_v2_morning",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    },
+    "scenario_4A_v3_afternoon": {
+      "scenario": "scenario_4A_v3_afternoon",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    },
+    "scenario_4A_v3_morning": {
+      "scenario": "scenario_4A_v3_morning",
+      "seed": 1,
+      "has_tripinfo": true,
+      "has_summary": true,
+      "has_fcd": true,
+      "valid": true
+    }
+  },
   "default_center": [
     59.89600084555638,
     10.598507288718736
@@ -118,28 +235,6 @@
     }
   },
   "scenarios": {
-    "scenario_4A_base_morning": {
-      "family": "scenario_4A_base",
-      "period": "morning",
-      "label": "Base (dagens profil) AM",
-      "network": "scenario_4A_base",
-      "playback": {
-        "file": "data/playback/scenario_4A_base_morning.json",
-        "frame_count": 720,
-        "interval_s": 5
-      },
-      "kpis": {
-        "avg_duration_min": 9.2,
-        "system_delay_h": 263.3,
-        "queue_km": 1.2,
-        "blocked_vehicles": 144,
-        "peak_waiting": 151,
-        "emergency_avg_min": 9.5,
-        "snaroya_avg_min": 9.7
-      },
-      "has_event_overlay": false,
-      "source": "sumo_seed1"
-    },
     "scenario_4A_base_afternoon": {
       "family": "scenario_4A_base",
       "period": "afternoon",
@@ -148,7 +243,9 @@
       "playback": {
         "file": "data/playback/scenario_4A_base_afternoon.json",
         "frame_count": 720,
-        "interval_s": 5
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 16531416
       },
       "kpis": {
         "avg_duration_min": 7.5,
@@ -160,183 +257,9 @@
         "snaroya_avg_min": 16.3
       },
       "has_event_overlay": false,
-      "source": "sumo_seed1"
-    },
-    "scenario_4A_v1_morning": {
-      "family": "scenario_4A_v1",
-      "period": "morning",
-      "label": "V1 AM",
-      "network": "scenario_4A_v1",
-      "playback": {
-        "file": "data/playback/scenario_4A_v1_morning.json",
-        "frame_count": 720,
-        "interval_s": 5
-      },
-      "kpis": {
-        "avg_duration_min": 9.9,
-        "system_delay_h": 249.6,
-        "queue_km": 0.9,
-        "blocked_vehicles": 107,
-        "peak_waiting": 117,
-        "emergency_avg_min": 8.7,
-        "snaroya_avg_min": 9.5
-      },
-      "has_event_overlay": false,
-      "source": "sumo_seed1"
-    },
-    "scenario_4A_v1_afternoon": {
-      "family": "scenario_4A_v1",
-      "period": "afternoon",
-      "label": "V1 PM",
-      "network": "scenario_4A_v1",
-      "playback": {
-        "file": "data/playback/scenario_4A_v1_afternoon.json",
-        "frame_count": 720,
-        "interval_s": 5
-      },
-      "kpis": {
-        "avg_duration_min": 9.2,
-        "system_delay_h": 362.0,
-        "queue_km": 2.8,
-        "blocked_vehicles": 331,
-        "peak_waiting": 334,
-        "emergency_avg_min": 13.5,
-        "snaroya_avg_min": 14.3
-      },
-      "has_event_overlay": false,
-      "source": "sumo_seed1"
-    },
-    "scenario_4A_v2_morning": {
-      "family": "scenario_4A_v2",
-      "period": "morning",
-      "label": "V2 AM",
-      "network": "scenario_4A_v2",
-      "playback": {
-        "file": "data/playback/scenario_4A_v2_morning.json",
-        "frame_count": 720,
-        "interval_s": 5
-      },
-      "kpis": {
-        "avg_duration_min": 8.9,
-        "system_delay_h": 299.6,
-        "queue_km": 3.8,
-        "blocked_vehicles": 454,
-        "peak_waiting": 458,
-        "emergency_avg_min": 8.9,
-        "snaroya_avg_min": 9.2
-      },
-      "has_event_overlay": false,
-      "source": "sumo_seed1"
-    },
-    "scenario_4A_v2_afternoon": {
-      "family": "scenario_4A_v2",
-      "period": "afternoon",
-      "label": "V2 PM",
-      "network": "scenario_4A_v2",
-      "playback": {
-        "file": "data/playback/scenario_4A_v2_afternoon.json",
-        "frame_count": 720,
-        "interval_s": 5
-      },
-      "kpis": {
-        "avg_duration_min": 8.5,
-        "system_delay_h": 296.4,
-        "queue_km": 3.3,
-        "blocked_vehicles": 390,
-        "peak_waiting": 400,
-        "emergency_avg_min": 10.1,
-        "snaroya_avg_min": 9.6
-      },
-      "has_event_overlay": false,
-      "source": "sumo_seed1"
-    },
-    "scenario_4A_v3_morning": {
-      "family": "scenario_4A_v3",
-      "period": "morning",
-      "label": "V3 AM",
-      "network": "scenario_4A_v3",
-      "playback": {
-        "file": "data/playback/scenario_4A_v3_morning.json",
-        "frame_count": 720,
-        "interval_s": 5
-      },
-      "kpis": {
-        "avg_duration_min": 10.0,
-        "system_delay_h": 253.9,
-        "queue_km": 0.9,
-        "blocked_vehicles": 99,
-        "peak_waiting": 105,
-        "emergency_avg_min": 9.9,
-        "snaroya_avg_min": 10.2
-      },
-      "has_event_overlay": false,
-      "source": "sumo_seed1"
-    },
-    "scenario_4A_v3_afternoon": {
-      "family": "scenario_4A_v3",
-      "period": "afternoon",
-      "label": "V3 PM",
-      "network": "scenario_4A_v3",
-      "playback": {
-        "file": "data/playback/scenario_4A_v3_afternoon.json",
-        "frame_count": 720,
-        "interval_s": 5
-      },
-      "kpis": {
-        "avg_duration_min": 9.3,
-        "system_delay_h": 359.0,
-        "queue_km": 2.7,
-        "blocked_vehicles": 324,
-        "peak_waiting": 328,
-        "emergency_avg_min": 15.6,
-        "snaroya_avg_min": 14.4
-      },
-      "has_event_overlay": false,
-      "source": "sumo_seed1"
-    },
-    "scenario_4A_v1_rolfsbukt_morning": {
-      "family": "scenario_4A_v1_rolfsbukt",
-      "period": "morning",
-      "label": "V1 + milj\u00f8gate AM",
-      "network": "scenario_4A_v1_rolfsbukt",
-      "playback": {
-        "file": "data/playback/scenario_4A_v1_rolfsbukt_morning.json",
-        "frame_count": 720,
-        "interval_s": 5
-      },
-      "kpis": {
-        "avg_duration_min": 11.9,
-        "system_delay_h": 290.0,
-        "queue_km": 3.2,
-        "blocked_vehicles": 381,
-        "peak_waiting": 382,
-        "emergency_avg_min": 11.6,
-        "snaroya_avg_min": 12.1
-      },
-      "has_event_overlay": false,
-      "source": "sumo_seed1"
-    },
-    "scenario_4A_v1_rolfsbukt_afternoon": {
-      "family": "scenario_4A_v1_rolfsbukt",
-      "period": "afternoon",
-      "label": "V1 + milj\u00f8gate PM",
-      "network": "scenario_4A_v1_rolfsbukt",
-      "playback": {
-        "file": "data/playback/scenario_4A_v1_rolfsbukt_afternoon.json",
-        "frame_count": 720,
-        "interval_s": 5
-      },
-      "kpis": {
-        "avg_duration_min": 10.2,
-        "system_delay_h": 321.7,
-        "queue_km": 2.6,
-        "blocked_vehicles": 315,
-        "peak_waiting": 320,
-        "emergency_avg_min": 39.8,
-        "snaroya_avg_min": 31.1
-      },
-      "has_event_overlay": false,
-      "source": "sumo_seed1"
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "main"
     },
     "scenario_4A_base_event_afternoon": {
       "family": "scenario_4A_base_event",
@@ -346,7 +269,9 @@
       "playback": {
         "file": "data/playback/scenario_4A_base_event_afternoon.json",
         "frame_count": 720,
-        "interval_s": 5
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 18416650
       },
       "kpis": {
         "avg_duration_min": 7.6,
@@ -358,7 +283,61 @@
         "snaroya_avg_min": 15.3
       },
       "has_event_overlay": true,
-      "source": "sumo_seed1"
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "exploratory"
+    },
+    "scenario_4A_base_morning": {
+      "family": "scenario_4A_base",
+      "period": "morning",
+      "label": "Base (dagens profil) AM",
+      "network": "scenario_4A_base",
+      "playback": {
+        "file": "data/playback/scenario_4A_base_morning.json",
+        "frame_count": 720,
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 20593868
+      },
+      "kpis": {
+        "avg_duration_min": 9.2,
+        "system_delay_h": 263.3,
+        "queue_km": 1.2,
+        "blocked_vehicles": 144,
+        "peak_waiting": 151,
+        "emergency_avg_min": 9.5,
+        "snaroya_avg_min": 9.7
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "main"
+    },
+    "scenario_4A_v1_afternoon": {
+      "family": "scenario_4A_v1",
+      "period": "afternoon",
+      "label": "V1 PM",
+      "network": "scenario_4A_v1",
+      "playback": {
+        "file": "data/playback/scenario_4A_v1_afternoon.json",
+        "frame_count": 720,
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 19644355
+      },
+      "kpis": {
+        "avg_duration_min": 9.2,
+        "system_delay_h": 362.0,
+        "queue_km": 2.8,
+        "blocked_vehicles": 331,
+        "peak_waiting": 334,
+        "emergency_avg_min": 13.5,
+        "snaroya_avg_min": 14.3
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "main"
     },
     "scenario_4A_v1_event_afternoon": {
       "family": "scenario_4A_v1_event",
@@ -368,7 +347,9 @@
       "playback": {
         "file": "data/playback/scenario_4A_v1_event_afternoon.json",
         "frame_count": 720,
-        "interval_s": 5
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 20688798
       },
       "kpis": {
         "avg_duration_min": 9.5,
@@ -380,7 +361,191 @@
         "snaroya_avg_min": 15.8
       },
       "has_event_overlay": true,
-      "source": "sumo_seed1"
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "exploratory"
+    },
+    "scenario_4A_v1_morning": {
+      "family": "scenario_4A_v1",
+      "period": "morning",
+      "label": "V1 AM",
+      "network": "scenario_4A_v1",
+      "playback": {
+        "file": "data/playback/scenario_4A_v1_morning.json",
+        "frame_count": 720,
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 22139591
+      },
+      "kpis": {
+        "avg_duration_min": 9.9,
+        "system_delay_h": 249.6,
+        "queue_km": 0.9,
+        "blocked_vehicles": 107,
+        "peak_waiting": 117,
+        "emergency_avg_min": 8.7,
+        "snaroya_avg_min": 9.5
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "main"
+    },
+    "scenario_4A_v1_rolfsbukt_afternoon": {
+      "family": "scenario_4A_v1_rolfsbukt",
+      "period": "afternoon",
+      "label": "V1 + milj\u00f8gate PM",
+      "network": "scenario_4A_v1_rolfsbukt",
+      "playback": {
+        "file": "data/playback/scenario_4A_v1_rolfsbukt_afternoon.json",
+        "frame_count": 720,
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 25283501
+      },
+      "kpis": {
+        "avg_duration_min": 10.2,
+        "system_delay_h": 321.7,
+        "queue_km": 2.6,
+        "blocked_vehicles": 315,
+        "peak_waiting": 320,
+        "emergency_avg_min": 39.8,
+        "snaroya_avg_min": 31.1
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "exploratory"
+    },
+    "scenario_4A_v1_rolfsbukt_morning": {
+      "family": "scenario_4A_v1_rolfsbukt",
+      "period": "morning",
+      "label": "V1 + milj\u00f8gate AM",
+      "network": "scenario_4A_v1_rolfsbukt",
+      "playback": {
+        "file": "data/playback/scenario_4A_v1_rolfsbukt_morning.json",
+        "frame_count": 720,
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 27848889
+      },
+      "kpis": {
+        "avg_duration_min": 11.9,
+        "system_delay_h": 290.0,
+        "queue_km": 3.2,
+        "blocked_vehicles": 381,
+        "peak_waiting": 382,
+        "emergency_avg_min": 11.6,
+        "snaroya_avg_min": 12.1
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "exploratory"
+    },
+    "scenario_4A_v2_afternoon": {
+      "family": "scenario_4A_v2",
+      "period": "afternoon",
+      "label": "V2 PM",
+      "network": "scenario_4A_v2",
+      "playback": {
+        "file": "data/playback/scenario_4A_v2_afternoon.json",
+        "frame_count": 720,
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 21144457
+      },
+      "kpis": {
+        "avg_duration_min": 8.5,
+        "system_delay_h": 296.4,
+        "queue_km": 3.3,
+        "blocked_vehicles": 390,
+        "peak_waiting": 400,
+        "emergency_avg_min": 10.1,
+        "snaroya_avg_min": 9.6
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "main"
+    },
+    "scenario_4A_v2_morning": {
+      "family": "scenario_4A_v2",
+      "period": "morning",
+      "label": "V2 AM",
+      "network": "scenario_4A_v2",
+      "playback": {
+        "file": "data/playback/scenario_4A_v2_morning.json",
+        "frame_count": 720,
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 21160149
+      },
+      "kpis": {
+        "avg_duration_min": 8.9,
+        "system_delay_h": 299.6,
+        "queue_km": 3.8,
+        "blocked_vehicles": 454,
+        "peak_waiting": 458,
+        "emergency_avg_min": 8.9,
+        "snaroya_avg_min": 9.2
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "main"
+    },
+    "scenario_4A_v3_afternoon": {
+      "family": "scenario_4A_v3",
+      "period": "afternoon",
+      "label": "V3 PM",
+      "network": "scenario_4A_v3",
+      "playback": {
+        "file": "data/playback/scenario_4A_v3_afternoon.json",
+        "frame_count": 720,
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 20340960
+      },
+      "kpis": {
+        "avg_duration_min": 9.3,
+        "system_delay_h": 359.0,
+        "queue_km": 2.7,
+        "blocked_vehicles": 324,
+        "peak_waiting": 328,
+        "emergency_avg_min": 15.6,
+        "snaroya_avg_min": 14.4
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "main"
+    },
+    "scenario_4A_v3_morning": {
+      "family": "scenario_4A_v3",
+      "period": "morning",
+      "label": "V3 AM",
+      "network": "scenario_4A_v3",
+      "playback": {
+        "file": "data/playback/scenario_4A_v3_morning.json",
+        "frame_count": 720,
+        "interval_s": 5,
+        "seed": 1,
+        "size_bytes": 21030640
+      },
+      "kpis": {
+        "avg_duration_min": 10.0,
+        "system_delay_h": 253.9,
+        "queue_km": 0.9,
+        "blocked_vehicles": 99,
+        "peak_waiting": 105,
+        "emergency_avg_min": 9.9,
+        "snaroya_avg_min": 10.2
+      },
+      "has_event_overlay": false,
+      "source": "sumo_seed1",
+      "seed": 1,
+      "status": "main"
     }
   },
   "families": [

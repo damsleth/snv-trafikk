@@ -1,27 +1,71 @@
 import { clamp, lerp, lerpAngle, round1 } from "./utils.js"
 
-export async function fetchJson(path, { onError } = {}) {
-  const response = await fetch(path)
+const DEFAULT_TIMEOUT_MS = 30000
+
+export async function fetchJson(path, { onError, signal, timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
+  const controller = new AbortController()
+  const timeout = window.setTimeout(() => controller.abort(new Error(`Tidsavbrudd ved lasting av ${path}`)), timeoutMs)
+  const abortFromCaller = () => controller.abort(signal.reason)
+  if (signal) {
+    if (signal.aborted) {
+      controller.abort(signal.reason)
+    } else {
+      signal.addEventListener("abort", abortFromCaller, { once: true })
+    }
+  }
+
+  let response
+  try {
+    response = await fetch(path, { signal: controller.signal })
+  } catch (error) {
+    const message = error.name === "AbortError" ? `Lasting av ${path} ble avbrutt` : `Kunne ikke laste ${path}`
+    onError?.(message)
+    throw error
+  } finally {
+    window.clearTimeout(timeout)
+    signal?.removeEventListener?.("abort", abortFromCaller)
+  }
+
   if (!response.ok) {
     const error = new Error(`Kunne ikke laste ${path}`)
     onError?.(error.message)
     throw error
   }
-  return response.json()
+  try {
+    return await response.json()
+  } catch (error) {
+    onError?.(`Ugyldig JSON fra ${path}`)
+    throw error
+  }
+}
+
+function showFatalLoadError(message) {
+  const main = document.createElement("main")
+  main.className = "app-error"
+  const title = document.createElement("h1")
+  title.textContent = "Presentasjonen kunne ikke lastes"
+  const text = document.createElement("p")
+  text.textContent = message
+  main.append(title, text)
+  document.body.replaceChildren(main)
 }
 
 export async function loadManifest() {
   try {
     return await fetchJson("./data/manifest.json")
   } catch (error) {
-    document.body.innerHTML = `<main class="app-error"><h1>Presentasjonen kunne ikke lastes</h1><p>${error.message}</p></main>`
+    showFatalLoadError(error.message)
     throw error
   }
 }
 
 export async function loadNetwork(path, cache, { onError } = {}) {
   if (!cache.networks.has(path)) {
-    cache.networks.set(path, fetchJson(`./${path}`, { onError }))
+    const request = fetchJson(`./${path}`, { onError }).catch((error) => {
+      cache.networks.delete(path)
+      throw error
+    })
+    cache.networks.set(path, request)
   }
   return cache.networks.get(path)
 }
@@ -33,7 +77,11 @@ export async function loadPlayback(manifest, scenarioName, cache, { onError } = 
   }
   const key = scenario.playback.file
   if (!cache.playbacks.has(key)) {
-    cache.playbacks.set(key, fetchJson(`./${key}`, { onError }))
+    const request = fetchJson(`./${key}`, { onError }).catch((error) => {
+      cache.playbacks.delete(key)
+      throw error
+    })
+    cache.playbacks.set(key, request)
   }
   return cache.playbacks.get(key)
 }

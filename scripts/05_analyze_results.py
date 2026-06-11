@@ -2,9 +2,10 @@
 """Analyze SUMO simulation results and generate comparison visualizations."""
 
 import os
+import json
 import xml.etree.ElementTree as ET
 
-from config import OUTPUT_DIR, PROJECT_ROOT, VISUALIZATIONS_DIR
+from config import OUTPUT_DIR, PROJECT_ROOT, SUMMARY_STATS_FILE, VISUALIZATIONS_DIR
 
 os.environ.setdefault("MPLCONFIGDIR", str(PROJECT_ROOT / ".tmp" / "matplotlib"))
 
@@ -147,6 +148,51 @@ def generate_dashboard(results: dict) -> None:
     print(f"Saved {dashboard_file.name}")
 
 
+def generate_validation_report(results: dict) -> dict:
+    """Generate lightweight plausibility checks for current result artifacts."""
+    warnings = []
+    checks = []
+
+    for period_name in PERIODS:
+        base_name = f"scenario_4A_base_{period_name}"
+        v1_name = f"scenario_4A_v1_{period_name}"
+        v2_name = f"scenario_4A_v2_{period_name}"
+        if base_name in results and v1_name in results:
+            base_duration = metric_mean(results[base_name], "avg_duration_s")
+            v1_duration = metric_mean(results[v1_name], "avg_duration_s")
+            ok = v1_duration >= base_duration
+            checks.append({"name": f"{period_name}: V1 duration >= base", "ok": ok})
+            if not ok:
+                warnings.append(f"{period_name}: V1 average duration is lower than base; check calibration/output freshness")
+        if v1_name in results and v2_name in results:
+            v1_delay = metric_mean(results[v1_name], "system_delay_h")
+            v2_delay = metric_mean(results[v2_name], "system_delay_h")
+            ok = v2_delay >= v1_delay
+            checks.append({"name": f"{period_name}: V2 delay >= V1", "ok": ok})
+            if not ok:
+                warnings.append(f"{period_name}: V2 system delay is lower than V1; verify scenario assumptions")
+
+    for scenario_name, runs in results.items():
+        successful = [run for run in runs if not run.get("failed")]
+        if len(successful) < len(runs):
+            warnings.append(f"{scenario_name}: {len(successful)}/{len(runs)} successful seeds")
+        for run in successful:
+            integrity = run.get("integrity")
+            if integrity and not integrity.get("valid", False):
+                warnings.append(f"{scenario_name} seed {run.get('seed')}: invalid output integrity")
+
+    report = {
+        "valid": not warnings,
+        "checks": checks,
+        "warnings": warnings,
+        "scenario_count": len(results),
+    }
+    validation_file = OUTPUT_DIR / "validation_report.json"
+    validation_file.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"Validation -> {validation_file}")
+    return report
+
+
 def analyze_all() -> None:
     print("=" * 60)
     print("PHASE 4: Analysis and Visualization")
@@ -186,6 +232,7 @@ def analyze_all() -> None:
         chart_queue_timeline(results, period_name)
 
     generate_dashboard(results)
+    generate_validation_report(results)
     print(f"\nVisualizations written to {VISUALIZATIONS_DIR}")
 
 

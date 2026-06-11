@@ -11,6 +11,13 @@ from urllib.parse import urlparse
 from config import PROJECT_ROOT
 
 PRESENTATION_DIR = PROJECT_ROOT / "web" / "presentation"
+MAX_PATCHED_RUN_BYTES = 2 * 1024 * 1024
+SECURITY_HEADERS = {
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "no-referrer",
+}
 
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
@@ -19,6 +26,11 @@ from scripts.utils.patched_run import run_patched_scenario
 
 
 class PresentationRequestHandler(SimpleHTTPRequestHandler):
+    def end_headers(self) -> None:
+        for header, value in SECURITY_HEADERS.items():
+            self.send_header(header, value)
+        super().end_headers()
+
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
         if parsed.path == "/api/health":
@@ -34,7 +46,11 @@ class PresentationRequestHandler(SimpleHTTPRequestHandler):
 
         try:
             content_length = int(self.headers.get("Content-Length", "0"))
+            if content_length > MAX_PATCHED_RUN_BYTES:
+                self._respond_json(413, {"error": "Request body is too large"})
+                return
             payload = json.loads(self.rfile.read(content_length) or b"{}")
+            validate_patched_run_payload(payload)
             package = payload.get("package") or {}
             response = run_patched_scenario(
                 package=package,
@@ -61,6 +77,24 @@ class PresentationRequestHandler(SimpleHTTPRequestHandler):
             self.wfile.write(body)
         except (BrokenPipeError, ConnectionResetError):
             return
+
+
+def validate_patched_run_payload(payload: dict) -> None:
+    """Validate the small JSON envelope accepted by /api/patched-run."""
+    if not isinstance(payload, dict):
+        raise ValueError("Payload must be a JSON object")
+    package = payload.get("package") or {}
+    if not isinstance(package, dict):
+        raise ValueError("package must be a JSON object")
+    if "seed" in payload:
+        seed = int(payload["seed"])
+        if seed < 1 or seed > 100:
+            raise ValueError("seed must be between 1 and 100")
+    if "period" in payload and payload["period"] not in {"", "morning", "afternoon", "midday"}:
+        raise ValueError("period must be morning, afternoon, or midday")
+    for key in ["edges", "artifacts"]:
+        if key in package and not isinstance(package[key], (dict, list)):
+            raise ValueError(f"package.{key} has an invalid shape")
 
 
 def main() -> None:

@@ -11,6 +11,12 @@ const TILES = {
   },
 }
 
+function trustedSvgElement(svgHtml) {
+  const template = document.createElement("template")
+  template.innerHTML = svgHtml.trim()
+  return template.content.firstElementChild
+}
+
 export function createMapController({ manifest, ui, darkMode, popupRenderer = defaultEdgePopup, onEdgeSelected = null }) {
   const map = L.map("map", {
     zoomControl: true,
@@ -276,7 +282,10 @@ export function createMapController({ manifest, ui, darkMode, popupRenderer = de
         existing.setLatLng([lat, lon])
         const el = existing.getElement()
         if (el) {
-          el.innerHTML = svgHtml
+          const svg = trustedSvgElement(svgHtml)
+          if (svg) {
+            el.replaceChildren(svg)
+          }
         }
       } else {
         const marker = L.marker([lat, lon], {

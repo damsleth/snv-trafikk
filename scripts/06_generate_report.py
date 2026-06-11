@@ -37,6 +37,10 @@ def generate_report() -> None:
     results = load_all_results(OUTPUT_DIR)
     grouped = group_scenarios(results)
     stats_by_scenario = {scenario_name: aggregate_stats(runs) for scenario_name, runs in results.items()}
+    validation_file = OUTPUT_DIR / "validation_report.json"
+    validation_report = {}
+    if validation_file.exists():
+        validation_report = json.loads(validation_file.read_text(encoding="utf-8"))
 
     def img(name: str) -> str:
         return f"../visualizations/{name}"
@@ -51,6 +55,24 @@ def generate_report() -> None:
         "Denne rapporten bruker periodedelte scenarioer (AM/PM), appendix-baserte OD-matriser og en systemforsinkelses-KPI som inkluderer både fullførte turer og blokkerte avganger.",
         "",
         "Det betyr at tallene under ikke er direkte sammenlignbare med tidligere repo-utgaver som brukte kun morgenrute og kun tidstap fra fullførte turer.",
+        "",
+        "## Valideringsstatus",
+        "",
+    ]
+
+    if validation_report:
+        warnings = validation_report.get("warnings", [])
+        if warnings:
+            lines.append("Automatiske valideringssjekker har funnet forhold som bør vurderes før publisering:")
+            lines.append("")
+            for warning in warnings:
+                lines.append(f"- {warning}")
+        else:
+            lines.append("Automatiske valideringssjekker fant ingen nye advarsler i siste analyseartefakt.")
+    else:
+        lines.append("Ingen `output/validation_report.json` funnet. Kjør `uv run python scripts/05_analyze_results.py` for automatiske plausibilitetssjekker.")
+
+    lines += [
         "",
         "## Hovedobservasjoner",
         "",

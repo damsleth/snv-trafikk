@@ -51,8 +51,11 @@ are available via `uv run netconvert`, `uv run duarouter`, etc.
 - JavaScript code in `web/presentation/app.js` uses modular functions and event listeners for interactivity
 - JavaScript does not have any unnecessary semicolons.
 
-## Devlog conventions
-- All changes are documented reverse chronologically in the `DEVLOG.md` file, with date, timestamp, and a short description of the change
+## Devlog and planning conventions
+- Always keep `docs/DEVLOG.md` up to date as work progresses; add new entries reverse chronologically with date, timestamp, and a short description of the change before finishing work.
+- Keep `.plans/` as local, uncommitted working state. Do not stage or commit files from `.plans/`.
+- Keep active todos and plans in `.plans/TODO.md`, updating them as work progresses.
+- When work is finished, move completed todos and plan notes from `.plans/TODO.md` to `.plans/DONE.md`, and move finished plan documents into `.plans/done/`.
 
 ### Code Intelligence
 

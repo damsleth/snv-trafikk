@@ -14,7 +14,7 @@
   </head>
   <body>
     <div class="layout">
-      <aside class="panel">
+      <aside class="panel" role="region" aria-label="Kontrollpanel">
         <div class="panel-head">
           <div>
             <h1>Snarøyveien</h1>
@@ -87,7 +87,7 @@ Simulering av trafikkforhold mellom Snarøya og E18 under ulike scenarier
             <li>Unity Arena-konsert simuleres ved å legge til ekstra kjøretøy i tidsrommet 18:00-23:00.</li>
             <li>For mer info, se <a href="https://github.com/damsleth/snv-trafikk">dokumentasjonen</a>.</li>
           </ul>
-          <p id="scenarioNote" class="note">
+          <p id="scenarioNote" class="note" aria-live="polite">
             Lastet scenario.
           </p>
         </section>
@@ -97,8 +97,8 @@ Simulering av trafikkforhold mellom Snarøya og E18 under ulike scenarier
         </div>
       </aside>
 
-      <main class="map-shell">
-        <div id="map"></div>
+      <main class="map-shell" role="region" aria-label="Trafikkart">
+        <div id="map" role="application" aria-label="Interaktivt trafikkart"></div>
         <section class="map-charts" aria-label="Synkrone ko-grafer">
           <article class="chart-card kpis-card">
             <div class="kpis">
@@ -128,7 +128,7 @@ Simulering av trafikkforhold mellom Snarøya og E18 under ulike scenarier
               </div>
               <strong id="queueChartValue">0 kjt</strong>
             </div>
-            <canvas id="queueTimelineChart" height="120"></canvas>
+            <canvas id="queueTimelineChart" height="120" role="img" aria-label="Tidsserie for ko"></canvas>
           </article>
           <article class="chart-card">
             <div class="chart-head">
@@ -138,7 +138,7 @@ Simulering av trafikkforhold mellom Snarøya og E18 under ulike scenarier
               </div>
               <strong id="growthChartValue">0 kjt</strong>
             </div>
-            <canvas id="queueGrowthChart" height="120"></canvas>
+            <canvas id="queueGrowthChart" height="120" role="img" aria-label="Tidsserie for ko-vekst"></canvas>
           </article>
         </section>
       </main>

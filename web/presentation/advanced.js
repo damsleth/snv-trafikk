@@ -290,6 +290,8 @@ function initResizeHandle() {
   const savedWidth = Number(localStorage.getItem(ADVANCED_PANEL_WIDTH_STORAGE_KEY))
   if (Number.isFinite(savedWidth) && savedWidth > 0) {
     applyAdvancedPanelWidth(savedWidth)
+  } else {
+    ui.advancedResizeHandle.setAttribute("aria-valuenow", String(ADVANCED_PANEL_MIN_WIDTH))
   }
 
   ui.advancedResizeHandle.addEventListener("pointerdown", (event) => {
@@ -314,12 +316,30 @@ function initResizeHandle() {
     ui.advancedResizeHandle.addEventListener("pointerup", onPointerUp)
     ui.advancedResizeHandle.addEventListener("pointercancel", onPointerUp)
   })
+
+  ui.advancedResizeHandle.addEventListener("keydown", (event) => {
+    const currentWidth = Number.parseInt(ui.advancedPanel.style.width, 10) || ADVANCED_PANEL_MIN_WIDTH
+    if (event.key === "ArrowLeft") {
+      event.preventDefault()
+      applyAdvancedPanelWidth(currentWidth - 24)
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault()
+      applyAdvancedPanelWidth(currentWidth + 24)
+    } else if (event.key === "Home") {
+      event.preventDefault()
+      applyAdvancedPanelWidth(ADVANCED_PANEL_MIN_WIDTH)
+    } else if (event.key === "End") {
+      event.preventDefault()
+      applyAdvancedPanelWidth(ADVANCED_PANEL_MAX_WIDTH)
+    }
+  })
 }
 
 function applyAdvancedPanelWidth(width) {
   const maxWidth = Math.max(ADVANCED_PANEL_MIN_WIDTH, Math.min(ADVANCED_PANEL_MAX_WIDTH, window.innerWidth * 0.72))
   const clampedWidth = Math.round(Math.min(Math.max(width, ADVANCED_PANEL_MIN_WIDTH), maxWidth))
   ui.advancedPanel.style.width = `${clampedWidth}px`
+  ui.advancedResizeHandle.setAttribute("aria-valuenow", String(clampedWidth))
   localStorage.setItem(ADVANCED_PANEL_WIDTH_STORAGE_KEY, String(clampedWidth))
 }
 
@@ -445,11 +465,11 @@ function populateEdgeEditor(feature) {
   if (!feature) {
     ui.selectedEdgePill.textContent = "Ingen valgt"
     ui.selectedEdgeTitle.textContent = "Klikk på en lenke i kartet"
-    ui.selectedEdgeMeta.innerHTML = ""
+    ui.selectedEdgeMeta.replaceChildren()
     ui.editSpeedInput.value = ""
     ui.editLanesInput.value = ""
     ui.editCapacityInput.value = ""
-    ui.crossingPartnerSelect.innerHTML = ""
+    ui.crossingPartnerSelect.replaceChildren()
     return
   }
 
@@ -460,7 +480,7 @@ function populateEdgeEditor(feature) {
   ui.editSpeedInput.value = String(edge.speed_kmh)
   ui.editLanesInput.value = String(edge.lanes)
   ui.editCapacityInput.value = String(edge.capacity_vph_estimate)
-  ui.selectedEdgeMeta.innerHTML = buildInspectorRows([
+  renderInspectorRows(ui.selectedEdgeMeta, [
     ["Lenke-ID", edge.id],
     ["Fra node", `${edge.from_node} (${edge.from_node_type || "ukjent"})`],
     ["Til node", `${edge.to_node} (${edge.to_node_type || "ukjent"})`],
@@ -469,7 +489,7 @@ function populateEdgeEditor(feature) {
     ["Rundkjøring", edge.roundabout_id || "-"],
   ])
 
-  ui.crossingPartnerSelect.innerHTML = ""
+  ui.crossingPartnerSelect.replaceChildren()
   for (const edgeId of edge.node_edge_ids) {
     const option = document.createElement("option")
     option.value = edgeId
@@ -478,8 +498,15 @@ function populateEdgeEditor(feature) {
   }
 }
 
-function buildInspectorRows(rows) {
-  return rows.map(([term, value]) => `<dt>${term}</dt><dd>${value}</dd>`).join("")
+function renderInspectorRows(container, rows) {
+  container.replaceChildren()
+  for (const [term, value] of rows) {
+    const dt = document.createElement("dt")
+    dt.textContent = term
+    const dd = document.createElement("dd")
+    dd.textContent = value
+    container.append(dt, dd)
+  }
 }
 
 async function renderAll() {
@@ -587,22 +614,29 @@ function renderArtifactList() {
   const selectedId = state.selectedEdgeId
   const items = artifactsForFamily().filter((artifact) => !selectedId || artifact.edge_id === selectedId)
   if (!items.length) {
-    ui.artifactList.innerHTML = '<p class="advanced-note">Ingen artefakter for valgt lenke.</p>'
+    const empty = document.createElement("p")
+    empty.className = "advanced-note"
+    empty.textContent = "Ingen artefakter for valgt lenke."
+    ui.artifactList.replaceChildren(empty)
     return
   }
 
-  ui.artifactList.innerHTML = ""
+  ui.artifactList.replaceChildren()
   for (const artifact of items) {
     const row = document.createElement("div")
     row.className = "artifact-item"
-    row.innerHTML = `
-      <div>
-        <strong>${artifact.type}</strong>
-        <p>${artifact.edge_id}${artifact.crossing_edges ? ` - ${artifact.crossing_edges.join(" / ")}` : ""}</p>
-      </div>
-      <button class="ghost-button" type="button">Fjern</button>
-    `
-    row.querySelector("button")?.addEventListener("click", async () => {
+    const text = document.createElement("div")
+    const title = document.createElement("strong")
+    title.textContent = artifact.type
+    const detail = document.createElement("p")
+    detail.textContent = `${artifact.edge_id}${artifact.crossing_edges ? ` - ${artifact.crossing_edges.join(" / ")}` : ""}`
+    text.append(title, detail)
+    const removeButton = document.createElement("button")
+    removeButton.className = "ghost-button"
+    removeButton.type = "button"
+    removeButton.textContent = "Fjern"
+    row.append(text, removeButton)
+    removeButton.addEventListener("click", async () => {
       removeArtifact(workbench, state.family, artifact.id)
       saveWorkbenchState(workbench)
       renderArtifactList()

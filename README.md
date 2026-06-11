@@ -133,8 +133,11 @@ Merk: morgen- og ettermiddagskartene bygger på reelle SUMO-kjøringer. Midt på
 Hvis du vil gå dypere enn figurene:
 
 - Oppsummert resultatrapport: [output/report/snaroyveien_traffic_report.md](output/report/snaroyveien_traffic_report.md)
-- Tolkning av offisiell utredning: [OFFICIAL_REPORT_INTERPRETATION.md](OFFICIAL_REPORT_INTERPRETATION.md)
-- Utviklingslogg: [DEVLOG.md](DEVLOG.md)
+- Scenarioforutsetninger: [docs/SCENARIO_ASSUMPTIONS.md](docs/SCENARIO_ASSUMPTIONS.md)
+- Tolkning av offisiell utredning: [docs/OFFICIAL_REPORT_INTERPRETATION.md](docs/OFFICIAL_REPORT_INTERPRETATION.md)
+- Utviklingsoppsett og kvalitetssjekker: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
+- Endringslogg: [CHANGELOG.md](CHANGELOG.md)
+- Utviklingslogg: [docs/DEVLOG.md](docs/DEVLOG.md)
 
 ## Viktige forbehold
 
@@ -199,6 +202,14 @@ Anbefalt minimumssekvens før større endringer merges:
 ```bash
 uv run --extra dev pytest -q
 uv run python -m compileall scripts tests
+uv run ruff check .
+uv run mypy scripts tests
+```
+
+Før full rerun er det også lurt å validere scenariooppsettet:
+
+```bash
+uv run python scripts/00_validate_setup.py
 ```
 
 Ved endringer i presentasjonsdata eller rapportlogikk er det også naturlig å kjøre:

@@ -58,6 +58,8 @@ SCENARIO_FAMILIES = {
     "scenario_4A_base": {
         "network": NETWORK_DIR / "base" / "fornebu.net.xml",
         "demand": "4A",
+        "status": "main",
+        "export": True,
         "label": "Base (dagens profil)",
         "ui_description": "dagens 2+3-profil",
         "color": "#2ecc71",
@@ -67,6 +69,8 @@ SCENARIO_FAMILIES = {
         "network": NETWORK_DIR / "base" / "fornebu.net.xml",
         "demand": "4A",
         "demand_scale": 0.8,
+        "status": "sensitivity",
+        "export": False,
         "label": "Base (dagens profil, 80 % trafikk)",
         "ui_description": "dagens 2+3-profil, 80 % etterspørsel",
         "color": "#58d68d",
@@ -75,6 +79,8 @@ SCENARIO_FAMILIES = {
     "scenario_4A_v1": {
         "network": NETWORK_DIR / "proposed" / "fornebu_v1.net.xml",
         "demand": "4A",
+        "status": "main",
+        "export": True,
         "label": "V1",
         "ui_description": "innsnevring Snarøyveien (2+2) + utvidet rundkjøring",
         "color": "#e74c3c",
@@ -84,6 +90,8 @@ SCENARIO_FAMILIES = {
         "network": NETWORK_DIR / "proposed" / "fornebu_v1.net.xml",
         "demand": "4A",
         "demand_scale": 0.8,
+        "status": "sensitivity",
+        "export": False,
         "label": "V1 (80 % trafikk)",
         "ui_description": "innsnevring Snarøyveien (2+2), 80 % etterspørsel",
         "color": "#f1948a",
@@ -92,6 +100,8 @@ SCENARIO_FAMILIES = {
     "scenario_4A_v2": {
         "network": NETWORK_DIR / "proposed" / "fornebu_v2.net.xml",
         "demand": "4A",
+        "status": "main",
+        "export": True,
         "label": "V2",
         "ui_description": "V1 + redusert fart",
         "color": "#e67e22",
@@ -100,6 +110,8 @@ SCENARIO_FAMILIES = {
     "scenario_4A_v3": {
         "network": NETWORK_DIR / "proposed" / "fornebu_v3.net.xml",
         "demand": "4A",
+        "status": "main",
+        "export": True,
         "label": "V3",
         "ui_description": "V1 + signalregulert innkjøring",
         "color": "#8e44ad",
@@ -108,6 +120,8 @@ SCENARIO_FAMILIES = {
     "scenario_1A_base": {
         "network": NETWORK_DIR / "base" / "fornebu.net.xml",
         "demand": "1A",
+        "status": "reference",
+        "export": False,
         "label": "Base (Sc. 1A)",
         "color": "#16a085",
         "description": "Scenario 1A demand on current network",
@@ -115,6 +129,8 @@ SCENARIO_FAMILIES = {
     "scenario_1A_v1": {
         "network": NETWORK_DIR / "proposed" / "fornebu_v1.net.xml",
         "demand": "1A",
+        "status": "reference",
+        "export": False,
         "label": "V1 (Sc. 1A)",
         "color": "#c0392b",
         "description": "Scenario 1A demand on official V1 lane layout",
@@ -122,6 +138,8 @@ SCENARIO_FAMILIES = {
     "scenario_4A_v1_rolfsbukt": {
         "network": NETWORK_DIR / "proposed" / "fornebu_v1.net.xml",
         "demand": "4A",
+        "status": "exploratory",
+        "export": True,
         "label": "V1 + miljøgate",
         "ui_description": "V1 med bilfritt felt langs Rolfsbuktveien",
         "color": "#d35400",
@@ -133,6 +151,8 @@ SCENARIO_FAMILIES = {
     "scenario_4A_base_event": {
         "network": NETWORK_DIR / "base" / "fornebu.net.xml",
         "demand": "4A",
+        "status": "exploratory",
+        "export": True,
         "label": "Base + konsert",
         "color": "#27ae60",
         "description": "Base network with Unity Arena event-night overlay (PM only)",
@@ -144,6 +164,8 @@ SCENARIO_FAMILIES = {
     "scenario_4A_v1_event": {
         "network": NETWORK_DIR / "proposed" / "fornebu_v1.net.xml",
         "demand": "4A",
+        "status": "exploratory",
+        "export": True,
         "label": "V1 + konsert",
         "color": "#922b21",
         "description": "V1 lane layout with Unity Arena event-night overlay (PM only)",
@@ -179,6 +201,8 @@ def build_scenarios(families: dict | None = None) -> dict:
                 "period": period_name,
                 "demand": family["demand"],
                 "demand_scale": demand_scale,
+                "status": family.get("status", "unknown"),
+                "export": bool(family.get("export", False)),
                 "network": family["network"],
                 "routes": routes,
                 "description": f"{family['description']} ({period_name})",
@@ -215,3 +239,87 @@ def scenario_label(name: str) -> str:
 def scenario_color(name: str) -> str:
     family = scenario_family(name)
     return SCENARIO_FAMILIES.get(family, {}).get("color", "#95a5a6")
+
+
+def production_exports(scenarios: dict | None = None) -> list[str]:
+    """Return catalog scenarios marked for presentation export."""
+    scenario_map = SCENARIOS if scenarios is None else scenarios
+    return sorted(name for name, scenario in scenario_map.items() if scenario.get("export"))
+
+
+def validate_scenario_inputs(scenario_name: str, scenario_def: dict, check_files: bool = True) -> list[str]:
+    """Return validation errors for one expanded scenario definition."""
+    errors = []
+    required = ["family", "period", "demand", "network", "routes", "description", "label", "color", "additional"]
+    for key in required:
+        if key not in scenario_def:
+            errors.append(f"{scenario_name}: missing required key {key}")
+
+    if scenario_def.get("period") not in PERIODS:
+        errors.append(f"{scenario_name}: unknown period {scenario_def.get('period')}")
+
+    if check_files:
+        network = Path(str(scenario_def.get("network", "")))
+        if not network.exists():
+            errors.append(f"{scenario_name}: missing network {network}")
+
+        route_files = [Path(item) for item in str(scenario_def.get("routes", "")).split(",") if item]
+        if not route_files:
+            errors.append(f"{scenario_name}: no route files declared")
+        for route_file in route_files:
+            if not route_file.exists():
+                errors.append(f"{scenario_name}: missing route file {route_file}")
+
+        for additional_file in scenario_def.get("additional", []):
+            if not Path(str(additional_file)).exists():
+                errors.append(f"{scenario_name}: missing additional file {additional_file}")
+
+    return errors
+
+
+def find_orphaned_folders(scenarios_dir: Path | None = None, output_dir: Path | None = None, scenarios: dict | None = None) -> dict[str, list[str]]:
+    """Find local scenario/output folders not declared in the expanded catalog."""
+    scenario_map = SCENARIOS if scenarios is None else scenarios
+    scenario_names = set(scenario_map)
+    scenario_root = PROJECT_ROOT / "scenarios" if scenarios_dir is None else scenarios_dir
+    output_root = PROJECT_ROOT / "output" if output_dir is None else output_dir
+
+    def child_dirs(root: Path) -> list[str]:
+        if not root.exists():
+            return []
+        return sorted(path.name for path in root.iterdir() if path.is_dir() and path.name.startswith("scenario_"))
+
+    return {
+        "scenarios": [name for name in child_dirs(scenario_root) if name not in scenario_names],
+        "output": [name for name in child_dirs(output_root) if name not in scenario_names],
+    }
+
+
+def validate_scenario_catalog(check_files: bool = True, check_orphans: bool = True) -> dict:
+    """Validate the expanded scenario catalog and local scenario folders."""
+    errors = []
+    warnings = []
+
+    for family_name, family in SCENARIO_FAMILIES.items():
+        for key in ["network", "demand", "label", "color", "description", "status"]:
+            if key not in family:
+                errors.append(f"{family_name}: missing family key {key}")
+        if family.get("status") not in {"main", "reference", "sensitivity", "exploratory", "legacy", "local"}:
+            warnings.append(f"{family_name}: non-standard status {family.get('status')}")
+
+    for scenario_name, scenario_def in SCENARIOS.items():
+        errors.extend(validate_scenario_inputs(scenario_name, scenario_def, check_files=check_files))
+
+    orphans = find_orphaned_folders() if check_orphans else {"scenarios": [], "output": []}
+    for root_name, names in orphans.items():
+        for name in names:
+            warnings.append(f"orphaned {root_name} folder: {name}")
+
+    return {
+        "valid": not errors,
+        "errors": errors,
+        "warnings": warnings,
+        "orphans": orphans,
+        "scenario_count": len(SCENARIOS),
+        "export_count": len(production_exports()),
+    }

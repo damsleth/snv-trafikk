@@ -3,9 +3,12 @@
 
 from __future__ import annotations
 
+import argparse
 import json
+import subprocess
 import xml.etree.ElementTree as ET
 from collections import defaultdict
+from datetime import datetime, timezone
 
 import sumolib
 
@@ -25,8 +28,9 @@ from config import (
     lane_edge_id,
     queue_length_km,
 )
+from utils.provenance import git_commit, sha256_file
 from utils.results import load_scenario_stats, load_summary_stats
-from utils.scenario_catalog import SCENARIO_FAMILIES, SCENARIOS, scenario_family, scenario_label, scenario_period
+from utils.scenario_catalog import SCENARIO_FAMILIES, SCENARIOS, production_exports, scenario_family, scenario_label, scenario_period
 
 
 SCENARIOS_TO_EXPORT = [
@@ -59,6 +63,81 @@ COMMON_VCLASSES = [
     "taxi",
     "truck",
 ]
+
+SEED_POLICIES = {"seed_1", "first-successful", "best-complete"}
+
+
+def generated_at() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
+def selected_export_scenarios(cli_scenarios: list[str] | None = None) -> list[str]:
+    """Return scenarios to export, preferring catalog metadata over legacy constants."""
+    if cli_scenarios:
+        return [name for name in cli_scenarios if name in SCENARIOS]
+    catalog_exports = production_exports()
+    if catalog_exports:
+        return catalog_exports
+    return [name for name in SCENARIOS_TO_EXPORT if name in SCENARIOS]
+
+
+def seed_dir(scenario_name: str, seed: int) -> Path:
+    return OUTPUT_DIR / scenario_name / f"seed_{seed}"
+
+
+def seed_has_required_files(scenario_name: str, seed: int, include_fcd: bool = True) -> bool:
+    required = ["tripinfo.xml", "summary.xml"]
+    if include_fcd:
+        required.append("fcd.xml")
+    return all((seed_dir(scenario_name, seed) / filename).exists() for filename in required)
+
+
+def validate_export_inputs(scenario_name: str, seed: int) -> dict:
+    """Return a compact export-input validation report for one scenario/seed."""
+    checks = {
+        "scenario": scenario_name,
+        "seed": seed,
+        "has_tripinfo": (seed_dir(scenario_name, seed) / "tripinfo.xml").exists(),
+        "has_summary": (seed_dir(scenario_name, seed) / "summary.xml").exists(),
+        "has_fcd": (seed_dir(scenario_name, seed) / "fcd.xml").exists(),
+    }
+    checks["valid"] = bool(checks["has_tripinfo"] and checks["has_summary"] and checks["has_fcd"])
+    return checks
+
+
+def select_seed(scenario_name: str, policy: str = "seed_1") -> int | None:
+    """Select a playback seed according to an explicit policy."""
+    if policy not in SEED_POLICIES:
+        raise ValueError(f"Unknown seed policy: {policy}")
+    if policy == "seed_1":
+        return 1 if seed_has_required_files(scenario_name, 1) else None
+
+    candidates = []
+    for path in sorted((OUTPUT_DIR / scenario_name).glob("seed_*")):
+        try:
+            seed = int(path.name.split("_", 1)[1])
+        except (IndexError, ValueError):
+            continue
+        if seed_has_required_files(scenario_name, seed):
+            candidates.append(seed)
+
+    if not candidates:
+        return None
+    if policy == "first-successful":
+        return candidates[0]
+    if policy == "best-complete":
+        return min(candidates)
+    return None
+
+
+def cleanup_stale_playback(active_scenarios: list[str], dry_run: bool = True) -> list[Path]:
+    """Remove playback JSON files that are not part of the current export set."""
+    active_files = {f"{scenario}.json" for scenario in active_scenarios}
+    stale = sorted(path for path in PLAYBACK_DIR.glob("*.json") if path.name not in active_files)
+    if not dry_run:
+        for path in stale:
+            path.unlink(missing_ok=True)
+    return stale
 
 
 def stats_value(stats: dict, key: str, default: float = 0.0) -> float:
@@ -181,7 +260,7 @@ def build_anchor_points(net: sumolib.net.Net) -> list[dict]:
     return anchors
 
 
-def export_rolling_kpis(scenario_name: str, interval_s: int = PLAYBACK_INTERVAL_S) -> list[dict]:
+def export_rolling_kpis(scenario_name: str, seed: int = 1, interval_s: int = PLAYBACK_INTERVAL_S) -> list[dict]:
     """Compute rolling Snarøya-specific KPIs from tripinfo.xml.
 
     For each playback frame we report metrics for trips that *completed* within
@@ -195,7 +274,7 @@ def export_rolling_kpis(scenario_name: str, interval_s: int = PLAYBACK_INTERVAL_
       - emergency_min: avg emergency vehicle duration
       - queue_km: estimated queue from summary.xml (waiting + halting)
     """
-    tripinfo_path = OUTPUT_DIR / scenario_name / "seed_1" / "tripinfo.xml"
+    tripinfo_path = seed_dir(scenario_name, seed) / "tripinfo.xml"
     if not tripinfo_path.exists():
         return []
 
@@ -224,7 +303,7 @@ def export_rolling_kpis(scenario_name: str, interval_s: int = PLAYBACK_INTERVAL_
             trips_snaroya_to.append((depart, arrival, duration))
 
     # Also load summary queue data keyed by time
-    summary_path = OUTPUT_DIR / scenario_name / "seed_1" / "summary.xml"
+    summary_path = seed_dir(scenario_name, seed) / "summary.xml"
     queue_by_time: dict[int, int] = {}
     if summary_path.exists():
         ctx = ET.iterparse(str(summary_path), events=("end",))
@@ -275,8 +354,8 @@ def export_rolling_kpis(scenario_name: str, interval_s: int = PLAYBACK_INTERVAL_
     return rolling
 
 
-def export_summary_series(scenario_name: str) -> list[list[int]]:
-    summary_path = OUTPUT_DIR / scenario_name / "seed_1" / "summary.xml"
+def export_summary_series(scenario_name: str, seed: int = 1) -> list[list[int]]:
+    summary_path = seed_dir(scenario_name, seed) / "summary.xml"
     if not summary_path.exists():
         return []
 
@@ -441,8 +520,8 @@ def export_network_geojson(network_path: Path, family_name: str) -> dict:
     }
 
 
-def export_playback(scenario_name: str, scenario_def: dict) -> dict | None:
-    fcd_path = OUTPUT_DIR / scenario_name / "seed_1" / "fcd.xml"
+def export_playback(scenario_name: str, scenario_def: dict, seed: int = 1) -> dict | None:
+    fcd_path = seed_dir(scenario_name, seed) / "fcd.xml"
     if not fcd_path.exists():
         return None
 
@@ -527,7 +606,7 @@ def export_playback(scenario_name: str, scenario_def: dict) -> dict | None:
         )
         elem.clear()
 
-    rolling_kpis = export_rolling_kpis(scenario_name)
+    rolling_kpis = export_rolling_kpis(scenario_name, seed=seed)
 
     out_path = PLAYBACK_DIR / f"{scenario_name}.json"
     out_path.write_text(
@@ -536,7 +615,7 @@ def export_playback(scenario_name: str, scenario_def: dict) -> dict | None:
                 "interval_s": PLAYBACK_INTERVAL_S,
                 "frames": frames,
                 "summary": {
-                    "queue": export_summary_series(scenario_name),
+                    "queue": export_summary_series(scenario_name, seed=seed),
                 },
                 "rolling_kpis": rolling_kpis,
                 "max_edge_count": max_edge_count,
@@ -551,6 +630,8 @@ def export_playback(scenario_name: str, scenario_def: dict) -> dict | None:
         "file": f"data/playback/{scenario_name}.json",
         "frame_count": len(frames),
         "interval_s": PLAYBACK_INTERVAL_S,
+        "seed": seed,
+        "size_bytes": out_path.stat().st_size,
     }
 
 
@@ -572,9 +653,9 @@ def network_family_id(family_name: str) -> str:
     return family_name
 
 
-def build_manifest() -> dict:
+def build_manifest(seed_policy: str = "seed_1", scenarios_to_export: list[str] | None = None) -> dict:
     summary_stats = load_summary_stats(SUMMARY_FILE)
-    available_scenarios = [name for name in SCENARIOS_TO_EXPORT if name in SCENARIOS]
+    available_scenarios = selected_export_scenarios(scenarios_to_export)
     family_ids = sorted({network_family_id(scenario_family(name)) for name in available_scenarios})
 
     NETWORKS_DIR.mkdir(parents=True, exist_ok=True)
@@ -586,9 +667,15 @@ def build_manifest() -> dict:
     base_net = sumolib.net.readNet(str(Path(SCENARIOS["scenario_4A_base_morning"]["network"])))
 
     scenarios = {}
+    export_inputs = {}
     for scenario_name in available_scenarios:
+        selected_seed = select_seed(scenario_name, seed_policy)
+        if selected_seed is None:
+            export_inputs[scenario_name] = {"valid": False, "seed_policy": seed_policy, "error": "no complete seed found"}
+            continue
+        export_inputs[scenario_name] = validate_export_inputs(scenario_name, selected_seed)
         stats = load_scenario_stats(OUTPUT_DIR, summary_stats, scenario_name)
-        playback = export_playback(scenario_name, SCENARIOS[scenario_name])
+        playback = export_playback(scenario_name, SCENARIOS[scenario_name], seed=selected_seed)
         if not playback:
             continue
 
@@ -600,7 +687,9 @@ def build_manifest() -> dict:
             "playback": playback,
             "kpis": build_kpis(stats),
             "has_event_overlay": "event" in scenario_name,
-            "source": "sumo_seed1",
+            "source": f"sumo_seed{selected_seed}",
+            "seed": selected_seed,
+            "status": SCENARIOS[scenario_name].get("status", "unknown"),
         }
 
     event_base = scenarios.get("scenario_4A_base_event_afternoon", {}).get("kpis", {})
@@ -631,7 +720,14 @@ def build_manifest() -> dict:
 
     default_network = networks.get("scenario_4A_base", {})
     return {
+        "manifest_version": "1.1",
         "generated_from": "scripts/07_export_presentation_data.py",
+        "generated_at": generated_at(),
+        "git_commit": git_commit(PROJECT_ROOT),
+        "scenario_catalog_sha256": sha256_file(PROJECT_ROOT / "scripts" / "utils" / "scenario_catalog.py"),
+        "seed_policy": seed_policy,
+        "exported_scenarios": available_scenarios,
+        "export_inputs": export_inputs,
         "default_center": default_network.get("center", [59.9, 10.61]),
         "default_bounds": default_network.get("bounds", [[59.88, 10.57], [59.92, 10.66]]),
         "anchors": build_anchor_points(base_net),
@@ -665,11 +761,37 @@ def build_manifest() -> dict:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Export SUMO results to presentation data")
+    parser.add_argument("--seed-policy", choices=sorted(SEED_POLICIES), default="seed_1", help="Playback seed selection policy")
+    parser.add_argument("--scenario", action="append", dest="scenarios", help="Limit export to a scenario; may be repeated")
+    parser.add_argument("--dry-run", action="store_true", help="Print export plan without writing manifest/playback")
+    parser.add_argument("--clean-old-playback", action="store_true", help="Remove playback JSON files outside the current export set")
+    args = parser.parse_args()
+
     print("=" * 60)
     print("PHASE 6: Exporting presentation data")
     print("=" * 60)
 
-    manifest = build_manifest()
+    scenarios_to_export = selected_export_scenarios(args.scenarios)
+    if args.dry_run:
+        print(json.dumps({
+            "seed_policy": args.seed_policy,
+            "scenarios": [
+                {
+                    "name": scenario_name,
+                    "selected_seed": select_seed(scenario_name, args.seed_policy),
+                }
+                for scenario_name in scenarios_to_export
+            ],
+        }, indent=2, ensure_ascii=False))
+        return
+
+    if args.clean_old_playback:
+        stale = cleanup_stale_playback(scenarios_to_export, dry_run=False)
+        for path in stale:
+            print(f"Removed stale playback {path}")
+
+    manifest = build_manifest(seed_policy=args.seed_policy, scenarios_to_export=scenarios_to_export)
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     (DATA_DIR / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     print(f"Manifest -> {DATA_DIR / 'manifest.json'}")

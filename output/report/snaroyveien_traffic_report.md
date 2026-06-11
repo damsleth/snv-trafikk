@@ -1,12 +1,18 @@
 # Trafikkanalyse Snarøyveien
 
-*Automatisk generert 11.06.2026 kl. 11:50*
+*Automatisk generert 11.06.2026 kl. 18:55*
 
 ## QA-status
 
 Denne rapporten bruker periodedelte scenarioer (AM/PM), appendix-baserte OD-matriser og en systemforsinkelses-KPI som inkluderer både fullførte turer og blokkerte avganger.
 
 Det betyr at tallene under ikke er direkte sammenlignbare med tidligere repo-utgaver som brukte kun morgenrute og kun tidstap fra fullførte turer.
+
+## Valideringsstatus
+
+Automatiske valideringssjekker har funnet forhold som bør vurderes før publisering:
+
+- afternoon: V2 system delay is lower than V1; verify scenario assumptions
 
 ## Hovedobservasjoner
 

@@ -160,6 +160,23 @@ select {
   color: var(--ink);
 }
 
+button,
+select,
+input[type="range"],
+input[type="number"],
+input[type="checkbox"] {
+  min-height: 44px;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+a:focus-visible,
+.advanced-resize-handle:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .toggle-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -174,6 +191,7 @@ select {
   border-radius: 4px;
   padding: 12px;
   background: var(--toggle-bg);
+  min-height: 48px;
 }
 
 .toggle input {
@@ -486,6 +504,73 @@ output,
     right: 12px;
     bottom: 12px;
     width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .panel {
+    padding: 1rem;
+    gap: 14px;
+    max-height: none;
+  }
+
+  .panel-head h1 {
+    font-size: 1.5rem;
+    letter-spacing: 0;
+  }
+
+  .control-group,
+  .timeline,
+  .legend {
+    padding: 12px;
+  }
+
+  .map-shell,
+  #map {
+    min-height: 62vh;
+    height: 62vh;
+  }
+
+  .map-charts {
+    flex-direction: column;
+    max-height: 46vh;
+    overflow: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .panel {
+    padding: 0.75rem;
+  }
+
+  .timeline-head,
+  .range-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .kpis,
+  .metrics-grid,
+  .toggle-grid,
+  .advanced-control-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .map-shell,
+  #map {
+    min-height: 58vh;
+    height: 58vh;
+  }
+
+  .map-charts {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    gap: 8px;
+  }
+
+  .chart-card {
+    padding: 10px;
   }
 }
 

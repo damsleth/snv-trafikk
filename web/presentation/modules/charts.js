@@ -34,7 +34,7 @@ export function renderComparisonTable({ manifest, state, ui, onSelectFamily }) {
     emergency: " min",
   }
 
-  ui.compareBody.innerHTML = ""
+  ui.compareBody.replaceChildren()
   for (const row of rows) {
     const tr = document.createElement("tr")
     if (row.id === state.family) {

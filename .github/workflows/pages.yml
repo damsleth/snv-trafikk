@@ -28,6 +28,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          mkdir -p web/presentation/data/playback
           gh release download data-v1 \
             --repo damsleth/snv-trafikk \
             --pattern "*.json" \
