@@ -24,6 +24,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Download playback data
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download data-v1 \
+            --repo damsleth/snv-trafikk \
+            --pattern "*.json" \
+            --dir web/presentation/data/playback/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
